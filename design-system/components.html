@@ -1,0 +1,787 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{brand}} — Componentes (Revision 1, pendiente de aprobación)</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="tokens.css">
+<script src="brand.js"></script>
+<style>
+  /* ===== Base ===== */
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-base);
+    line-height: var(--leading-normal);
+    color: var(--color-text);
+    background: var(--color-bg-subtle);
+    overflow-x: hidden;
+  }
+  h1, h2, h3, h4 { line-height: var(--leading-tight); margin: 0; color: var(--color-text); }
+  p { margin: 0; }
+  a { color: var(--color-link); text-underline-offset: 2px; }
+  :focus-visible { outline: none; box-shadow: var(--focus-ring); }
+  .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+  .num { font-variant-numeric: tabular-nums; }
+  .mono { font-family: var(--font-mono); font-size: 0.95em; }
+  .muted { color: var(--color-text-secondary); }
+
+  /* ===== Página de referencia ===== */
+  .ds-page { max-width: var(--container-max); margin: 0 auto; padding: var(--space-6) var(--gutter-mobile) var(--space-16); }
+  .ds-intro { display: grid; gap: var(--space-2); margin-bottom: var(--space-8); }
+  .ds-intro h1 { font-size: var(--text-2xl); }
+  .ds-tag { display: inline-flex; align-items: center; gap: var(--space-1); font-size: var(--text-xs); font-weight: var(--weight-semibold); letter-spacing: var(--tracking-caps); text-transform: uppercase; color: var(--color-warning); background: var(--color-warning-bg); border: 1px dashed var(--color-warning-border); padding: 2px var(--space-2); border-radius: var(--radius-full); width: fit-content; }
+  .ds-section { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-5) var(--space-4); margin-bottom: var(--space-6); }
+  .ds-section > h2 { font-size: var(--text-xl); margin-bottom: var(--space-1); }
+  .ds-section > .ds-desc { font-size: var(--text-sm); color: var(--color-text-secondary); margin-bottom: var(--space-5); }
+  .ds-row { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
+  .ds-stack { display: grid; gap: var(--space-4); }
+  .ds-grid-2 { display: grid; gap: var(--space-5); grid-template-columns: 1fr; }
+  .ds-label { font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: var(--tracking-caps); margin: var(--space-4) 0 var(--space-2); }
+  .ds-label:first-child { margin-top: 0; }
+  .ds-toc { display: flex; flex-wrap: wrap; gap: var(--space-2); font-size: var(--text-sm); }
+  .ds-toc a { padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); }
+  @media (min-width: 768px) {
+    .ds-page { padding: var(--space-8) var(--space-8) var(--space-16); }
+    .ds-section { padding: var(--space-6); }
+    .ds-grid-2 { grid-template-columns: 1fr 1fr; }
+  }
+
+  /* Paleta */
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr)); gap: var(--space-3); }
+  .swatch { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; font-size: var(--text-xs); }
+  .swatch-chip { height: 3rem; }
+  .swatch-meta { padding: var(--space-2); display: grid; gap: 2px; }
+  .swatch-meta strong { font-size: var(--text-sm); }
+
+  /* Tipografía */
+  .type-sample { display: grid; grid-template-columns: 4.5rem 1fr; gap: var(--space-3); align-items: baseline; padding: var(--space-2) 0; border-bottom: 1px solid var(--color-border); }
+  .type-sample:last-child { border-bottom: 0; }
+  .type-sample code { font-family: var(--font-mono); font-size: var(--text-xs); color: var(--color-text-secondary); }
+
+  /* ===== Header de la app ===== */
+  .app-header { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-2) var(--space-4); background: var(--color-surface); border-bottom: 1px solid var(--color-border); min-height: 3.5rem; }
+  .app-header img { height: 32px; width: auto; display: block; }
+  .app-nav { display: none; gap: var(--space-1); }
+  .app-nav a { display: inline-flex; align-items: center; min-height: var(--control-height); padding: 0 var(--space-3); border-radius: var(--radius-md); color: var(--color-text-secondary); font-size: var(--text-sm); font-weight: var(--weight-medium); text-decoration: none; transition: background-color var(--duration-fast) var(--ease-out), color var(--duration-fast) var(--ease-out); }
+  .app-nav a:hover { background: var(--color-bg-muted); color: var(--color-text); }
+  .app-nav a[aria-current="page"] { color: var(--color-primary); background: var(--color-primary-subtle); }
+  .app-user { display: flex; align-items: center; gap: var(--space-2); }
+  .avatar { width: 2rem; height: 2rem; border-radius: var(--radius-full); background: var(--color-primary-muted); color: var(--blue-800); display: grid; place-items: center; font-size: var(--text-xs); font-weight: var(--weight-bold); }
+  .app-user .menu-btn { display: inline-flex; }
+  @media (min-width: 900px) { .app-nav { display: flex; } .app-user .menu-btn { display: none; } }
+  .public-header { display: flex; align-items: center; justify-content: center; padding: var(--space-3) var(--space-4); background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+  .public-header img { height: 28px; width: auto; }
+  .frame { border: 1px solid var(--color-border); border-radius: var(--radius-md); overflow: hidden; }
+
+  /* ===== Botones ===== */
+  .btn { --btn-bg: var(--color-surface); --btn-fg: var(--color-text); --btn-border: var(--color-border-strong);
+    display: inline-flex; align-items: center; justify-content: center; gap: var(--space-2);
+    min-height: var(--control-height); padding: 0 var(--space-4);
+    font: inherit; font-size: var(--text-sm); font-weight: var(--weight-semibold); line-height: 1;
+    color: var(--btn-fg); background: var(--btn-bg); border: 1px solid var(--btn-border); border-radius: var(--radius-md);
+    cursor: pointer; text-decoration: none; white-space: nowrap;
+    transition: background-color var(--duration-fast) var(--ease-out), border-color var(--duration-fast) var(--ease-out), transform var(--duration-instant) var(--ease-out); }
+  .btn:active:not(:disabled) { transform: scale(0.97); }
+  .btn svg { width: 1rem; height: 1rem; flex: none; }
+  .btn-primary { --btn-bg: var(--color-primary); --btn-fg: var(--color-on-primary); --btn-border: var(--color-primary); }
+  .btn-primary:hover:not(:disabled) { --btn-bg: var(--color-primary-hover); --btn-border: var(--color-primary-hover); }
+  .btn-secondary:hover:not(:disabled) { --btn-bg: var(--color-bg-subtle); }
+  .btn-ghost { --btn-border: transparent; --btn-fg: var(--color-primary); --btn-bg: transparent; }
+  .btn-ghost:hover:not(:disabled) { --btn-bg: var(--color-primary-subtle); }
+  .btn-danger { --btn-bg: var(--color-danger); --btn-fg: var(--gray-0); --btn-border: var(--color-danger); }
+  .btn-danger:hover:not(:disabled) { --btn-bg: #8f1c13; --btn-border: #8f1c13; }
+  .btn-danger-outline { --btn-fg: var(--color-danger); --btn-border: var(--color-danger); }
+  .btn-danger-outline:hover:not(:disabled) { --btn-bg: var(--color-danger-bg); }
+  .btn:disabled, .btn[aria-disabled="true"] { --btn-bg: var(--color-bg-muted); --btn-fg: var(--color-text-disabled); --btn-border: var(--gray-300); cursor: not-allowed; }
+  .btn-lg { min-height: var(--control-height-lg); font-size: var(--text-base); padding: 0 var(--space-5); }
+  .btn-sm { min-height: 2rem; padding: 0 var(--space-3); font-size: var(--text-xs); }
+  .btn-icon { padding: 0; width: var(--control-height); }
+  .btn-block { width: 100%; }
+  .is-focus { box-shadow: var(--focus-ring); }
+  .spinner { width: 1rem; height: 1rem; border-radius: 50%; border: 2px solid currentColor; border-right-color: transparent; animation: spin 700ms linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ===== Formularios ===== */
+  .field { display: grid; gap: var(--space-1); min-width: 0; }
+  .field label, .field legend { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text); padding: 0; }
+  .field .req { color: var(--color-danger); }
+  .field .opt { font-weight: var(--weight-regular); color: var(--color-text-secondary); }
+  .help { font-size: var(--text-xs); color: var(--color-text-secondary); }
+  .input, .select, .textarea {
+    width: 100%; min-height: var(--control-height-lg); padding: var(--space-2) var(--space-3);
+    font: inherit; font-size: var(--text-base); color: var(--color-text);
+    background: var(--color-surface); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md);
+    transition: border-color var(--duration-fast) var(--ease-out), box-shadow var(--duration-fast) var(--ease-out); }
+  .input:hover, .select:hover, .textarea:hover { border-color: var(--gray-600); }
+  .input:focus-visible, .select:focus-visible, .textarea:focus-visible { border-color: var(--color-primary); }
+  .input::placeholder, .textarea::placeholder { color: var(--gray-500); }
+  .input:disabled, .select:disabled { background: var(--color-bg-muted); color: var(--color-text-disabled); border-color: var(--gray-300); cursor: not-allowed; }
+  .input[aria-invalid="true"], .textarea[aria-invalid="true"] { border-color: var(--color-danger); border-width: 2px; padding: calc(var(--space-2) - 1px) calc(var(--space-3) - 1px); }
+  .error-msg { display: flex; gap: var(--space-1); align-items: flex-start; font-size: var(--text-xs); font-weight: var(--weight-medium); color: var(--color-danger); }
+  .error-msg svg { width: 0.875rem; height: 0.875rem; flex: none; margin-top: 1px; }
+  .select { appearance: none; padding-right: var(--space-8);
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M2 4l4 4 4-4' fill='none' stroke='%234a5870' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat; background-position: right var(--space-3) center; }
+  .textarea { min-height: 6rem; resize: vertical; line-height: var(--leading-normal); }
+  .input-group { display: flex; align-items: stretch; }
+  .input-group .addon { display: inline-flex; align-items: center; padding: 0 var(--space-3); font-size: var(--text-sm); color: var(--color-text-secondary); background: var(--color-bg-subtle); border: 1px solid var(--color-border-strong); border-right: 0; border-radius: var(--radius-md) 0 0 var(--radius-md); white-space: nowrap; }
+  .input-group .input { border-radius: 0 var(--radius-md) var(--radius-md) 0; min-width: 0; }
+  .form-grid { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+  @media (min-width: 640px) { .form-grid { grid-template-columns: 1fr 1fr; } .form-grid .span-2 { grid-column: 1 / -1; } }
+  .check { display: flex; gap: var(--space-2); align-items: flex-start; font-size: var(--text-sm); }
+  .check input { width: 1.125rem; height: 1.125rem; margin: 2px 0 0; accent-color: var(--color-primary); flex: none; }
+
+  /* ===== Badges de estado de turno ===== */
+  .badge { display: inline-flex; align-items: center; gap: var(--space-1); padding: 2px var(--space-2) 2px 6px; border-radius: var(--radius-full); font-size: var(--text-xs); font-weight: var(--weight-semibold); line-height: 1.4; white-space: nowrap; border: 1px solid transparent; }
+  .badge svg { width: 0.75rem; height: 0.75rem; flex: none; }
+  .badge-reservado  { color: var(--status-reservado-fg);  background: var(--status-reservado-bg);  border-color: var(--color-info-border); }
+  .badge-confirmado { color: var(--status-confirmado-fg); background: var(--status-confirmado-bg); border-color: var(--blue-200); }
+  .badge-atendido   { color: var(--status-atendido-fg);   background: var(--status-atendido-bg);   border-color: var(--color-success-border); }
+  .badge-ausente    { color: var(--status-ausente-fg);    background: var(--status-ausente-bg);    border-color: var(--color-warning-border); }
+  .badge-cancelado  { color: var(--status-cancelado-fg);  background: var(--status-cancelado-bg);  border-color: var(--gray-300); }
+  .badge-cancelado span { text-decoration: line-through; text-decoration-thickness: 1px; }
+  .badge-neutral { color: var(--gray-700); background: var(--color-bg-muted); border-color: var(--gray-300); }
+
+  /* ===== Alertas y toasts ===== */
+  .alert { display: grid; grid-template-columns: auto 1fr; gap: var(--space-3); padding: var(--space-3) var(--space-4); border-radius: var(--radius-md); border: 1px solid; border-left-width: 4px; font-size: var(--text-sm); }
+  .alert svg { width: 1.25rem; height: 1.25rem; margin-top: 1px; }
+  .alert strong { display: block; margin-bottom: 2px; }
+  .alert-info    { background: var(--color-info-bg);    border-color: var(--color-info-border);    border-left-color: var(--color-info);    }
+  .alert-success { background: var(--color-success-bg); border-color: var(--color-success-border); border-left-color: var(--color-success); }
+  .alert-warning { background: var(--color-warning-bg); border-color: var(--color-warning-border); border-left-color: var(--color-warning); }
+  .alert-danger  { background: var(--color-danger-bg);  border-color: var(--color-danger-border);  border-left-color: var(--color-danger);  }
+  .alert-info svg { color: var(--color-info); } .alert-success svg { color: var(--color-success); }
+  .alert-warning svg { color: var(--color-warning); } .alert-danger svg { color: var(--color-danger); }
+  .toast-stack { display: grid; gap: var(--space-2); max-width: 24rem; align-content: start; align-self: start; }
+  .toast { display: grid; grid-template-columns: auto 1fr auto; gap: var(--space-3); align-items: start; padding: var(--space-3) var(--space-3) var(--space-3) var(--space-4); background: var(--gray-900); color: var(--gray-0); border-radius: var(--radius-lg); box-shadow: var(--shadow-lg); font-size: var(--text-sm);
+    animation: toast-in var(--duration-slow) var(--ease-out) both; }
+  .toast svg { width: 1.125rem; height: 1.125rem; margin-top: 1px; }
+  .toast .ok { color: var(--green-300); } .toast .err { color: var(--red-300); }
+  .toast button { background: none; border: 0; color: var(--gray-300); cursor: pointer; padding: 2px; border-radius: var(--radius-sm); font: inherit; }
+  .toast a { color: var(--blue-200); font-weight: var(--weight-semibold); }
+  @keyframes toast-in { from { opacity: 0; transform: translateY(8px) scale(0.98); } to { opacity: 1; transform: none; } }
+
+  /* ===== Cards ===== */
+  .card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius-lg); box-shadow: var(--shadow-xs); padding: var(--space-4); display: grid; gap: var(--space-3); }
+  .card-header { display: flex; justify-content: space-between; align-items: flex-start; gap: var(--space-3); }
+  .card h3 { font-size: var(--text-lg); }
+  .meta-list { display: grid; grid-template-columns: auto 1fr; gap: var(--space-1) var(--space-3); font-size: var(--text-sm); margin: 0; }
+  .meta-list dt { color: var(--color-text-secondary); }
+  .meta-list dd { margin: 0; font-weight: var(--weight-medium); }
+  .service-option { display: grid; grid-template-columns: 1fr auto; gap: var(--space-1) var(--space-3); padding: var(--space-4); border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); background: var(--color-surface); cursor: pointer; transition: border-color var(--duration-fast) var(--ease-out), background-color var(--duration-fast) var(--ease-out); }
+  .service-option:hover { border-color: var(--color-primary); }
+  .service-option input { position: absolute; opacity: 0; pointer-events: none; }
+  .service-option:has(input:checked) { border-color: var(--color-primary); border-width: 2px; padding: calc(var(--space-4) - 1px); background: var(--color-primary-subtle); }
+  .service-option:has(input:focus-visible) { box-shadow: var(--focus-ring); }
+  .service-option .name { font-weight: var(--weight-semibold); }
+  .service-option .dur { font-size: var(--text-sm); color: var(--color-text-secondary); }
+
+  /* ===== Selector de horarios (público, mobile) ===== */
+  .phone { max-width: 390px; margin: 0 auto; border: 1px solid var(--color-border); border-radius: var(--radius-xl); overflow: hidden; background: var(--color-bg); box-shadow: var(--shadow-md); }
+  .phone-body { padding: var(--space-4); display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--space-4); }
+  .stepper { display: flex; gap: var(--space-2); align-items: center; font-size: var(--text-xs); color: var(--color-text-secondary); }
+  .stepper ol { display: flex; gap: var(--space-1); list-style: none; padding: 0; margin: 0; flex: 1; }
+  .stepper li { flex: 1; height: 4px; border-radius: var(--radius-full); background: var(--gray-200); }
+  .stepper li.done, .stepper li[aria-current="step"] { background: var(--color-primary); }
+  .day-strip { display: flex; gap: var(--space-2); overflow-x: auto; padding: 4px 4px 6px; margin: -4px; scroll-snap-type: x mandatory; scrollbar-width: thin; }
+  .day { scroll-snap-align: start; flex: none; width: 3.5rem; min-height: 4rem; display: grid; place-items: center; gap: 0; padding: var(--space-2) 0; border: 1px solid var(--color-border-strong); border-radius: var(--radius-lg); background: var(--color-surface); font: inherit; color: var(--color-text); cursor: pointer; }
+  .day .dow { font-size: var(--text-xs); color: var(--color-text-secondary); text-transform: uppercase; }
+  .day .dnum { font-size: var(--text-lg); font-weight: var(--weight-bold); }
+  .day[aria-pressed="true"] { background: var(--color-primary); border-color: var(--color-primary); color: var(--color-on-primary); }
+  .day[aria-pressed="true"] .dow { color: var(--blue-100); }
+  .day:disabled { background: var(--color-bg-muted); color: var(--color-text-disabled); border-color: var(--gray-200); border-style: dashed; cursor: not-allowed; }
+  .slot-group h4 { font-size: var(--text-sm); color: var(--color-text-secondary); font-weight: var(--weight-semibold); margin-bottom: var(--space-2); }
+  .slots { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-2); }
+  .slot { min-height: var(--touch-target); border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); background: var(--color-surface); font: inherit; font-size: var(--text-base); font-weight: var(--weight-semibold); color: var(--color-primary); cursor: pointer; font-variant-numeric: tabular-nums; transition: background-color var(--duration-fast) var(--ease-out), transform var(--duration-instant) var(--ease-out); }
+  .slot:hover { background: var(--color-primary-subtle); border-color: var(--color-primary); }
+  .slot:active { transform: scale(0.97); }
+  .slot[aria-pressed="true"] { background: var(--color-primary); color: var(--color-on-primary); border-color: var(--color-primary); }
+  .slot:disabled { color: var(--color-text-disabled); background: var(--color-bg-muted); border-color: var(--gray-200); text-decoration: line-through; cursor: not-allowed; }
+  .sticky-cta { position: sticky; bottom: 0; padding: var(--space-3) var(--space-4); background: var(--color-surface); border-top: 1px solid var(--color-border); display: grid; gap: var(--space-2); }
+  .summary-line { font-size: var(--text-sm); display: flex; justify-content: space-between; gap: var(--space-2); }
+
+  /* ===== Agenda día ===== */
+  .agenda-toolbar { display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; justify-content: space-between; margin-bottom: var(--space-3); }
+  .agenda-toolbar h3 { font-size: var(--text-lg); }
+  .seg { display: inline-flex; border: 1px solid var(--color-border-strong); border-radius: var(--radius-md); overflow: hidden; }
+  .seg button { border: 0; background: var(--color-surface); font: inherit; font-size: var(--text-sm); font-weight: var(--weight-medium); padding: 0 var(--space-3); min-height: 2.25rem; color: var(--color-text-secondary); cursor: pointer; }
+  .seg button + button { border-left: 1px solid var(--color-border-strong); }
+  .seg button[aria-pressed="true"] { background: var(--color-primary-subtle); color: var(--color-primary); font-weight: var(--weight-semibold); }
+  .agenda { --row: 2.25rem; position: relative; display: grid; grid-template-columns: 3.25rem 1fr; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); overflow: hidden; }
+  .agenda-times { display: grid; grid-auto-rows: var(--row); border-right: 1px solid var(--color-border); background: var(--color-bg-subtle); }
+  .agenda-times span { font-size: var(--text-xs); color: var(--color-text-secondary); padding: 2px var(--space-2) 0 0; text-align: right; font-variant-numeric: tabular-nums; border-top: 1px solid var(--color-border); }
+  .agenda-times span:first-child { border-top: 0; }
+  .agenda-col { position: relative; display: grid; grid-auto-rows: var(--row); }
+  .agenda-col .line { border-top: 1px solid var(--color-border); }
+  .agenda-col .line:nth-child(even) { border-top-style: dashed; border-top-color: var(--gray-100); }
+  .agenda-col .line:first-child { border-top: 0; }
+  .appt { position: absolute; left: var(--space-1); right: var(--space-1); top: calc(var(--start) * var(--row) + 2px); height: calc(var(--span) * var(--row) - 4px);
+    display: flex; flex-direction: column; gap: 0; padding: var(--space-1) var(--space-2); border-radius: var(--radius-sm); border-left: 4px solid; font-size: var(--text-xs); line-height: 1.35; overflow: hidden; text-align: left; font-family: inherit; cursor: pointer; border-top: 0; border-right: 0; border-bottom: 0; }
+  .appt:hover { filter: brightness(0.98); box-shadow: var(--shadow-sm); }
+  .appt .who { font-size: var(--text-sm); font-weight: var(--weight-semibold); color: var(--color-text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .appt .what { color: var(--color-text-secondary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .appt .row1 { display: flex; justify-content: space-between; gap: var(--space-2); align-items: center; min-width: 0; }
+  .appt.s-confirmado { background: var(--status-confirmado-bg); border-left-color: var(--status-confirmado-fg); }
+  .appt.s-atendido   { background: var(--status-atendido-bg);   border-left-color: var(--status-atendido-fg); }
+  .appt.s-ausente    { background: var(--status-ausente-bg);    border-left-color: var(--status-ausente-fg); }
+  .appt.s-reservado  { background: var(--status-reservado-bg);  border-left-color: var(--status-reservado-fg); }
+  .appt.s-cancelado  { background: var(--status-cancelado-bg); border-left-color: var(--gray-400); }
+  .appt.s-cancelado .who { text-decoration: line-through; color: var(--color-text-secondary); }
+  .block { position: absolute; left: 0; right: 0; top: calc(var(--start) * var(--row)); height: calc(var(--span) * var(--row));
+    background: repeating-linear-gradient(135deg, var(--status-bloqueado-bg) 0 8px, var(--color-surface) 8px 16px);
+    border-top: 1px solid var(--status-bloqueado-line); border-bottom: 1px solid var(--status-bloqueado-line);
+    display: flex; align-items: center; gap: var(--space-2); padding: 0 var(--space-3); font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--gray-600); }
+  .block svg { width: 0.875rem; height: 0.875rem; }
+  .now-line { position: absolute; left: 0; right: 0; top: calc(var(--at) * var(--row)); height: 0; border-top: 2px solid var(--color-danger); z-index: 1; }
+  .now-line::before { content: ""; position: absolute; left: -5px; top: -6px; width: 10px; height: 10px; border-radius: 50%; background: var(--color-danger); }
+  .free-slot { position: absolute; left: var(--space-1); right: var(--space-1); top: calc(var(--start) * var(--row) + 2px); height: calc(var(--row) - 4px); display: flex; align-items: center; padding: 0 var(--space-2); font-size: var(--text-xs); color: var(--color-text-secondary); border: 1px dashed var(--gray-300); border-radius: var(--radius-sm); background: transparent; cursor: pointer; font-family: inherit; }
+  .free-slot:hover { border-color: var(--color-primary); color: var(--color-primary); background: var(--color-primary-subtle); }
+  .legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); font-size: var(--text-xs); color: var(--color-text-secondary); margin-top: var(--space-3); }
+
+  /* ===== Tabla de pacientes ===== */
+  .table-tools { display: flex; flex-wrap: wrap; gap: var(--space-2); margin-bottom: var(--space-3); }
+  .table-tools .search { flex: 1 1 14rem; position: relative; }
+  .table-tools .search svg { position: absolute; left: var(--space-3); top: 50%; translate: 0 -50%; width: 1rem; height: 1rem; color: var(--color-text-secondary); pointer-events: none; }
+  .table-tools .search .input { padding-left: var(--space-8); min-height: var(--control-height); font-size: var(--text-sm); }
+  .table-wrap { overflow-x: auto; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  table.data { width: 100%; border-collapse: collapse; font-size: var(--text-sm); min-width: 40rem; }
+  table.data th { text-align: left; font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-text-secondary); text-transform: uppercase; letter-spacing: var(--tracking-caps); background: var(--color-bg-subtle); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--color-border); white-space: nowrap; }
+  table.data td { padding: var(--space-3); border-bottom: 1px solid var(--color-border); vertical-align: middle; }
+  table.data tr:last-child td { border-bottom: 0; }
+  table.data tbody tr:hover { background: var(--gray-25); }
+  table.data .pname { font-weight: var(--weight-semibold); color: var(--color-text); text-decoration: none; }
+  table.data .pname:hover { text-decoration: underline; color: var(--color-primary); }
+  /* Lista móvil alternativa */
+  .patient-list { list-style: none; margin: 0; padding: 0; border: 1px solid var(--color-border); border-radius: var(--radius-md); }
+  .patient-list li + li { border-top: 1px solid var(--color-border); }
+  .patient-list a { display: grid; grid-template-columns: 1fr auto; gap: 2px var(--space-3); padding: var(--space-3) var(--space-4); text-decoration: none; color: var(--color-text); }
+  .patient-list a:hover { background: var(--gray-25); }
+  .patient-list .sub { font-size: var(--text-xs); color: var(--color-text-secondary); }
+  .only-mobile { display: block; } .only-desktop { display: none; }
+  @media (min-width: 768px) { .only-mobile { display: none; } .only-desktop { display: block; } }
+
+  /* ===== Odontograma ===== */
+  .odo { display: grid; gap: var(--space-3); }
+  .odo-arch { display: flex; flex-wrap: wrap; justify-content: center; gap: var(--space-2) var(--space-4); }
+  .odo-quad { display: grid; grid-template-columns: repeat(8, 2.25rem); gap: 4px; }
+  .odo-quad-label { grid-column: 1 / -1; font-size: var(--text-xs); color: var(--color-text-secondary); text-align: center; }
+  .tooth { position: relative; height: 2.75rem; display: grid; grid-template-rows: auto 1fr; place-items: center; padding: 2px 0; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: var(--color-surface); font: inherit; font-size: var(--text-xs); font-weight: var(--weight-semibold); color: var(--color-text); cursor: pointer; font-variant-numeric: tabular-nums; }
+  .tooth:hover { border-color: var(--color-primary); background: var(--color-primary-subtle); }
+  .tooth .mark { font-size: 0.6875rem; font-weight: var(--weight-bold); line-height: 1; width: 1.25rem; height: 1.125rem; display: grid; place-items: center; border-radius: 3px; }
+  .t-caries .mark      { color: var(--gray-0); background: var(--tooth-caries); }
+  .t-obturado .mark    { color: var(--gray-0); background: var(--tooth-obturado); }
+  .t-corona .mark      { color: var(--tooth-corona); border: 2px solid var(--tooth-corona); }
+  .t-endodoncia .mark  { color: var(--gray-0); background: var(--tooth-endodoncia); }
+  .t-ausente { background: var(--color-bg-muted); color: var(--color-text-secondary); border-style: dashed; }
+  .t-ausente .mark { color: var(--tooth-ausente); font-size: var(--text-sm); }
+  .tooth[aria-pressed="true"] { box-shadow: 0 0 0 2px var(--color-primary); border-color: var(--color-primary); }
+  .odo-legend { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-4); justify-content: center; font-size: var(--text-xs); color: var(--color-text-secondary); }
+  .odo-legend span { display: inline-flex; align-items: center; gap: var(--space-1); }
+  .odo-legend .tooth { display: inline-grid; width: 1.5rem; height: 1.25rem; padding: 0; cursor: default; border: 0; background: none; }
+
+  /* ===== Diálogo ===== */
+  .dialog-preview { position: relative; padding: var(--space-6) var(--space-3); background: rgba(26, 36, 51, 0.48); border-radius: var(--radius-md); display: grid; place-items: center; }
+  .dialog, dialog.dialog { width: min(100%, 28rem); background: var(--color-surface); border: 0; border-radius: var(--radius-xl); box-shadow: var(--shadow-lg); padding: 0; color: var(--color-text); }
+  dialog.dialog::backdrop { background: rgba(26, 36, 51, 0.48); }
+  dialog.dialog[open] { animation: dialog-in var(--duration-base) var(--ease-out); }
+  @keyframes dialog-in { from { opacity: 0; transform: scale(0.96); } to { opacity: 1; transform: none; } }
+  .dialog-head { display: flex; justify-content: space-between; gap: var(--space-3); padding: var(--space-5) var(--space-5) var(--space-2); }
+  .dialog-head h3 { font-size: var(--text-xl); }
+  .dialog-body { padding: 0 var(--space-5) var(--space-4); font-size: var(--text-sm); display: grid; gap: var(--space-3); }
+  .dialog-foot { display: flex; flex-wrap: wrap-reverse; justify-content: flex-end; gap: var(--space-2); padding: var(--space-4) var(--space-5); border-top: 1px solid var(--color-border); background: var(--color-bg-subtle); border-radius: 0 0 var(--radius-xl) var(--radius-xl); }
+  @media (max-width: 479px) { .dialog-foot .btn { flex: 1 1 100%; } }
+
+  /* ===== Estado vacío ===== */
+  .empty { display: grid; justify-items: center; text-align: center; gap: var(--space-3); padding: var(--space-10) var(--space-4); border: 1px dashed var(--gray-300); border-radius: var(--radius-lg); background: var(--gray-25); }
+  .empty .ico { width: 3rem; height: 3rem; border-radius: var(--radius-full); background: var(--color-primary-subtle); color: var(--color-primary); display: grid; place-items: center; }
+  .empty .ico svg { width: 1.5rem; height: 1.5rem; }
+  .empty h3 { font-size: var(--text-lg); }
+  .empty p { font-size: var(--text-sm); color: var(--color-text-secondary); max-width: 32ch; }
+
+  /* ===== Evoluciones (timeline HC) ===== */
+  .timeline { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-3); }
+  .entry { border: 1px solid var(--color-border); border-radius: var(--radius-md); padding: var(--space-3) var(--space-4); display: grid; gap: var(--space-1); font-size: var(--text-sm); background: var(--color-surface); }
+  .entry header { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: var(--space-2); font-size: var(--text-xs); color: var(--color-text-secondary); }
+  .entry.corrected { background: var(--gray-25); border-style: dashed; }
+  .entry.corrected .body { color: var(--color-text-secondary); text-decoration: line-through; text-decoration-color: var(--gray-400); }
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-check-circle" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 10.3l2.4 2.4 4.6-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 4.5V8l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-x" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-user-x" viewBox="0 0 16 16"><circle cx="7" cy="5" r="2.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M2 14c0-2.8 2.2-4.5 5-4.5 1 0 1.9.2 2.6.6M11 10.5l3 3M14 10.5l-3 3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></symbol>
+  <symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v5M10 6.2v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-warn" viewBox="0 0 20 20"><path d="M10 2.8l8 14H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.8v5M10 13.8v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.75" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.5 10.5L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 16 16"><path d="M2.5 4h11M2.5 8h11M2.5 12h11" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+  <symbol id="i-chev-l" viewBox="0 0 16 16"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-chev-r" viewBox="0 0 16 16"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6M16 4.8a3.5 3.5 0 010 6.4M18 14.4c2 .8 3.5 2.8 3.5 5.6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+</svg>
+
+<a class="sr-only" href="#main">Saltar al contenido</a>
+
+<header class="app-header" role="banner">
+  <a href="#main" aria-label="Inicio de La Muela" data-brand-name-attr="aria-label"><img src="assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48"></a>
+  <nav class="app-nav" aria-label="Principal">
+    <a href="#agenda" aria-current="page">Agenda</a>
+    <a href="#pacientes">Pacientes</a>
+    <a href="#odontograma">Historia clínica</a>
+    <a href="#formularios">Configuración</a>
+  </nav>
+  <div class="app-user">
+    <span class="avatar" aria-hidden="true">DR</span>
+    <span class="sr-only">Sesión iniciada como Dra. Romero</span>
+    <button class="btn btn-ghost btn-icon menu-btn" type="button" aria-label="Abrir menú" aria-expanded="false"><svg aria-hidden="true"><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+
+<main id="main" class="ds-page">
+  <div class="ds-intro">
+    <span class="ds-tag">Revision 1 · aprobación pendiente</span>
+    <h1>Sistema de diseño de <span data-brand-name>La Muela</span></h1>
+    <p class="muted">Referencia viva de componentes en HTML/CSS plano (sin framework). Tono clínico y confiable: mucho blanco, acentos fríos, legibilidad de datos clínicos primero. Valores en <code>tokens.css</code>; nombre en <code>brand.js</code>; logo en <code>assets/logo.svg</code>.</p>
+    <nav class="ds-toc" aria-label="Secciones">
+      <a href="#color">Color</a><a href="#tipografia">Tipografía</a><a href="#botones">Botones</a><a href="#formularios">Formularios</a><a href="#estados">Estados de turno</a><a href="#alertas">Alertas</a><a href="#cards">Cards</a><a href="#reserva">Reserva</a><a href="#agenda">Agenda</a><a href="#pacientes">Pacientes</a><a href="#odontograma">Odontograma</a><a href="#dialogo">Diálogo</a><a href="#vacio">Estado vacío</a>
+    </nav>
+  </div>
+
+  <!-- ============ COLOR ============ -->
+  <section class="ds-section" id="color" aria-labelledby="h-color">
+    <h2 id="h-color">Color</h2>
+    <p class="ds-desc">Azul clínico como primario; neutros fríos; semánticos con fondo suave. Los hex son propuesta (ver brand.md). Contraste AA verificado.</p>
+    <div class="swatches">
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-primary)"></div><div class="swatch-meta"><strong>Primario</strong><span class="mono">#1F5BBF</span><span class="muted">6.35:1 s/blanco</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-primary-hover)"></div><div class="swatch-meta"><strong>Primario hover</strong><span class="mono">#184A9E</span><span class="muted">8.36:1</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-primary-subtle);border-bottom:1px solid var(--color-border)"></div><div class="swatch-meta"><strong>Primario suave</strong><span class="mono">#EEF4FC</span><span class="muted">fondos de selección</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-text)"></div><div class="swatch-meta"><strong>Texto</strong><span class="mono">#1A2433</span><span class="muted">15.6:1</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-text-secondary)"></div><div class="swatch-meta"><strong>Texto secundario</strong><span class="mono">#5A6578</span><span class="muted">5.9:1</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-border-strong)"></div><div class="swatch-meta"><strong>Borde control</strong><span class="mono">#8391A5</span><span class="muted">3.2:1 (UI)</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-bg-subtle);border-bottom:1px solid var(--color-border)"></div><div class="swatch-meta"><strong>Fondo app</strong><span class="mono">#F5F7FA</span><span class="muted">superficies: #FFFFFF</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-success)"></div><div class="swatch-meta"><strong>Éxito</strong><span class="mono">#17734A</span><span class="muted">fondo #E8F5EE</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-warning)"></div><div class="swatch-meta"><strong>Advertencia</strong><span class="mono">#8A5300</span><span class="muted">fondo #FDF4E1</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-danger)"></div><div class="swatch-meta"><strong>Peligro</strong><span class="mono">#B42318</span><span class="muted">fondo #FDECEB</span></div></div>
+      <div class="swatch"><div class="swatch-chip" style="background:var(--color-info)"></div><div class="swatch-meta"><strong>Info</strong><span class="mono">#0B6680</span><span class="muted">fondo #E5F4F8</span></div></div>
+    </div>
+  </section>
+
+  <!-- ============ TIPOGRAFÍA ============ -->
+  <section class="ds-section" id="tipografia" aria-labelledby="h-type">
+    <h2 id="h-type">Tipografía</h2>
+    <p class="ds-desc">Fuente del sistema (Segoe UI, SF, Roboto…), sin descargas. Cifras tabulares para horarios, DNI y piezas dentales.</p>
+    <div>
+      <div class="type-sample"><code>3xl 30</code><span style="font-size:var(--text-3xl);font-weight:700">Reservá tu turno</span></div>
+      <div class="type-sample"><code>2xl 24</code><span style="font-size:var(--text-2xl);font-weight:700">Agenda del día</span></div>
+      <div class="type-sample"><code>xl 20</code><span style="font-size:var(--text-xl);font-weight:600">Historia clínica</span></div>
+      <div class="type-sample"><code>lg 18</code><span style="font-size:var(--text-lg);font-weight:600">Martín Gómez · 34 años</span></div>
+      <div class="type-sample"><code>base 16</code><span>Cuerpo del flujo público e inputs (evita zoom en iOS).</span></div>
+      <div class="type-sample"><code>sm 14</code><span style="font-size:var(--text-sm)">Cuerpo denso del back-office: tablas, evoluciones, metadatos.</span></div>
+      <div class="type-sample"><code>xs 12</code><span style="font-size:var(--text-xs)" class="muted">Leyendas, ayudas y etiquetas · <span class="num">09:30 – 10:15</span></span></div>
+      <div class="type-sample"><code>mono</code><span class="mono num">DNI 30.456.789 · pieza 36</span></div>
+    </div>
+  </section>
+
+  <!-- ============ BOTONES ============ -->
+  <section class="ds-section" id="botones" aria-labelledby="h-btn">
+    <h2 id="h-btn">Botones</h2>
+    <p class="ds-desc">Una sola acción primaria por vista. Feedback de presión (escala 0.97). El foco se muestra con anillo de 3px y separación blanca.</p>
+    <p class="ds-label">Variantes</p>
+    <div class="ds-row">
+      <button class="btn btn-primary" type="button">Confirmar turno</button>
+      <button class="btn btn-secondary" type="button">Reprogramar</button>
+      <button class="btn btn-ghost" type="button">Ver detalle</button>
+      <button class="btn btn-danger-outline" type="button">Cancelar turno</button>
+      <button class="btn btn-danger" type="button">Sí, cancelar</button>
+    </div>
+    <p class="ds-label">Estados</p>
+    <div class="ds-row">
+      <button class="btn btn-primary is-focus" type="button">Foco (teclado)</button>
+      <button class="btn btn-primary" type="button" disabled>Deshabilitado</button>
+      <button class="btn btn-secondary" type="button" disabled>Deshabilitado</button>
+      <button class="btn btn-primary" type="button" aria-busy="true" aria-disabled="true"><span class="spinner" aria-hidden="true"></span>Guardando…</button>
+    </div>
+    <p class="ds-label">Tamaños e íconos</p>
+    <div class="ds-row">
+      <button class="btn btn-primary btn-lg" type="button">Continuar</button>
+      <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Nuevo turno</button>
+      <button class="btn btn-secondary btn-sm" type="button">Pequeño</button>
+      <button class="btn btn-secondary btn-icon" type="button" aria-label="Día anterior"><svg aria-hidden="true"><use href="#i-chev-l"/></svg></button>
+    </div>
+  </section>
+
+  <!-- ============ FORMULARIOS ============ -->
+  <section class="ds-section" id="formularios" aria-labelledby="h-form">
+    <h2 id="h-form">Formularios</h2>
+    <p class="ds-desc">Etiqueta siempre visible arriba del campo; ayuda debajo; error con ícono + texto + borde de 2px (no depende solo del color).</p>
+    <form class="form-grid" novalidate onsubmit="return false">
+      <div class="field">
+        <label for="f-nombre">Nombre y apellido <span class="req" aria-hidden="true">*</span></label>
+        <input class="input" id="f-nombre" name="nombre" autocomplete="name" required value="Lucía Fernández">
+      </div>
+      <div class="field">
+        <label for="f-dni">DNI <span class="req" aria-hidden="true">*</span></label>
+        <input class="input num" id="f-dni" name="dni" inputmode="numeric" pattern="[0-9]{7,8}" maxlength="10" required aria-describedby="f-dni-help" placeholder="30456789">
+        <span class="help" id="f-dni-help">Solo números, sin puntos (7 u 8 dígitos).</span>
+      </div>
+      <div class="field">
+        <label for="f-tel">Teléfono celular <span class="req" aria-hidden="true">*</span></label>
+        <div class="input-group">
+          <span class="addon" aria-hidden="true">+54</span>
+          <input class="input num" id="f-tel" name="tel" type="tel" inputmode="tel" autocomplete="tel-national" required aria-invalid="true" aria-describedby="f-tel-err f-tel-help" value="11 4">
+        </div>
+        <span class="error-msg" id="f-tel-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>Ingresá el número completo con código de área (ej. 11 2345 6789).</span>
+        <span class="help" id="f-tel-help">Sin 0 ni 15.</span>
+      </div>
+      <div class="field">
+        <label for="f-email">Email <span class="req" aria-hidden="true">*</span></label>
+        <input class="input" id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="f-email-help" placeholder="nombre@ejemplo.com">
+        <span class="help" id="f-email-help">Te enviamos la confirmación y el link para cancelar o reprogramar.</span>
+      </div>
+      <div class="field">
+        <label for="f-prest">Prestación</label>
+        <select class="select" id="f-prest" name="prestacion">
+          <option>Consulta y diagnóstico (30 min)</option>
+          <option>Limpieza (45 min)</option>
+          <option>Arreglo de caries (60 min)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="f-dis">Consultorio</label>
+        <input class="input" id="f-dis" value="Av. Siempre Viva 742" disabled aria-describedby="f-dis-help">
+        <span class="help" id="f-dis-help">Campo deshabilitado (solo lectura).</span>
+      </div>
+      <div class="field span-2">
+        <label for="f-evo">Evolución <span class="opt">(se registra con autor y fecha)</span></label>
+        <textarea class="textarea" id="f-evo" aria-invalid="true" aria-describedby="f-evo-err" placeholder="Describí lo realizado en la atención…"></textarea>
+        <span class="error-msg" id="f-evo-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>La evolución no puede quedar vacía.</span>
+      </div>
+      <div class="field span-2">
+        <label class="check"><input type="checkbox" checked><span>Acepto el tratamiento de mis datos según la Ley 25.326 <a href="#formularios">(ver política)</a></span></label>
+      </div>
+    </form>
+  </section>
+
+  <!-- ============ ESTADOS DE TURNO ============ -->
+  <section class="ds-section" id="estados" aria-labelledby="h-st">
+    <h2 id="h-st">Estados de turno</h2>
+    <p class="ds-desc">Cada estado combina ícono, texto y color. “Reservado” queda como (TBD): el modelo de datos v1 crea los turnos directamente confirmados.</p>
+    <div class="ds-row">
+      <span class="badge badge-reservado"><svg aria-hidden="true"><use href="#i-clock"/></svg>Reservado</span>
+      <span class="badge badge-confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span>
+      <span class="badge badge-atendido"><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Atendido</span>
+      <span class="badge badge-ausente"><svg aria-hidden="true"><use href="#i-user-x"/></svg>Ausente</span>
+      <span class="badge badge-cancelado"><svg aria-hidden="true"><use href="#i-x"/></svg><span>Cancelado</span></span>
+      <span class="badge badge-neutral"><svg aria-hidden="true"><use href="#i-lock"/></svg>Bloqueado</span>
+    </div>
+    <p class="ds-label" style="margin-top:var(--space-4)">Mapeo con el modelo</p>
+    <p class="help">Confirmado = <code>CONFIRMED</code> · Atendido = <code>COMPLETED</code> · Ausente = <code>NO_SHOW</code> · Cancelado = <code>CANCELLED</code> · Reservado = (TBD) · Bloqueado = bloqueo de agenda.</p>
+  </section>
+
+  <!-- ============ ALERTAS Y TOASTS ============ -->
+  <section class="ds-section" id="alertas" aria-labelledby="h-al">
+    <h2 id="h-al">Alertas y toasts</h2>
+    <p class="ds-desc">Alertas en línea para contexto persistente; toasts para confirmar acciones (aparecen desde abajo, 280 ms, sin animación si se reduce el movimiento).</p>
+    <div class="ds-grid-2">
+      <div class="ds-stack">
+        <div class="alert alert-info" role="status"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>Recordatorio por email</strong>El paciente recibe un recordatorio 24 h antes del turno.</div></div>
+        <div class="alert alert-success" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><div><strong>Turno confirmado</strong>Te enviamos los datos a lucia@ejemplo.com.</div></div>
+        <div class="alert alert-warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>Hay 2 turnos dentro del bloqueo</strong>No se cancelan automáticamente. Revisalos antes de guardar.</div></div>
+        <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>Ese horario ya no está disponible</strong>Otra persona lo reservó recién. Elegí otro horario.</div></div>
+      </div>
+      <div class="toast-stack" aria-live="polite">
+        <div class="toast" role="status"><svg class="ok" aria-hidden="true"><use href="#i-check-circle"/></svg><div>Turno marcado como <strong>atendido</strong>. <a href="#agenda">Registrar evolución</a></div><button type="button" aria-label="Cerrar notificación"><svg width="14" height="14" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+        <div class="toast" role="status"><svg class="err" aria-hidden="true"><use href="#i-alert"/></svg><div>No se pudo enviar el email. Se reintentará automáticamente.</div><button type="button" aria-label="Cerrar notificación"><svg width="14" height="14" aria-hidden="true"><use href="#i-x"/></svg></button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CARDS ============ -->
+  <section class="ds-section" id="cards" aria-labelledby="h-cards">
+    <h2 id="h-cards">Cards</h2>
+    <p class="ds-desc">Superficie blanca, borde de 1px y sombra mínima. Opciones seleccionables para elegir prestación en el flujo público.</p>
+    <div class="ds-grid-2">
+      <article class="card" aria-labelledby="c1-t">
+        <div class="card-header">
+          <div><h3 id="c1-t">Lucía Fernández</h3><p class="help">Próximo turno</p></div>
+          <span class="badge badge-confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span>
+        </div>
+        <dl class="meta-list">
+          <dt>Fecha</dt><dd class="num">Jue 19/11 · 10:30 – 11:15</dd>
+          <dt>Prestación</dt><dd>Limpieza</dd>
+          <dt>DNI</dt><dd class="num">30.456.789</dd>
+          <dt>Origen</dt><dd>Reserva online</dd>
+        </dl>
+        <div class="ds-row"><button class="btn btn-secondary btn-sm" type="button">Reprogramar</button><button class="btn btn-ghost btn-sm" type="button">Abrir ficha</button></div>
+      </article>
+      <fieldset class="ds-stack" style="border:0;padding:0;margin:0">
+        <legend class="ds-label" style="margin-top:0">¿Qué necesitás?</legend>
+        <label class="service-option"><input type="radio" name="svc" checked><span class="name">Consulta y diagnóstico</span><span class="dur num">30 min</span><span class="help" style="grid-column:1/-1">Primera visita o control general.</span></label>
+        <label class="service-option"><input type="radio" name="svc"><span class="name">Limpieza</span><span class="dur num">45 min</span><span class="help" style="grid-column:1/-1">Remoción de sarro y pulido.</span></label>
+      </fieldset>
+    </div>
+  </section>
+
+  <!-- ============ RESERVA (MOBILE) ============ -->
+  <section class="ds-section" id="reserva" aria-labelledby="h-res">
+    <h2 id="h-res">Reserva pública — selector de horario</h2>
+    <p class="ds-desc">Paso 2 de 4, pensado para celular: días deslizables, horarios agrupados por franja, objetivo táctil de 44 px y acción fija abajo.</p>
+    <div class="phone">
+      <div class="public-header"><img src="assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48"></div>
+      <div class="phone-body">
+        <div class="stepper"><span>Paso 2 de 4</span><ol aria-hidden="true"><li class="done"></li><li aria-current="step"></li><li></li><li></li></ol></div>
+        <div>
+          <h3 style="font-size:var(--text-xl)">Elegí día y horario</h3>
+          <p class="help" style="font-size:var(--text-sm)">Consulta y diagnóstico · 30 min</p>
+        </div>
+        <div role="group" aria-label="Día">
+          <div class="day-strip">
+            <button class="day" type="button" disabled aria-label="Lunes 16, sin horarios"><span class="dow">Lun</span><span class="dnum">16</span></button>
+            <button class="day" type="button" aria-pressed="false"><span class="dow">Mar</span><span class="dnum">17</span></button>
+            <button class="day" type="button" aria-pressed="true"><span class="dow">Mié</span><span class="dnum">18</span></button>
+            <button class="day" type="button" aria-pressed="false"><span class="dow">Jue</span><span class="dnum">19</span></button>
+            <button class="day" type="button" aria-pressed="false"><span class="dow">Vie</span><span class="dnum">20</span></button>
+            <button class="day" type="button" disabled aria-label="Sábado 21, sin horarios"><span class="dow">Sáb</span><span class="dnum">21</span></button>
+          </div>
+        </div>
+        <div class="slot-group" role="group" aria-labelledby="sg-m">
+          <h4 id="sg-m">Mañana</h4>
+          <div class="slots">
+            <button class="slot" type="button" aria-pressed="false">09:00</button>
+            <button class="slot" type="button" disabled aria-label="09:30, ocupado">09:30</button>
+            <button class="slot" type="button" aria-pressed="false">10:00</button>
+            <button class="slot" type="button" aria-pressed="true">10:30</button>
+            <button class="slot" type="button" aria-pressed="false">11:00</button>
+            <button class="slot" type="button" aria-pressed="false">11:30</button>
+          </div>
+        </div>
+        <div class="slot-group" role="group" aria-labelledby="sg-t">
+          <h4 id="sg-t">Tarde</h4>
+          <div class="slots">
+            <button class="slot" type="button" aria-pressed="false">15:00</button>
+            <button class="slot" type="button" aria-pressed="false">15:30</button>
+            <button class="slot" type="button" disabled aria-label="16:00, ocupado">16:00</button>
+          </div>
+        </div>
+      </div>
+      <div class="sticky-cta">
+        <div class="summary-line"><span class="muted">Mié 18/11</span><strong class="num">10:30 – 11:00</strong></div>
+        <button class="btn btn-primary btn-lg btn-block" type="button">Continuar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ AGENDA ============ -->
+  <section class="ds-section" id="agenda" aria-labelledby="h-ag">
+    <h2 id="h-ag">Agenda — vista diaria</h2>
+    <p class="ds-desc">Densa pero legible: franjas de 15 min, barra lateral por estado, bloqueo con rayado + ícono + texto, línea de hora actual.</p>
+    <div class="agenda-toolbar">
+      <div class="ds-row" style="gap:var(--space-2)">
+        <button class="btn btn-secondary btn-icon" type="button" aria-label="Día anterior"><svg aria-hidden="true"><use href="#i-chev-l"/></svg></button>
+        <button class="btn btn-secondary" type="button">Hoy</button>
+        <button class="btn btn-secondary btn-icon" type="button" aria-label="Día siguiente"><svg aria-hidden="true"><use href="#i-chev-r"/></svg></button>
+        <h3>Lunes 16 de noviembre</h3>
+      </div>
+      <div class="ds-row" style="gap:var(--space-2)">
+        <div class="seg" role="group" aria-label="Vista"><button type="button" aria-pressed="true">Día</button><button type="button" aria-pressed="false">Semana</button></div>
+        <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Turno</button>
+      </div>
+    </div>
+    <div class="agenda" role="region" aria-label="Turnos del lunes 16 de noviembre">
+      <div class="agenda-times" aria-hidden="true">
+        <span>09:00</span><span></span><span>09:30</span><span></span><span>10:00</span><span></span><span>10:30</span><span></span><span>11:00</span><span></span><span>11:30</span><span></span><span>12:00</span><span></span><span>12:30</span><span></span>
+      </div>
+      <div class="agenda-col">
+        <div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div><div class="line"></div>
+        <button class="appt s-atendido" style="--start:0;--span:2" type="button"><span class="row1"><span class="who">Martín Gómez</span><span class="badge badge-atendido"><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Atendido</span></span><span class="what num">09:00 – 09:30 · Consulta</span></button>
+        <button class="appt s-ausente" style="--start:2;--span:2" type="button"><span class="row1"><span class="who">Sofía Ramírez</span><span class="badge badge-ausente"><svg aria-hidden="true"><use href="#i-user-x"/></svg>Ausente</span></span><span class="what num">09:30 – 10:00 · Control</span></button>
+        <button class="appt s-confirmado" style="--start:4;--span:3" type="button"><span class="row1"><span class="who">Lucía Fernández</span><span class="badge badge-confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></span><span class="what num">10:00 – 10:45 · Limpieza · online</span></button>
+        <div class="now-line" style="--at:5.4" role="presentation"><span class="sr-only">Hora actual 10:21</span></div>
+        <button class="free-slot" style="--start:7" type="button">10:45 libre · agregar turno</button>
+        <div class="block" style="--start:8;--span:4"><svg aria-hidden="true"><use href="#i-lock"/></svg>Bloqueado · Trámite banco (11:00 – 12:00)</div>
+        <button class="appt s-cancelado" style="--start:12;--span:2" type="button"><span class="row1"><span class="who">Diego Paz</span><span class="badge badge-cancelado"><svg aria-hidden="true"><use href="#i-x"/></svg><span>Cancelado</span></span></span><span class="what num">12:00 – 12:30 · por el paciente</span></button>
+        <button class="appt s-confirmado" style="--start:14;--span:2" type="button"><span class="row1"><span class="who">Ana Torres</span><span class="badge badge-confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></span><span class="what num">12:30 – 13:00 · Consulta</span></button>
+      </div>
+    </div>
+    <div class="legend" aria-label="Referencias">
+      <span>Barra izquierda = estado</span><span>Rayado = bloqueado</span><span>Línea roja = hora actual</span><span>Recuadro punteado = libre</span>
+    </div>
+  </section>
+
+  <!-- ============ PACIENTES ============ -->
+  <section class="ds-section" id="pacientes" aria-labelledby="h-pac">
+    <h2 id="h-pac">Pacientes</h2>
+    <p class="ds-desc">Tabla en desktop/tablet; lista apilada en celular. Búsqueda por nombre, DNI o teléfono.</p>
+    <div class="table-tools">
+      <div class="search"><label for="q" class="sr-only">Buscar paciente</label><svg aria-hidden="true"><use href="#i-search"/></svg><input class="input" id="q" type="search" placeholder="Buscar por nombre, DNI o teléfono"></div>
+      <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Paciente</button>
+    </div>
+    <div class="only-desktop">
+      <div class="table-wrap">
+        <table class="data">
+          <caption class="sr-only">Listado de pacientes</caption>
+          <thead><tr><th scope="col">Paciente</th><th scope="col">DNI</th><th scope="col">Teléfono</th><th scope="col">Próximo turno</th><th scope="col">Último estado</th></tr></thead>
+          <tbody>
+            <tr><td><a class="pname" href="#odontograma">Fernández, Lucía</a></td><td class="num">30.456.789</td><td class="num">11 2345-6789</td><td class="num">19/11 10:30</td><td><span class="badge badge-confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></td></tr>
+            <tr><td><a class="pname" href="#odontograma">Gómez, Martín</a></td><td class="num">27.118.402</td><td class="num">11 5566-1020</td><td class="muted">—</td><td><span class="badge badge-atendido"><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Atendido</span></td></tr>
+            <tr><td><a class="pname" href="#odontograma">Ramírez, Sofía</a></td><td class="num">41.902.335</td><td class="num">351 455-7781</td><td class="muted">—</td><td><span class="badge badge-ausente"><svg aria-hidden="true"><use href="#i-user-x"/></svg>Ausente</span></td></tr>
+            <tr><td><a class="pname" href="#odontograma">Paz, Diego</a></td><td class="num">35.007.811</td><td class="num">11 4012-3344</td><td class="muted">—</td><td><span class="badge badge-cancelado"><svg aria-hidden="true"><use href="#i-x"/></svg><span>Cancelado</span></span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+    <ul class="patient-list only-mobile" aria-label="Listado de pacientes">
+      <li><a href="#odontograma"><strong>Fernández, Lucía</strong><span class="badge badge-confirmado"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span><span class="sub num">DNI 30.456.789 · próximo 19/11 10:30</span></a></li>
+      <li><a href="#odontograma"><strong>Gómez, Martín</strong><span class="badge badge-atendido"><svg aria-hidden="true"><use href="#i-check-circle"/></svg>Atendido</span><span class="sub num">DNI 27.118.402 · 11 5566-1020</span></a></li>
+      <li><a href="#odontograma"><strong>Ramírez, Sofía</strong><span class="badge badge-ausente"><svg aria-hidden="true"><use href="#i-user-x"/></svg>Ausente</span><span class="sub num">DNI 41.902.335 · 351 455-7781</span></a></li>
+    </ul>
+  </section>
+
+  <!-- ============ ODONTOGRAMA ============ -->
+  <section class="ds-section" id="odontograma" aria-labelledby="h-odo">
+    <h2 id="h-odo">Odontograma (muestra) y evoluciones</h2>
+    <p class="ds-desc">Notación FDI, adulto. Cada estado lleva código de letra además de color. La HC nunca se edita: una corrección es una nueva entrada y la original queda tachada y visible.</p>
+    <div class="ds-stack" style="gap:var(--space-8)">
+      <div class="odo" role="group" aria-label="Odontograma de Lucía Fernández">
+        <div class="odo-arch">
+          <div class="odo-quad" role="group" aria-label="Cuadrante 1, superior derecho">
+            <span class="odo-quad-label">Superior derecho</span>
+            <button class="tooth t-ausente" type="button" aria-label="Pieza 18, ausente"><span>18</span><span class="mark" aria-hidden="true">✕</span></button>
+            <button class="tooth" type="button" aria-label="Pieza 17, sano"><span>17</span><span class="mark"></span></button>
+            <button class="tooth t-obturado" type="button" aria-label="Pieza 16, obturado"><span>16</span><span class="mark" aria-hidden="true">O</span></button>
+            <button class="tooth" type="button" aria-label="Pieza 15, sano"><span>15</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 14, sano"><span>14</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 13, sano"><span>13</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 12, sano"><span>12</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 11, sano"><span>11</span><span class="mark"></span></button>
+          </div>
+          <div class="odo-quad" role="group" aria-label="Cuadrante 2, superior izquierdo">
+            <span class="odo-quad-label">Superior izquierdo</span>
+            <button class="tooth" type="button" aria-label="Pieza 21, sano"><span>21</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 22, sano"><span>22</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 23, sano"><span>23</span><span class="mark"></span></button>
+            <button class="tooth t-caries" type="button" aria-label="Pieza 24, caries"><span>24</span><span class="mark" aria-hidden="true">C</span></button>
+            <button class="tooth" type="button" aria-label="Pieza 25, sano"><span>25</span><span class="mark"></span></button>
+            <button class="tooth t-corona" type="button" aria-label="Pieza 26, corona"><span>26</span><span class="mark" aria-hidden="true">Co</span></button>
+            <button class="tooth" type="button" aria-label="Pieza 27, sano"><span>27</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 28, sano"><span>28</span><span class="mark"></span></button>
+          </div>
+        </div>
+        <div class="odo-arch">
+          <div class="odo-quad" role="group" aria-label="Cuadrante 4, inferior derecho">
+            <button class="tooth" type="button" aria-label="Pieza 48, sano"><span>48</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 47, sano"><span>47</span><span class="mark"></span></button>
+            <button class="tooth t-endodoncia" type="button" aria-label="Pieza 46, endodoncia"><span>46</span><span class="mark" aria-hidden="true">E</span></button>
+            <button class="tooth" type="button" aria-label="Pieza 45, sano"><span>45</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 44, sano"><span>44</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 43, sano"><span>43</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 42, sano"><span>42</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 41, sano"><span>41</span><span class="mark"></span></button>
+            <span class="odo-quad-label">Inferior derecho</span>
+          </div>
+          <div class="odo-quad" role="group" aria-label="Cuadrante 3, inferior izquierdo">
+            <button class="tooth" type="button" aria-label="Pieza 31, sano"><span>31</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 32, sano"><span>32</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 33, sano"><span>33</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 34, sano"><span>34</span><span class="mark"></span></button>
+            <button class="tooth" type="button" aria-label="Pieza 35, sano"><span>35</span><span class="mark"></span></button>
+            <button class="tooth t-caries" type="button" aria-pressed="true" aria-label="Pieza 36, caries, seleccionada"><span>36</span><span class="mark" aria-hidden="true">C</span></button>
+            <button class="tooth" type="button" aria-label="Pieza 37, sano"><span>37</span><span class="mark"></span></button>
+            <button class="tooth t-ausente" type="button" aria-label="Pieza 38, ausente"><span>38</span><span class="mark" aria-hidden="true">✕</span></button>
+            <span class="odo-quad-label">Inferior izquierdo</span>
+          </div>
+        </div>
+        <div class="odo-legend" aria-label="Referencias del odontograma">
+          <span><span class="tooth t-caries"><span class="mark">C</span></span>Caries</span>
+          <span><span class="tooth t-obturado"><span class="mark">O</span></span>Obturado</span>
+          <span><span class="tooth t-corona"><span class="mark">Co</span></span>Corona</span>
+          <span><span class="tooth t-endodoncia"><span class="mark">E</span></span>Endodoncia</span>
+          <span><span class="tooth t-ausente"><span class="mark">✕</span></span>Ausente</span>
+        </div>
+      </div>
+      <div class="ds-stack">
+        <h3 style="font-size:var(--text-lg)">Evoluciones</h3>
+        <ol class="timeline">
+          <li class="entry"><header><span class="num">16/11/2026 10:41 · Dra. Romero</span><span class="badge badge-neutral">Corrige entrada del 16/11 10:38</span></header><p class="body">Pieza 36: caries oclusal profunda. Se indica obturación. <em class="muted">Motivo de corrección: pieza mal registrada.</em></p></li>
+          <li class="entry corrected"><header><span class="num">16/11/2026 10:38 · Dra. Romero</span><span class="badge badge-cancelado"><svg aria-hidden="true"><use href="#i-x"/></svg><span>Corregida</span></span></header><p class="body">Pieza 46: caries oclusal profunda. Se indica obturación.</p></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ DIÁLOGO ============ -->
+  <section class="ds-section" id="dialogo" aria-labelledby="h-dlg">
+    <h2 id="h-dlg">Diálogo de confirmación</h2>
+    <p class="ds-desc">Usa <code>&lt;dialog&gt;</code> nativo (foco atrapado, Esc cierra). Acción destructiva a la derecha; en celular los botones ocupan todo el ancho. Vista estática + botón para abrir el real.</p>
+    <div class="dialog-preview">
+      <div class="dialog" role="dialog" aria-modal="false" aria-labelledby="dlg-s-t">
+        <div class="dialog-head"><h3 id="dlg-s-t">¿Cancelar tu turno?</h3><button class="btn btn-ghost btn-icon" type="button" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+        <div class="dialog-body">
+          <p>Vas a cancelar <strong>Limpieza</strong> del <strong class="num">jueves 19/11 a las 10:30</strong>. El horario quedará libre para otra persona.</p>
+          <p class="muted">Esta acción no se puede deshacer, pero podés reservar un turno nuevo cuando quieras.</p>
+        </div>
+        <div class="dialog-foot"><button class="btn btn-secondary" type="button">Mantener turno</button><button class="btn btn-danger" type="button">Sí, cancelar turno</button></div>
+      </div>
+    </div>
+    <div class="ds-row" style="margin-top:var(--space-4)"><button class="btn btn-secondary" type="button" id="open-dlg">Abrir diálogo real</button></div>
+    <dialog class="dialog" id="dlg" aria-labelledby="dlg-t">
+      <form method="dialog">
+        <div class="dialog-head"><h3 id="dlg-t">¿Cancelar tu turno?</h3><button class="btn btn-ghost btn-icon" value="close" aria-label="Cerrar"><svg aria-hidden="true"><use href="#i-x"/></svg></button></div>
+        <div class="dialog-body"><p>Vas a cancelar <strong>Limpieza</strong> del <strong class="num">jueves 19/11 a las 10:30</strong>.</p></div>
+        <div class="dialog-foot"><button class="btn btn-secondary" value="keep" autofocus>Mantener turno</button><button class="btn btn-danger" value="cancel">Sí, cancelar turno</button></div>
+      </form>
+    </dialog>
+  </section>
+
+  <!-- ============ VACÍO ============ -->
+  <section class="ds-section" id="vacio" aria-labelledby="h-empty">
+    <h2 id="h-empty">Estado vacío</h2>
+    <p class="ds-desc">Explica qué pasa y ofrece la próxima acción.</p>
+    <div class="ds-grid-2">
+      <div class="empty">
+        <span class="ico" aria-hidden="true"><svg><use href="#i-cal"/></svg></span>
+        <h3>No hay turnos para este día</h3>
+        <p>Compartí tu link de reserva o cargá un turno manualmente.</p>
+        <div class="ds-row" style="justify-content:center"><button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Nuevo turno</button><button class="btn btn-secondary" type="button">Copiar link</button></div>
+      </div>
+      <div class="empty">
+        <span class="ico" aria-hidden="true"><svg><use href="#i-users"/></svg></span>
+        <h3>Sin resultados para “Gonzalez”</h3>
+        <p>Probá con el DNI o el teléfono, o creá la ficha del paciente.</p>
+        <button class="btn btn-secondary" type="button">Crear paciente</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+  (function () {
+    var dlg = document.getElementById("dlg");
+    var opener = document.getElementById("open-dlg");
+    if (dlg && opener && typeof dlg.showModal === "function") {
+      opener.addEventListener("click", function () { dlg.showModal(); });
+      dlg.addEventListener("close", function () { opener.focus(); });
+    }
+    // Toggle de selección (demo) para slots, días y vistas
+    document.querySelectorAll(".slots, .day-strip, .seg").forEach(function (group) {
+      group.addEventListener("click", function (e) {
+        var btn = e.target.closest("button[aria-pressed]");
+        if (!btn || btn.disabled) return;
+        group.querySelectorAll("button[aria-pressed]").forEach(function (b) { b.setAttribute("aria-pressed", "false"); });
+        btn.setAttribute("aria-pressed", "true");
+      });
+    });
+  })();
+</script>
+</body>
+</html>

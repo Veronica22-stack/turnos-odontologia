@@ -1,0 +1,30 @@
+# Skill registry (local, no versionado — ver CLAUDE.md)
+.atl/
+
+# Secretos y entorno
+.env
+.env.*
+!.env.example
+
+# Artefactos de agentes / herramientas
+.playwright-mcp/
+*.bak
+*.tmp
+
+# Backend (Gradle / Java)
+.gradle/
+build/
+out/
+*.class
+
+# Frontend (Node / Vite)
+node_modules/
+dist/
+coverage/
+
+# IDE y sistema operativo
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

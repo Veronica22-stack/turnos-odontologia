@@ -1,0 +1,192 @@
+/*
+ * La Muela — Design tokens
+ * Revision: 1 · Approval: pending
+ * Fuente única de valores visuales. Las pantallas y mockups importan este
+ * archivo y usan solo variables semánticas (--color-*, --space-*, etc.).
+ * Los hex exactos son PROPUESTA (ver brand.md). Contrastes verificados con
+ * la fórmula WCAG 2.x sobre fondo blanco salvo indicación.
+ * Sin fuentes remotas: stack del sistema.
+ */
+
+:root {
+  /* ---------- Paleta base: azul clínico (primario) ---------- */
+  --blue-50:  #eef4fc;
+  --blue-100: #d9e6f8;
+  --blue-200: #b3cdf1;
+  --blue-300: #7fa8e6;
+  --blue-500: #2f6fd6;
+  --blue-600: #1f5bbf; /* 6.35:1 sobre blanco */
+  --blue-700: #184a9e; /* 8.36:1 sobre blanco */
+  --blue-800: #143c80;
+  --blue-900: #0f2d5f;
+
+  /* ---------- Neutros fríos (slate) ---------- */
+  --gray-0:   #ffffff;
+  --gray-25:  #f8fafc;
+  --gray-50:  #f5f7fa;
+  --gray-100: #eef1f5;
+  --gray-200: #e4e9f0;
+  --gray-300: #cfd7e2;
+  --gray-400: #8391a5; /* 3.20:1 — mínimo para bordes de controles */
+  --gray-500: #5a6578; /* 5.9:1 — texto secundario */
+  --gray-600: #4a5870; /* 7.19:1 */
+  --gray-700: #3f4c63;
+  --gray-800: #2a3547;
+  --gray-900: #1a2433; /* 15.6:1 — texto principal */
+
+  /* ---------- Semánticos (texto / fondo / borde) ---------- */
+  --green-700: #17734a; --green-50: #e8f5ee; --green-300: #8fcfae;
+  --amber-700: #8a5300; --amber-50: #fdf4e1; --amber-400: #c27c0e;
+  --red-700:   #b42318; --red-50:   #fdeceb; --red-300:   #f0a8a1;
+  --cyan-700:  #0b6680; --cyan-50:  #e5f4f8; --cyan-300:  #8cc9da;
+
+  /* ---------- Roles de color (usar ESTOS en componentes) ---------- */
+  --color-bg:              var(--gray-0);
+  --color-bg-subtle:       var(--gray-50);
+  --color-bg-muted:        var(--gray-100);
+  --color-surface:         var(--gray-0);
+  --color-surface-raised:  var(--gray-0);
+
+  --color-text:            var(--gray-900);
+  --color-text-secondary:  var(--gray-500);
+  --color-text-inverse:    var(--gray-0);
+  --color-text-disabled:   var(--gray-500);
+
+  --color-border:          var(--gray-200); /* divisores decorativos */
+  --color-border-strong:   var(--gray-400); /* bordes de inputs (≥3:1) */
+
+  --color-primary:         var(--blue-600);
+  --color-primary-hover:   var(--blue-700);
+  --color-primary-active:  var(--blue-800);
+  --color-primary-subtle:  var(--blue-50);
+  --color-primary-muted:   var(--blue-100);
+  --color-on-primary:      var(--gray-0);
+  --color-link:            var(--blue-600);
+
+  --color-success:         var(--green-700);
+  --color-success-bg:      var(--green-50);
+  --color-success-border:  var(--green-300);
+  --color-warning:         var(--amber-700);
+  --color-warning-bg:      var(--amber-50);
+  --color-warning-border:  var(--amber-400);
+  --color-danger:          var(--red-700);
+  --color-danger-bg:       var(--red-50);
+  --color-danger-border:   var(--red-300);
+  --color-info:            var(--cyan-700);
+  --color-info-bg:         var(--cyan-50);
+  --color-info-border:     var(--cyan-300);
+
+  /* Estados de turno — color + ícono + texto (nunca solo color) */
+  --status-reservado-fg:   var(--cyan-700);   /* (TBD) no existe en el modelo de datos v1 */
+  --status-reservado-bg:   var(--cyan-50);
+  --status-confirmado-fg:  var(--blue-700);
+  --status-confirmado-bg:  var(--blue-50);
+  --status-atendido-fg:    var(--green-700);
+  --status-atendido-bg:    var(--green-50);
+  --status-ausente-fg:     var(--amber-700);
+  --status-ausente-bg:     var(--amber-50);
+  --status-cancelado-fg:   var(--gray-600);
+  --status-cancelado-bg:   var(--gray-100);
+  --status-bloqueado-bg:   var(--gray-100);
+  --status-bloqueado-line: var(--gray-300);
+
+  /* Odontograma (catálogo base FDI) */
+  --tooth-sano:        var(--gray-0);
+  --tooth-caries:      var(--red-700);
+  --tooth-obturado:    var(--blue-600);
+  --tooth-ausente:     var(--gray-500);
+  --tooth-corona:      var(--amber-700);
+  --tooth-endodoncia:  var(--cyan-700);
+
+  /* ---------- Tipografía ---------- */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue",
+               "Noto Sans", "Liberation Sans", Arial, sans-serif;
+  --font-mono: ui-monospace, "Cascadia Mono", "Segoe UI Mono", "SF Mono",
+               Menlo, Consolas, "Liberation Mono", monospace;
+
+  --text-xs:   0.75rem;   /* 12px — metadatos, leyendas */
+  --text-sm:   0.875rem;  /* 14px — cuerpo denso back-office */
+  --text-base: 1rem;      /* 16px — cuerpo público / inputs (evita zoom iOS) */
+  --text-lg:   1.125rem;  /* 18px */
+  --text-xl:   1.25rem;   /* 20px — títulos de card */
+  --text-2xl:  1.5rem;    /* 24px — título de página */
+  --text-3xl:  1.875rem;  /* 30px — título destacado público */
+
+  --leading-tight:  1.25;
+  --leading-normal: 1.5;
+
+  --weight-regular:  400;
+  --weight-medium:   500;
+  --weight-semibold: 600;
+  --weight-bold:     700;
+
+  --tracking-caps: 0.04em;
+
+  /* ---------- Espaciado (base 4px) ---------- */
+  --space-0:  0;
+  --space-1:  0.25rem;  /* 4 */
+  --space-2:  0.5rem;   /* 8 */
+  --space-3:  0.75rem;  /* 12 */
+  --space-4:  1rem;     /* 16 */
+  --space-5:  1.25rem;  /* 20 */
+  --space-6:  1.5rem;   /* 24 */
+  --space-8:  2rem;     /* 32 */
+  --space-10: 2.5rem;   /* 40 */
+  --space-12: 3rem;     /* 48 */
+  --space-16: 4rem;     /* 64 */
+
+  --gutter-mobile: var(--space-4);
+  --container-max: 72rem;
+  --touch-target:  2.75rem; /* 44px mínimo táctil */
+  --control-height: 2.5rem; /* 40px back-office */
+  --control-height-lg: 3rem; /* 48px flujo público */
+
+  /* ---------- Radios ---------- */
+  --radius-sm:   4px;
+  --radius-md:   6px;
+  --radius-lg:   10px;
+  --radius-xl:   14px;
+  --radius-full: 999px;
+
+  /* ---------- Sombras (frías, sutiles) ---------- */
+  --shadow-xs: 0 1px 2px rgba(20, 36, 64, 0.06);
+  --shadow-sm: 0 1px 3px rgba(20, 36, 64, 0.08), 0 1px 2px rgba(20, 36, 64, 0.04);
+  --shadow-md: 0 4px 12px rgba(20, 36, 64, 0.08), 0 2px 4px rgba(20, 36, 64, 0.04);
+  --shadow-lg: 0 16px 40px rgba(20, 36, 64, 0.14), 0 4px 10px rgba(20, 36, 64, 0.06);
+
+  /* ---------- Foco (visible, ≥3:1 contra fondo) ---------- */
+  --focus-color:  var(--blue-600);
+  --focus-width:  3px;
+  --focus-offset: 2px;
+  --focus-ring:   0 0 0 var(--focus-offset) var(--gray-0),
+                  0 0 0 calc(var(--focus-offset) + var(--focus-width)) var(--focus-color);
+
+  /* ---------- Movimiento ---------- */
+  --duration-instant: 80ms;
+  --duration-fast:    140ms;
+  --duration-base:    200ms;
+  --duration-slow:    280ms;
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* ---------- Capas ---------- */
+  --z-header: 10;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-toast: 60;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-instant: 0ms;
+    --duration-fast:    0ms;
+    --duration-base:    0ms;
+    --duration-slow:    0ms;
+  }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
