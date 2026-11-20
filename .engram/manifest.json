@@ -8,6 +8,14 @@
       "sessions": 2,
       "memories": 8,
       "prompts": 0
+    },
+    {
+      "id": "969ac31d",
+      "created_by": "lucas",
+      "created_at": "2026-11-20T18:55:09Z",
+      "sessions": 0,
+      "memories": 2,
+      "prompts": 0
     }
   ]
 }
