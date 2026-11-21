@@ -144,7 +144,7 @@ Sin migración de datos. El deploy es estático (C-27). Rollback: revertir el co
 - Design system revision: 1
 - Decision: yes (2026-11-21)
 - Mockups: openspec/changes/c-05-frontend-core-shell/mockups/
-- Approval: pending (aprobador: Lucas)
+- Approval: approved (2026-11-21, by Lucas)
 - Preview: rendered (2026-11-21, `mockups/previews/private-390.png`, `mockups/previews/private-1440.png`, `mockups/previews/public-390.png`, `mockups/previews/public-1440.png`; Playwright MCP vía servidor local en 127.0.0.1, sin scroll horizontal a 390 px, enlaces de la barra inferior de 50 px de alto, consola sin errores salvo `favicon.ico` del servidor de prueba antes de agregar el `<link rel="icon">`)
 - Visual verify: pending
 - Criterio de aceptación: `mockups/private-shell.html`, `mockups/public-shell.html` y sus capturas (ver `tasks.md` grupos 8 y 9).
