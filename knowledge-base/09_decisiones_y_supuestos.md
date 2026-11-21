@@ -59,11 +59,23 @@
 **Trade-offs aceptados**: Vistas más complejas (versión vigente vs historial).
 
 ### DD-08 — Infraestructura local por ahora
-**Decisión**: Docker Compose (app + PostgreSQL) como entorno de desarrollo/ejecución local; proveedor cloud y ubicación de los datos quedan abiertos.
+**Decisión**: Ejecución local con PostgreSQL instalado en cada equipo (ver DD-10); proveedor cloud y ubicación de los datos quedan abiertos.
 **Contexto**: Costo mínimo y decisiones de hosting pendientes.
 **Alternativas consideradas**: PaaS/VPS en la nube desde el inicio.
 **Justificación**: No bloquear el desarrollo.
 **Trade-offs aceptados**: Un producto real orientado a clientes con reservas 24/7 necesita estar siempre disponible; la ejecución local no lo garantiza (ver 10).
+
+### DD-10 — Sin Docker en el proyecto
+**Decisión**:
+1. No se usa Docker en ninguna etapa (desarrollo, tests ni producción/despliegue).
+2. Ejecución local: cada integrante instala PostgreSQL de forma nativa (instalador oficial de Windows, incluye pgAdmin) y crea la base y los roles con un script SQL versionado (`infra/postgres/init/01-roles.sql`, ejecutado con psql o pgAdmin), explicado en el README.
+3. Tests automatizados: PostgreSQL embebido con la librería zonky (`io.zonky.test:embedded-postgres`, dependencia solo de test); `./gradlew test` levanta un PostgreSQL real temporal, sin instalación previa y funcional en CI. Reemplaza a Testcontainers. H2 sigue prohibido: la restricción de exclusión requiere PostgreSQL real.
+4. Emails en desarrollo: se escriben en el log de la aplicación en lugar de enviarse (sin Mailpit); detalle en C-13.
+5. Despliegue en producción (C-27, fuera del MVP): estrategia a definir, sin Dockerfile ni compose; el hosting sigue como pregunta abierta PA-03.
+**Contexto**: Decisión explícita del usuario (2026-11-21). Docker Compose se había incorporado como suposición durante la fundación; varios integrantes del equipo no tienen Docker ni saben usarlo.
+**Alternativas consideradas**: Docker Compose (app + PostgreSQL + Mailpit), descartado por la barrera de uso del equipo; Testcontainers, descartado porque requiere Docker; H2 en memoria, descartado porque no soporta la restricción de exclusión (`btree_gist`) ni el comportamiento real de PostgreSQL.
+**Justificación**: Reduce los requisitos de herramientas del equipo y mantiene tests contra PostgreSQL real.
+**Trade-offs aceptados**: Cada integrante instala y mantiene PostgreSQL localmente (riesgo de diferencias de versión); la estrategia de despliegue queda sin definir hasta resolver PA-03.
 
 ## Supuestos inferidos
 
