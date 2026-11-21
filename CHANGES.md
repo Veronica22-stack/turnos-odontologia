@@ -268,7 +268,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/03_actores_y_roles.md` §Rutas públicas
 
 ### [C-06] `login-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[~]` propose y mockups aprobados por Lucas (2026-11-21); apply en espera de C-04
 - **Scope**:
   - Pantalla `/login` y cambio obligatorio de contraseña (US-001, US-002); mensajes genéricos de error y de cuenta bloqueada
   - Redirección a la ruta original tras login; sesión expirada redirige a login conservando la ruta; logout

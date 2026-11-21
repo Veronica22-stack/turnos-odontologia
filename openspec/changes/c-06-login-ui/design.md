@@ -141,6 +141,6 @@ Sin migración de datos. Mientras C-04 no exista, `/login` en `npm run dev` siem
 - Design system revision: 1
 - Decision: yes (2026-11-21)
 - Mockups: openspec/changes/c-06-login-ui/mockups/
-- Approval: pending (aprobador: Lucas)
+- Approval: approved (2026-11-21, by Lucas)
 - Preview: rendered (2026-11-21, `mockups/previews/<pantalla>-390.png` y `<pantalla>-1440.png` para las 10 pantallas de `mockups/` (20 capturas); Playwright MCP sobre servidor local en 127.0.0.1:8765, página completa; sin scroll horizontal a 390 px, botones de 48 px de alto, botón "Mostrar" de 44 px, tokens cargados, consola sin errores ni requests fallidos)
 - Criterio de aceptación: los HTML de `mockups/` y sus capturas (ver `tasks.md` grupos 6 y 7).

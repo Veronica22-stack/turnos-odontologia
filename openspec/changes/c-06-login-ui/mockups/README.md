@@ -1,7 +1,7 @@
 # Mockups — C-06 `login-ui`
 
 Design system: Revision 1 (aprobada 2026-11-16) · Política: `system-and-mockups`
-Approval: pending (aprobador: Lucas)
+Approval: approved (2026-11-21, by Lucas)
 Preview: rendered (2026-11-21, `previews/`)
 
 Todas las pantallas usan el app shell público aprobado en C-05 (header con logo provisional y "Acceso profesionales", pie con `(TBD)`), sin cambios.
