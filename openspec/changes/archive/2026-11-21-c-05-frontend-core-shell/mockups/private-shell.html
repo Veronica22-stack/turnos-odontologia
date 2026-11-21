@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Agenda · {{brand}} — mockup C-05 (app shell privado)</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shell.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <!-- Sprite de íconos (librería definitiva TBD en el design system) -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-agenda" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 13h3v3H8z"/></symbol>
+    <symbol id="i-pacientes" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M16 3.5a4 4 0 0 1 0 7M19 14a5 5 0 0 1 3 5v2"/></symbol>
+    <symbol id="i-config" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-salir" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+  </svg>
+
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="private-shell">
+    <header class="app-header" role="banner">
+      <a class="brand-link" href="/agenda" aria-label="La Muela — ir a la agenda" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <div class="user-slot">
+        <span class="avatar" aria-hidden="true">DR</span>
+        <span class="user-name">Dra. Romero <span class="tbd">(TBD)</span></span>
+        <span class="sr-only">Sesión iniciada como Dra. Romero</span>
+        <button class="btn btn-ghost btn-logout" type="button" aria-label="Salir">
+          <svg aria-hidden="true"><use href="#i-salir"/></svg><span class="label">Salir</span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Principal">
+      <ul>
+        <li><a class="nav-link" href="/agenda" aria-current="page"><svg aria-hidden="true"><use href="#i-agenda"/></svg><span>Agenda</span></a></li>
+        <li><a class="nav-link" href="/pacientes"><svg aria-hidden="true"><use href="#i-pacientes"/></svg><span>Pacientes</span></a></li>
+        <li><a class="nav-link" href="/configuracion"><svg aria-hidden="true"><use href="#i-config"/></svg><span>Configuración</span></a></li>
+      </ul>
+    </nav>
+
+    <main id="main" class="private-main" tabindex="-1">
+      <div class="page-head">
+        <h1 tabindex="-1">Agenda</h1>
+        <span class="meta">martes 10/03/2026 · hora del consultorio (Buenos Aires)</span>
+      </div>
+
+      <div class="notice" role="status">
+        <span>Ejemplo de aviso del shell (p. ej. “Sin conexión con el servidor. Reintentá en unos segundos.”).</span>
+      </div>
+
+      <section class="placeholder" aria-label="Contenido de la vista">
+        <strong>Contenido de la vista</strong>
+        <span>La agenda diaria/semanal llega en su propio change [UI]. C&#8209;05 solo entrega el marco (header, navegación y área principal).</span>
+      </section>
+
+      <p class="mock-note">Mockup C-05 · design system Revision 1 · nombre del usuario y datos de ejemplo <span class="tbd">(TBD)</span></p>
+    </main>
+  </div>
+</body>
+</html>
