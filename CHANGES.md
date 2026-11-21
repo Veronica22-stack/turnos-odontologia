@@ -202,7 +202,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `openspec/config.yaml`
 
 ### [C-02] `core-models-shared`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS, warnings W1–W3 corregidos (`openspec/changes/archive/2026-11-21-c-02-core-models-shared/verify-report.md`); pendiente PR a `master`
 - **Scope**:
   - Migración V2: tablas `practice` (una fila, seed) y `app_user` (email, `password_hash`, `role`, `failed_attempts`, `locked_until`, `must_change_password`)
   - Modelos: `Practice`, `AppUser`, enum `Role { DENTIST }` (diseñado para sumar `SECRETARY` en v2)

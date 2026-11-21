@@ -37,7 +37,7 @@ public final class ModuleBoundaries {
             "historiaclinica", Set.of("pacientes", "auditoria"));
 
     private static final List<String> FORBIDDEN_DOMAIN_PACKAGES =
-            List.of("org.springframework.web.", "org.springframework.jdbc.", "java.sql.");
+            List.of("org.springframework.", "java.sql.");
 
     private ModuleBoundaries() {
     }
@@ -109,7 +109,7 @@ public final class ModuleBoundaries {
         return rule::check;
     }
 
-    /** {@code domain} no depende de api/application/infrastructure ni de Spring Web o JDBC. */
+    /** {@code domain} no depende de api/application/infrastructure ni de Spring (cualquier paquete) ni de java.sql. */
     public static Rule domainIndependent(String root) {
         return dependencyRule(root, "domain es independiente de las demas capas y del framework", (from, dependency) -> {
             if (!from.layer().equals("domain")) {

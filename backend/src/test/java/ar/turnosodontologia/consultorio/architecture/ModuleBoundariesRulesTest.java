@@ -124,6 +124,24 @@ class ModuleBoundariesRulesTest {
     }
 
     @Test
+    void dominioQueUsaSpringStereotypeFallaNombrandoOrigenYDestino() {
+        String root = root("violacion_dominio_spring");
+
+        assertThatThrownBy(() -> ModuleBoundaries.domainIndependent(root).check(classesOf("violacion_dominio_spring")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("PacienteSpring")
+                .hasMessageContaining("org.springframework.stereotype.Component");
+    }
+
+    @Test
+    void dominioConAnotacionesJpaEHibernateEsValido() {
+        String root = root("ok_dominio_jpa");
+
+        assertThatCode(() -> ModuleBoundaries.domainIndependent(root).check(classesOf("ok_dominio_jpa")))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
     void dominioQueUsaJdbcFalla() {
         String root = root("violacion_dominio_sql");
 

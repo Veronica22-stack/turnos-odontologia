@@ -28,6 +28,14 @@ public final class EmbeddedPostgresSupport {
     private static final String SUPERUSER = "postgres";
     private static final String DB_NAME = "consultorio";
 
+    /**
+     * Toda base recien migrada exige credenciales de bootstrap del DENTIST (C-02): se generan por ejecucion de la JVM
+     * (nunca versionadas). La contrasena tiene 12 o mas caracteres.
+     */
+    public static final String BOOTSTRAP_EMAIL = "bootstrap-" + UUID.randomUUID() + "@it-bootstrap.test";
+
+    public static final String BOOTSTRAP_PASSWORD = "Pw-" + UUID.randomUUID();
+
     private static Database shared;
 
     private EmbeddedPostgresSupport() {
@@ -139,6 +147,8 @@ public final class EmbeddedPostgresSupport {
             properties.put("DB_PASSWORD", credentials.appPassword());
             properties.put("DB_MIGRATION_USER", credentials.migratorUser());
             properties.put("DB_MIGRATION_PASSWORD", credentials.migratorPassword());
+            properties.put("BOOTSTRAP_ADMIN_EMAIL", BOOTSTRAP_EMAIL);
+            properties.put("BOOTSTRAP_ADMIN_PASSWORD", BOOTSTRAP_PASSWORD);
             return properties;
         }
 
