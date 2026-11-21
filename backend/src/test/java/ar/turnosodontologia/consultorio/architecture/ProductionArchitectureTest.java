@@ -58,4 +58,14 @@ class ProductionArchitectureTest {
     void losEventosDeAuditoriaSoloSeExponenPorSuApi() {
         ModuleBoundaries.auditEventsExposedOnlyThroughApi(ROOT).check(production);
     }
+
+    @Test
+    void authEstaAisladoDeLosModulosDeNegocio() {
+        ModuleBoundaries.authIsolatedFromBusinessModules(ROOT).check(production);
+    }
+
+    @Test
+    void laSeguridadHttpEstaConfinadaEnAuthInfrastructure() {
+        ModuleBoundaries.securityConfinedToAuthInfrastructure(ROOT).check(production);
+    }
 }

@@ -257,4 +257,52 @@ class ModuleBoundariesRulesTest {
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining("inventario");
     }
+
+    @Test
+    void authRegistraAuditoriaEsUnaAristaPermitida() {
+        String root = root("ok_auth");
+
+        assertThatCode(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("ok_auth")))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void authNoPuedeDependerDeUnModuloDeNegocio() {
+        String root = root("violacion_auth");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("violacion_auth")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuthApiMal")
+                .hasMessageContaining("PacientesApi");
+    }
+
+    @Test
+    void authDetectaLaDependenciaTransitivaPeroNombraLaAristaProhibida() {
+        String root = root("violacion_auth_transitiva");
+        JavaClasses classes = classesOf("violacion_auth_transitiva");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classes))
+                .as("la arista prohibida es auditoria -> pacientes, no auth -> auditoria")
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuditoriaPuente")
+                .hasMessageContaining("PacientesApi");
+        assertThatThrownBy(() -> ModuleBoundaries.authIsolatedFromBusinessModules(root).check(classes))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuditoriaPuente")
+                .hasMessageContaining("PacientesApi")
+                .hasMessageContaining("modulo pacientes");
+    }
+
+    @Test
+    void authPuedeUsarSharedApiSinCrearAristasDeModulo() {
+        String root = root("ok_auth");
+        JavaClasses classes = classesOf("ok_auth");
+
+        assertThatCode(() -> {
+            ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes);
+            ModuleBoundaries.allowedDependencyGraph(root).check(classes);
+            ModuleBoundaries.authIsolatedFromBusinessModules(root).check(classes);
+            ModuleBoundaries.securityConfinedToAuthInfrastructure(root).check(classes);
+        }).doesNotThrowAnyException();
+    }
 }

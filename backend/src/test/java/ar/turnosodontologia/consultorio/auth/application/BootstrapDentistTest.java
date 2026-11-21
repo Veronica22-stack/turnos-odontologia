@@ -40,6 +40,11 @@ class BootstrapDentistTest {
         }
 
         @Override
+        public Optional<AppUser> findById(UUID id) {
+            return Optional.empty();
+        }
+
+        @Override
         public boolean existsByPracticeIdAndRole(UUID practiceId, Role role) {
             return dentistExists && practiceId.equals(PRACTICE_ID) && role == Role.DENTIST;
         }
