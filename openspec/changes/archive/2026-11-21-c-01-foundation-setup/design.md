@@ -54,13 +54,13 @@ Todas las decisiones marcadas como confirmables fueron aprobadas por el usuario 
 - **Alternativa**: multi-módulo Gradle (un subproyecto por módulo) — fronteras impuestas por el compilador, pero ~8×4 configuraciones y builds más lentos.
 
 ### D5 — ArchUnit (no Spring Modulith) para verificar fronteras **(confirmado por el usuario, 2026-11-20)**
-- **Decisión**: ArchUnit (`com.tngtech.archunit:archunit-junit5`, solo `testImplementation`) con reglas explícitas en `ModuleBoundariesTest`:
+- **Decisión**: ArchUnit (`com.tngtech.archunit:archunit-junit5`, solo `testImplementation`) con reglas explícitas en `ModuleBoundaries` (reglas reutilizables), verificadas contra fixtures en `ModuleBoundariesRulesTest` y aplicadas al código de producción en `ProductionArchitectureTest` (nombres finales de la implementación; el plan original los agrupaba como `ModuleBoundariesTest`):
   1. Cada módulo de negocio solo accede a otro módulo vía `..<modulo>.api..`; `shared` es libre.
   2. Grafo permitido de KB 08 (`reservas` → `agenda`, `pacientes`, `notificaciones`; `historiaclinica` → `pacientes`, `auditoria`; `auth`/`auditoria` sin dependencias de negocio), sin ciclos (`slices().should().beFreeOfCycles()`).
   3. Capas: `domain` no depende de `api`/`application`/`infrastructure` ni de `org.springframework.web..`/`org.springframework.jdbc..`/`java.sql..`; `application` no depende de `api` ni de `infrastructure`.
   - Nota: JPA en entidades de dominio se decide en C-02. En C-01 la regla prohíbe `org.springframework.web..` y `org.springframework.jdbc..` en `domain`; si C-02 decide entidades JPA separadas del dominio, se agrega `jakarta.persistence..` a la lista.
 - **Cómo se testea la regla (TDD)**: las reglas se construyen como funciones que reciben `JavaClasses`. Tests unitarios importan paquetes *fixture* bajo `src/test/java/.../archfixture/{ok,violacion_*}/` (clases de prueba que imitan la estructura de módulos) y verifican que cada regla **falla** con la violación y **pasa** con la estructura correcta. Luego un test aplica las mismas reglas al código de producción.
-- **Paquetes vacíos**: cada `modulo/capa` lleva un `package-info.java` para que exista en el classpath y la regla de "estructura completa" pueda verificarlo.
+- **Paquetes vacíos**: cada `modulo/capa` lleva un `package-info.java` para que exista en el classpath y la regla de "estructura completa" pueda verificarlo. Para que `javac` genere la clase de esos `package-info.java` sin anotaciones, `build.gradle.kts` agrega el flag de compilador `-Xpkginfo:always` (no es una dependencia; complementa D13).
 - **Por qué no Spring Modulith**: Modulith trata los subpaquetes de un módulo como internos y exige `@NamedInterface` en cada `api`, no verifica capas internas (habría que sumar ArchUnit igual) y agrega dependencias al classpath principal. ArchUnit es solo de test y expresa exactamente las reglas de KB 08.
 - **Alternativa**: Spring Modulith (`spring-modulith-starter-test` + `@NamedInterface("api")`), útil si más adelante se quieren eventos de módulo o documentación generada.
 

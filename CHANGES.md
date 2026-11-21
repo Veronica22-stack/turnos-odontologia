@@ -185,7 +185,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 > C-05 corre en paralelo con C-02..C-04 (solo depende de C-01).
 
 ### [C-01] `foundation-setup`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — PR #1 mergeado en `master`; verify PASS WITH WARNINGS sin críticos (`openspec/changes/archive/2026-11-21-c-01-foundation-setup/verify-report.md`)
 - **Scope**:
   - Monorepo `backend/` (Spring Boot, Gradle Kotlin DSL, paquete base `…consultorio`) y `frontend/` (Vite + TypeScript estricto, sin framework)
   - Estructura modular `agenda, reservas, pacientes, historiaclinica, notificaciones, auth, auditoria, shared` con capas api/application/domain/infrastructure; verificación de dependencias entre módulos (ArchUnit o Spring Modulith)
