@@ -146,5 +146,5 @@ Sin migración de datos. El deploy es estático (C-27). Rollback: revertir el co
 - Mockups: openspec/changes/c-05-frontend-core-shell/mockups/
 - Approval: approved (2026-11-21, by Lucas)
 - Preview: rendered (2026-11-21, `mockups/previews/private-390.png`, `mockups/previews/private-1440.png`, `mockups/previews/public-390.png`, `mockups/previews/public-1440.png`; Playwright MCP vía servidor local en 127.0.0.1, sin scroll horizontal a 390 px, enlaces de la barra inferior de 50 px de alto, consola sin errores salvo `favicon.ico` del servidor de prueba antes de agregar el `<link rel="icon">`)
-- Visual verify: pending
+- Visual verify: passed (2026-11-21; Playwright sobre `npm run dev`, capturas en `mockups/verify/` private-390/1440 y public-390/1440; sin scroll horizontal a 390 px, barra inferior fija con enlaces de 50 px, lateral de 240 px a 1440 px, foco en h1, titulos "<vista> · La Muela"; sesion privada simulada solo interceptando `GET /api/v1/auth/me` en Playwright, guards intactos; consola solo con 500 del proxy a `/auth/me` por backend apagado; diferencias menores vs mockup: sin contenido ilustrativo del mockup (bajada, pasos, boton Continuar, aviso de ejemplo, fecha, nota, TBD del nombre))
 - Criterio de aceptación: `mockups/private-shell.html`, `mockups/public-shell.html` y sus capturas (ver `tasks.md` grupos 8 y 9).
