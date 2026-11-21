@@ -9,7 +9,11 @@ import com.tngtech.archunit.lang.ConditionEvents;
 import com.tngtech.archunit.lang.SimpleConditionEvent;
 import com.tngtech.archunit.lang.syntax.ArchRuleDefinition;
 import com.tngtech.archunit.library.dependencies.SlicesRuleDefinition;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +42,10 @@ public final class ModuleBoundaries {
 
     private static final List<String> FORBIDDEN_DOMAIN_PACKAGES =
             List.of("org.springframework.", "java.sql.");
+
+    /** Modulos que auditoria no puede alcanzar, ni directa ni transitivamente (design D5). */
+    private static final Set<String> FORBIDDEN_AUDITORIA_MODULES =
+            Set.of("agenda", "reservas", "pacientes", "historiaclinica", "notificaciones", "auth");
 
     private ModuleBoundaries() {
     }
@@ -100,6 +108,80 @@ public final class ModuleBoundaries {
                     && !to.module().equals(from.module())
                     && !to.module().equals(SHARED)
                     && !ALLOWED_DEPENDENCIES.getOrDefault(from.module(), Set.of()).contains(to.module());
+        });
+    }
+
+    /**
+     * Ninguna clase de auditoria alcanza un modulo de negocio, ni directa ni transitivamente. El mensaje nombra la
+     * clase de origen y la de destino (con el camino intermedio cuando la dependencia es indirecta).
+     */
+    public static Rule auditoriaIsolatedFromBusinessModules(String root) {
+        return classes -> {
+            List<String> problems = new ArrayList<>();
+            for (JavaClass origin : classes) {
+                Location from = locate(origin.getPackageName(), root);
+                if (from != null && from.module().equals("auditoria")) {
+                    problems.addAll(forbiddenPathsFrom(origin, root));
+                }
+            }
+            if (!problems.isEmpty()) {
+                throw new AssertionError("auditoria aislada de los modulos de negocio:\n"
+                        + String.join("\n", new LinkedHashSet<>(problems)));
+            }
+        };
+    }
+
+    /** Recorrido en anchura por las dependencias dentro del raiz; devuelve los caminos prohibidos. */
+    private static Set<String> forbiddenPathsFrom(JavaClass origin, String root) {
+        Set<String> problems = new LinkedHashSet<>();
+        Map<JavaClass, List<String>> visited = new HashMap<>();
+        Deque<JavaClass> pending = new ArrayDeque<>();
+        for (Dependency dependency : origin.getDirectDependenciesFromSelf()) {
+            collectForbidden(root, dependency, List.of(origin.getName()), visited, pending, problems);
+        }
+        while (!pending.isEmpty()) {
+            JavaClass current = pending.remove();
+            List<String> path = visited.get(current);
+            for (Dependency dependency : current.getDirectDependenciesFromSelf()) {
+                collectForbidden(root, dependency, path, visited, pending, problems);
+            }
+        }
+        return problems;
+    }
+
+    /** Registra la violacion o habilita el siguiente paso del recorrido transitivo. */
+    private static void collectForbidden(String root, Dependency dependency, List<String> path,
+            Map<JavaClass, List<String>> visited, Deque<JavaClass> pending, Collection<String> problems) {
+        JavaClass target = dependency.getTargetClass();
+        Location to = locate(target.getPackageName(), root);
+        if (to == null) {
+            return;
+        }
+        if (FORBIDDEN_AUDITORIA_MODULES.contains(to.module())) {
+            List<String> fullPath = new ArrayList<>(path);
+            fullPath.add(target.getName());
+            problems.add(String.join(" -> ", fullPath) + " (modulo " + to.module() + ")");
+            return;
+        }
+        if (visited.putIfAbsent(target, append(path, target.getName())) == null) {
+            pending.add(target);
+        }
+    }
+
+    private static List<String> append(List<String> path, String element) {
+        List<String> result = new ArrayList<>(path);
+        result.add(element);
+        return List.copyOf(result);
+    }
+
+    /** Fuera de auditoria solo se puede referenciar su capa api: nunca entidades, adaptadores ni dominio. */
+    public static Rule auditEventsExposedOnlyThroughApi(String root) {
+        return dependencyRule(root, "los eventos de auditoria solo se exponen por su capa api", (from, dependency) -> {
+            if (from.module().equals("auditoria")) {
+                return false;
+            }
+            Location to = locate(dependency.getTargetClass().getPackageName(), root);
+            return to != null && to.module().equals("auditoria") && !to.layer().equals("api");
         });
     }
 
