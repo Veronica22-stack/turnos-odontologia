@@ -4,3 +4,5 @@
 *.gz binary
 *.jar binary
 *.bat text eol=crlf
+*.sql text eol=lf
+gradlew text eol=lf

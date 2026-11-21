@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: consultorio
+  autoconfigure:
+    # Sin usuarios en memoria: evita que Spring genere (y loguee) una contrasena por defecto.
+    exclude: org.springframework.boot.security.autoconfigure.UserDetailsServiceAutoConfiguration
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+  flyway:
+    # Flyway usa el rol con DDL; la aplicacion corre con el rol sin DDL (design.md D6).
+    user: ${DB_MIGRATION_USER}
+    password: ${DB_MIGRATION_PASSWORD}
+    placeholders:
+      app_role: ${DB_USER}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+
+server:
+  error:
+    include-stacktrace: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      show-components: never

@@ -28,3 +28,9 @@ coverage/
 *.iml
 .DS_Store
 Thumbs.db
+
+# Logs, caches de herramientas y .env en subcarpetas (C-01)
+*.log
+frontend/.vite/
+backend/bin/
+**/.env
