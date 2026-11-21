@@ -17,8 +17,7 @@ Aplicación web para un odontólogo independiente en Argentina: agenda, reserva 
 | Base de datos | **PostgreSQL** (con `btree_gist` para la restricción de exclusión) | 15+ (Suposición) |
 | Migraciones | Flyway (Suposición) | 10+ |
 | Email | Proveedor transaccional (TBD; ver KB 10) | — |
-| Contenedores (dev) | Docker Compose: app + PostgreSQL | — |
-| Tests | JUnit 5 + Testcontainers (backend); Vitest (frontend) (Suposición) | — |
+| Tests | JUnit 5 + PostgreSQL embebido (zonky) (backend); Vitest (frontend) (Suposición) | — |
 
 Detalle completo: [knowledge-base/02_descripcion_general.md](knowledge-base/02_descripcion_general.md)
 
@@ -77,7 +76,7 @@ El plan completo está en [CHANGES.md](CHANGES.md). Resumen:
 
 - **Total**: 28 changes (C-01 a C-28) en 8 fases: 1 Fundación y acceso, 2 Configuración de la agenda, 3 Pacientes y turnos, 4 Notificaciones y reserva pública, 5 Historia clínica, 6 Interfaces del profesional, 7 Reserva pública (UI), 8 Producción y cumplimiento.
 - **Camino crítico** (14): `C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 → C-24 → C-25 → C-26 → C-27 → C-28` (C-25 también depende de C-15).
-- **Primer change**: `C-01` (`foundation-setup`): monorepo `backend/` + `frontend/`, Docker Compose, Flyway, tooling de tests.
+- **Primer change**: `C-01` (`foundation-setup`): monorepo `backend/` + `frontend/`, script SQL de base/roles para PostgreSQL local instalado, Flyway, tests con PostgreSQL embebido (zonky), README con pasos de instalación.
 - **Changes [UI]**: requieren un mockup HTML aprobado (design system Revision 1, política `system-and-mockups`) en `openspec/changes/<name>/mockups/` ANTES del `/opsx:apply`.
 
 **Antes de cualquier `/opsx:propose`**: leé [CHANGES.md](CHANGES.md), identificá las dependencias del change y los archivos de "Leer antes".

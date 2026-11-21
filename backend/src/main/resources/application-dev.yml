@@ -1,0 +1,8 @@
+# Perfil de desarrollo: solo valores NO sensibles. Las contrasenas siempre vienen del entorno.
+spring:
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/consultorio}
+
+logging:
+  level:
+    ar.turnosodontologia.consultorio: DEBUG

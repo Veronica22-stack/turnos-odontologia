@@ -10,8 +10,8 @@
 | Base de datos | **PostgreSQL** (con `btree_gist` para la restricción de exclusión) | 15+ (**Suposición**) |
 | Migraciones | Flyway (**Suposición**) | 10+ |
 | Email | Proveedor transaccional (TBD; ver 10) | — |
-| Contenedores (dev) | Docker Compose: app + PostgreSQL | — |
-| Tests | JUnit 5 + Testcontainers (backend); Vitest (frontend) (**Suposición**) | — |
+| Base de datos local | PostgreSQL instalado en cada equipo (instalador oficial, incluye pgAdmin); base y roles creados con script SQL versionado (DD-10) | — |
+| Tests | JUnit 5 + PostgreSQL embebido (zonky) (backend); Vitest (frontend) (**Suposición**) | — |
 
 Restricciones obligatorias del stack: frontend TS vanilla responsivo, backend Spring Boot con Gradle (ver `discovery/discovery.md` §9).
 

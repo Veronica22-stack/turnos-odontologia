@@ -5,7 +5,7 @@
 > **Leer este archivo antes de ejecutar cualquier `/opsx:propose`.**
 
 **Stack**: TypeScript vanilla (Vite) + Spring Boot (Gradle) + PostgreSQL (Flyway) · monolito modular · single-tenant v1 con `practice_id` en toda tabla de negocio.
-**Modo de apply**: Strict TDD habilitado (RED → GREEN → TRIANGULATE → REFACTOR; Testcontainers para integración).
+**Modo de apply**: Strict TDD habilitado (RED → GREEN → TRIANGULATE → REFACTOR; PostgreSQL embebido (zonky) para integración).
 **Política visual**: `system-and-mockups` con design system **Revision 1 aprobado** (`design-system/README.md`). Todo change marcado **[UI]** requiere un mockup HTML aprobado en `openspec/changes/<name>/mockups/` ANTES del apply (ver `design-system/`).
 
 ---
@@ -154,6 +154,30 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 
 > C-18 requiere C-11 y C-16; C-22 requiere C-17, C-18 y C-21 archivados. Los pasos 3-4 no tienen paralelismo posible en backend (cadena C-02 → C-03 → C-04); el Agente C puede adelantar el mockup de C-06 y los de las UIs siguientes mientras tanto.
 
+### División de tareas del equipo (trabajo práctico)
+
+**Alcance del TP — MVP imprescindible**: 24 changes (C-01 a C-22, C-24 y C-25), según la sección D de `discovery/investigacion-mercado.md` ajustada por el Discovery confirmado (`discovery/discovery.md` §5-6): agenda de un profesional sin solapamientos, reserva online autogestionada, recordatorios por email y ficha clínica con anamnesis, odontograma y evoluciones.
+
+**Fuera de alcance**: C-23 (visor de auditoría; el registro lo cubre C-03), C-26 (hardening de producción), C-27 (despliegue) y C-28 (checklist legal de lanzamiento). Lo decide la líder.
+
+**Change principal: C-11 `appointments-core`** — núcleo del dominio (turnos sin solapamientos), en el camino crítico. Lucas conduce explore → propose → archive; Elian hace el apply y Gabriel el verify (quien testea no es quien implementó).
+
+| Integrante | Responsabilidad principal | Changes |
+|---|---|---|
+| **Lucas (líder)** | Fundación (Discovery, knowledge-base, design system, roadmap, reglas del agente). Conduce el OPSX de C-11 (explore, propose, archive). Decide gates y paralelismo, controla `master` y aprueba todos los PR. Evidencia de Engram. | C-01 · C-11 (explore, propose, archive) |
+| **Elian** | Backend núcleo sobre el camino crítico. **Apply de C-11.** | C-02 · C-03 · C-04 · C-09 · C-11 (apply) · C-12 |
+| **Gabriel** | **Verify de C-11.** Dueño de la matriz de tests (cada escenario de cada spec: feliz, error de negocio y borde). README para clonar y correr los tests. API de reserva pública. | C-11 (verify) · C-08 · C-10 · C-14 · C-15 |
+| **Veronica** | Informe de Discovery en PDF (resumen ejecutivo, A, B, C y D). Backend de historia clínica y notificaciones. | C-13 · C-16 · C-17 · C-18 |
+| **Mayra** | Verificación manual de ≥5 fuentes del informe (no armó la tabla) y hallazgos en la sección F. Revisión de la knowledge-base contra el informe. Frontend base y reserva pública (con mockups). | C-05 · C-06 · C-24 · C-25 |
+| **Tomas** | Revisión del roadmap contra el MVP. Frontend del profesional (con mockups). | C-07 · C-19 · C-20 · C-21 · C-22 |
+
+**Reglas de trabajo**
+
+- Cada integrante trabaja en su rama `dev-<nombre>` (`dev-lucas`, `dev-elian`, …) con commits propios; a `master` solo se entra por Pull Request aprobado por la líder.
+- El paralelismo respeta los gates de este documento; nadie tiene dos changes en el mismo gate (gate 4: Tomas C-07, Gabriel C-08, Mayra C-06 · gate 6: Elian C-11, Veronica C-16, Tomas C-19 · gate 8: Gabriel C-14, Veronica C-17 → C-18, Tomas C-20).
+- Tests automatizados por cada escenario de los specs (feliz, error de negocio y borde) en todos los changes, en modo Strict TDD.
+- **Video de defensa**: Lucas (fundación y conducción OPSX), Elian (apply), Gabriel (verify y tests), Veronica (Discovery), Mayra (verificación de fuentes y UI pública), Tomas (roadmap y UI del profesional). **Reflexión escrita**: cada uno su parte.
+
 ---
 
 ## FASE 1 — Fundación y acceso
@@ -165,9 +189,9 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 - **Scope**:
   - Monorepo `backend/` (Spring Boot, Gradle Kotlin DSL, paquete base `…consultorio`) y `frontend/` (Vite + TypeScript estricto, sin framework)
   - Estructura modular `agenda, reservas, pacientes, historiaclinica, notificaciones, auth, auditoria, shared` con capas api/application/domain/infrastructure; verificación de dependencias entre módulos (ArchUnit o Spring Modulith)
-  - `docker-compose.yml` (app + PostgreSQL + Mailpit para emails de prueba), `.env.example` con las variables de 08 §Variables de entorno, `.gitignore` sin secretos
-  - Flyway con dos roles (`migrator` DDL / `app` sin UPDATE/DELETE sobre tablas inmutables, preparado); Migración V1 base verificada con Testcontainers
-  - Tooling de tests: JUnit 5 + Testcontainers (backend), Vitest (frontend); `./gradlew test` y `npm test` verdes con un test smoke por lado
+  - Script SQL (`infra/postgres/init/01-roles.sql`) que crea la base y los roles en el PostgreSQL instalado localmente; README con los pasos de instalación de PostgreSQL (sin Docker, DD-10); `.env.example` con las variables de 08 §Variables de entorno, `.gitignore` sin secretos
+  - Flyway con dos roles (`migrator` DDL / `app` sin UPDATE/DELETE sobre tablas inmutables, preparado); Migración V1 base verificada con PostgreSQL embebido (zonky)
+  - Tooling de tests: JUnit 5 + PostgreSQL embebido zonky (`io.zonky.test:embedded-postgres`, solo test) (backend), Vitest (frontend); `./gradlew test` y `npm test` verdes con un test smoke por lado
   - Config base `application.yml` / `application-dev.yml`, health endpoint `/actuator/health`
 - **Dependencias**: ninguna
 - **Governance**: BAJO
@@ -199,7 +223,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - Migración V3: tabla `audit_log` (usuario, acción, `patient_id` nullable, referencia, IP, `created_at` servidor) append-only; REVOKE UPDATE/DELETE al rol `app`
   - Puerto `AuditLogger` (interfaz pública del módulo `auditoria`) con acciones `LOGIN_OK, LOGIN_FAIL, PATIENT_READ, HC_READ, HC_CREATE, HC_CORRECT, BOOKING_TOKEN_USE`
   - Sin contenido clínico en claro: solo referencias (RN-AD-03); sin DNI/email en logs de aplicación
-  - Tests: inserción, imposibilidad de UPDATE/DELETE con el rol de la app (Testcontainers), no filtración de datos sensibles
+  - Tests: inserción, imposibilidad de UPDATE/DELETE con el rol de la app (PostgreSQL embebido zonky), no filtración de datos sensibles
 - **Dependencias**: `C-02`
 - **Governance**: CRITICO (audit trail)
 - **Leer antes**:
@@ -371,7 +395,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 - **Scope**:
   - Migración V9: tabla `notification` (tipo `CONFIRMATION/REMINDER/CANCELLATION`, estado `PENDING/SENT/FAILED`, `scheduled_for`, `attempts`, `UNIQUE (appointment_id, type)`)
   - Outbox simple + scheduler (cada 5-15 min) con `FOR UPDATE SKIP LOCKED`, reintentos con backoff, idempotencia
-  - Puerto `EmailSender` con adaptador SMTP (Mailpit en dev); proveedor definitivo TBD (PA-09)
+  - Puerto `EmailSender` con adaptador SMTP; en dev los emails se escriben en el log, sin envío (DD-10); proveedor definitivo TBD (PA-09)
   - Plantillas sin datos clínicos: fecha, hora, prestación, consultorio y link `/turno/{token}` (RN-NO-06); `APP_BASE_URL`
   - Listeners de `AppointmentConfirmed/Cancelled/Rescheduled`: confirmación inmediata, recordatorio (`REMINDER_HOURS_BEFORE`), anular/recalcular (RN-NO-04); un fallo de envío nunca revierte la reserva (RN-NO-05)
   - Notificación al odontólogo de cancelaciones del paciente (Suposición, PA-14)
@@ -614,11 +638,11 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ### [C-27] `deployment-backups-ops`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Imagen única (backend sirviendo la SPA compilada), `Dockerfile` multi-stage, compose de producción, HTTPS/HSTS, variables de entorno de producción
+  - Estrategia de despliegue a definir (PA-03), sin Dockerfile, compose ni imagen (DD-10); artefacto único (backend sirviendo la SPA compilada), HTTPS/HSTS, variables de entorno de producción
   - Script de despliegue reproducible (un cliente = un despliegue, DD-02); health checks y logs
   - Backups `pg_dump` cifrados programados + procedimiento y prueba de restauración (RPO/RTO a definir, PA-06)
   - Hosting y jurisdicción de datos (PA-03) registrados como decisión; scheduler de recordatorios garantizado (app siempre activa)
-  - Tests: build de imagen, smoke test de despliegue, restore verificado
+  - Tests: build del artefacto, smoke test de despliegue, restore verificado
 - **Dependencias**: `C-26`
 - **Governance**: ALTO
 - **Leer antes**:

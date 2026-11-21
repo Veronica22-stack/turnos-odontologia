@@ -31,7 +31,7 @@ Reglas de dependencia: `reservas` → `agenda`, `pacientes`, `notificaciones`; `
 
 ```
 proyecto/
-├── docker-compose.yml            # dev: app + postgres (+ mailpit para emails de prueba, Suposición)
+├── infra/postgres/init/01-roles.sql  # base y roles para PostgreSQL local instalado (DD-10)
 ├── .env.example
 ├── backend/
 │   ├── build.gradle.kts
@@ -56,7 +56,7 @@ proyecto/
 │       │       ├── application.yml
 │       │       ├── application-dev.yml
 │       │       └── db/migration/       # Flyway: V1__init.sql, V2__exclusion_constraint.sql ...
-│       └── test/                       # unit + integración (Testcontainers)
+│       └── test/                       # unit + integración (PostgreSQL embebido zonky)
 └── frontend/
     ├── package.json
     ├── tsconfig.json
@@ -103,23 +103,23 @@ La carpeta `design-system/` en la raíz (si la política de diseño lo habilita)
 
 ## Despliegue
 
-- **Ahora**: ejecución local (Docker Compose con app + PostgreSQL). Cloud/proveedor y ubicación de los datos = pregunta abierta.
-- **Suposición:** imagen única de la app (backend sirviendo la SPA compilada) para minimizar piezas.
-- **Riesgo single-tenant:** N clientes = N despliegues (actualizaciones, backups, monitoreo, certificados). Mitigación a evaluar: automatizar el despliegue (script/IaC), imagen versionada, y revisar la decisión si N crece (ver DD-02).
+- **Ahora**: ejecución local con PostgreSQL instalado en cada equipo, sin Docker (DD-10). Cloud/proveedor, estrategia de despliegue y ubicación de los datos = pregunta abierta (PA-03).
+- **Suposición:** artefacto único de la app (backend sirviendo la SPA compilada) para minimizar piezas.
+- **Riesgo single-tenant:** N clientes = N despliegues (actualizaciones, backups, monitoreo, certificados). Mitigación a evaluar: automatizar el despliegue (script/IaC), artefacto versionado, y revisar la decisión si N crece (ver DD-02).
 
 ## Variables de entorno
 
 | Variable | Descripción | Ejemplo | Sensible |
 |----------|-------------|---------|----------|
 | `SPRING_PROFILES_ACTIVE` | Perfil | `dev` | N |
-| `DB_URL` | JDBC de PostgreSQL | `jdbc:postgresql://db:5432/consultorio` | N |
+| `DB_URL` | JDBC de PostgreSQL | `jdbc:postgresql://localhost:5432/consultorio` | N |
 | `DB_USER` / `DB_PASSWORD` | Credenciales del rol de aplicación | `app` / `***` | Y |
 | `DB_MIGRATION_USER` / `DB_MIGRATION_PASSWORD` | Rol con DDL para Flyway | `migrator` / `***` | Y |
 | `APP_BASE_URL` | URL pública (links en emails) | `https://turnos.ejemplo.com` | N |
 | `APP_TIMEZONE` | Zona horaria del consultorio | `America/Argentina/Buenos_Aires` | N |
 | `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` | Alta inicial del odontólogo | `dr@ejemplo.com` / `***` | Y |
 | `AUTH_SESSION_TIMEOUT_MIN` | Expiración por inactividad | `30` | N |
-| `MAIL_PROVIDER` | Proveedor de email (TBD) | `smtp` | N |
+| `MAIL_PROVIDER` | Proveedor de email (TBD); en dev los emails se escriben en el log, sin envío (DD-10) | `smtp` | N |
 | `MAIL_HOST` / `MAIL_PORT` / `MAIL_USER` / `MAIL_PASSWORD` | SMTP | `smtp.ejemplo.com` / `587` | Y (password) |
 | `MAIL_FROM` | Remitente | `turnos@ejemplo.com` | N |
 | `REMINDER_HOURS_BEFORE` | Anticipación del recordatorio | `24` | N |
