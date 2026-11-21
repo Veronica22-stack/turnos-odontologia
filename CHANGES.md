@@ -252,7 +252,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-04
 
 ### [C-05] `frontend-core-shell` **[UI]**
-- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS sin críticos, W1 corregido y W2–W4 registrados en design.md (`openspec/changes/archive/2026-11-21-c-05-frontend-core-shell/verify-report.md`); mockups aprobados por Lucas; pendiente PR a `master`
+- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS sin críticos, W1 corregido y W2–W4 registrados en design.md (`openspec/changes/archive/2026-11-21-c-05-frontend-core-shell/verify-report.md`); mockups aprobados por Lucas; PR #5 mergeado en `master`
 - **Scope**:
   - Bootstrap `main.ts`, router propio (History API) con guards (`/login`, rutas privadas, públicas `/reservar` y `/turno/{token}`)
   - `core/http` (cliente fetch tipado, manejo de errores, CSRF), `core/auth` (estado de sesión), `core/state` (store pub/sub), `core/dom` (render con escape de HTML, sin `innerHTML` con datos de usuario)
