@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Permite a operadores, orquestadores de contenedores y monitoreo saber si la aplicación está viva y puede usar su base de datos, sin revelar información interna.
+Permite a operadores, herramientas de despliegue y monitoreo saber si la aplicación está viva y puede usar su base de datos, sin revelar información interna.
 
 ## ADDED Requirements
 

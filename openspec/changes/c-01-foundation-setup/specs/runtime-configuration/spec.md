@@ -39,7 +39,7 @@ La aplicación SHALL operar con UTC como zona horaria de la JVM y de las sesione
 - **THEN** el resultado es `UTC`
 
 ### Requirement: Perfil de desarrollo
-El sistema SHALL ofrecer un perfil `dev` que aporta valores no sensibles para el entorno local (host y puerto de la base y del servidor de email de prueba), sin aportar contraseñas.
+El sistema SHALL ofrecer un perfil `dev` que aporta valores no sensibles para el entorno local (host, puerto y nombre de la base local, nivel de logging), sin aportar contraseñas.
 
 #### Scenario: Perfil dev sin contraseñas
 - **WHEN** se activa el perfil `dev` sin definir `DB_PASSWORD`
