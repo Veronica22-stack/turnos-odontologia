@@ -1,10 +1,9 @@
-# Spec Delta: safe-rendering
+# safe-rendering Specification
 
 ## Purpose
-
 Garantiza que la SPA nunca interprete como HTML ni ejecute datos que vienen del usuario o de la API (nombres, DNI, notas clínicas, tokens), protegiendo los datos de salud contra XSS (Ley 25.326, regla dura 10).
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Texto siempre como texto
 Todo dato insertado en la interfaz SHALL mostrarse como texto literal: los caracteres `<`, `>`, `&`, `"` y `'` se ven tal cual y nunca crean elementos.
@@ -29,7 +28,7 @@ Cuando un dato deba incluirse en una cadena HTML o de atributo, el escape SHALL 
 - **THEN** el resultado es una cadena vacía
 
 ### Requirement: Atributos peligrosos rechazados
-La creación de elementos MUST rechazar atributos de manejadores de eventos (`on*`) y valores de `href`, `src`, `action` o `formaction` con esquemas distintos de `http:`, `https:`, `mailto:`, `tel:` o rutas relativas.
+La creación de elementos MUST rechazar atributos de manejadores de eventos (`on*`) y valores de `href`, `src`, `action` o `formaction` con esquemas distintos de `http:`, `https:`, `mailto:`, `tel:` o rutas relativas, con la única excepción de imágenes inlineadas por el bundler: `data:image/png`, `jpeg`, `gif`, `webp` o `svg+xml` SHALL aceptarse solo como `src` de un elemento `img`.
 
 #### Scenario: Atributo onclick
 - **WHEN** se intenta crear un elemento con el atributo `onclick`
@@ -38,6 +37,14 @@ La creación de elementos MUST rechazar atributos de manejadores de eventos (`on
 #### Scenario: Enlace javascript
 - **WHEN** se intenta crear un enlace con `href = " JavaScript:alert(1)"`
 - **THEN** la creación falla y no se crea el enlace
+
+#### Scenario: Imagen inlineada
+- **WHEN** se crea un `img` con `src = "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="`
+- **THEN** el elemento se crea con ese `src`
+
+#### Scenario: Data URI fuera de img
+- **WHEN** se intenta crear un enlace con `href = "data:image/svg+xml;base64,PHN2Zz48L3N2Zz4="` o un `img` con `src = "data:text/html;base64,AAAA"`
+- **THEN** la creación falla nombrando el atributo
 
 #### Scenario: Enlace relativo
 - **WHEN** se crea un enlace con `href = "/agenda"`
