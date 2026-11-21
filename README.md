@@ -98,6 +98,19 @@ curl http://localhost:8080/actuator/health      # {"status":"UP"}
 
 Toda otra ruta responde `401` (deny-by-default).
 
+#### Primer arranque: cuenta del odontólogo
+
+En el **primer** arranque contra una base nueva, el backend crea la cuenta del odontólogo (rol `DENTIST`). Para eso necesita
+dos variables en tu `.env` (ya están en `.env.example` con el marcador `change-me`), definidas **antes** del primer `bootRun`:
+
+- `BOOTSTRAP_ADMIN_EMAIL`: email de la cuenta (se guarda en minúsculas).
+- `BOOTSTRAP_ADMIN_PASSWORD`: contraseña inicial de **al menos 12 caracteres**.
+
+Si faltan o no son válidas, el arranque falla con un mensaje que nombra la variable (nunca su valor). La contraseña inicial
+es provisoria: la cuenta queda marcada para **cambiarla en el primer login** (pantalla de acceso: change C-04). Los arranques
+siguientes no leen estas variables: si ya existe un `DENTIST` no se crea ni se modifica nada, por eso conviene **quitar las
+variables del `.env` después del primer arranque**. El log solo muestra el id de la cuenta, nunca el email ni la contraseña.
+
 ### 4. Frontend
 
 ```bash
