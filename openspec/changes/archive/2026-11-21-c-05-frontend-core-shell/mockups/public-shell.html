@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Reservar turno · {{brand}} — mockup C-05 (app shell público)</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="shell.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="public-shell">
+    <header class="app-header public-header" role="banner">
+      <a class="brand-link" href="/reservar" aria-label="La Muela — reservar turno" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <a class="pro-link" href="/login">Acceso profesionales</a>
+    </header>
+
+    <main id="main" class="public-main" tabindex="-1">
+      <h1 tabindex="-1">Reservá tu turno</h1>
+      <p class="lead">Elegí la prestación, el día y el horario. No necesitás crear una cuenta.</p>
+
+      <ol class="steps" aria-label="Pasos de la reserva">
+        <li aria-current="step">1. Prestación</li>
+        <li>2. Horario</li>
+        <li>3. Tus datos</li>
+        <li>4. Listo</li>
+      </ol>
+
+      <section class="placeholder" aria-label="Contenido de la reserva">
+        <strong>Contenido de la reserva</strong>
+        <span>Selección de prestación, horarios y formulario llegan en los changes de reserva pública [UI]. C&#8209;05 solo entrega el marco.</span>
+      </section>
+
+      <button class="btn-primary-lg" type="button" disabled>Continuar</button>
+    </main>
+
+    <footer class="public-footer" role="contentinfo">
+      <div class="inner">
+        <p><span data-brand-name>La Muela</span> · Consultorio <span class="tbd">(TBD)</span> · Dirección y teléfono <span class="tbd">(TBD)</span></p>
+        <ul>
+          <li><a href="#">Política de privacidad</a> <span class="tbd">(TBD)</span></li>
+          <li><a href="#">Términos y condiciones</a> <span class="tbd">(TBD)</span></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
