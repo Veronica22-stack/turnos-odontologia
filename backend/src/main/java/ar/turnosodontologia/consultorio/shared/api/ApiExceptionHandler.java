@@ -3,7 +3,11 @@ package ar.turnosodontologia.consultorio.shared.api;
 import ar.turnosodontologia.consultorio.shared.domain.BusinessRuleException;
 import ar.turnosodontologia.consultorio.shared.domain.ConflictException;
 import ar.turnosodontologia.consultorio.shared.domain.DomainException;
+import ar.turnosodontologia.consultorio.shared.domain.ForbiddenException;
 import ar.turnosodontologia.consultorio.shared.domain.NotFoundException;
+import ar.turnosodontologia.consultorio.shared.domain.RateLimitedException;
+import ar.turnosodontologia.consultorio.shared.domain.UnauthenticatedException;
+import ar.turnosodontologia.consultorio.shared.domain.ValidationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +51,32 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     ResponseEntity<ProblemDetail> handleDomain(DomainException error) {
         HttpStatus status = statusOf(error);
         return ResponseEntity.status(status).body(ProblemDetails.of(status, error.code()));
+    }
+
+    @ExceptionHandler(UnauthenticatedException.class)
+    ResponseEntity<ProblemDetail> handleUnauthenticated(UnauthenticatedException error) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ProblemDetails.of(HttpStatus.UNAUTHORIZED, error.code()));
+    }
+
+    @ExceptionHandler(ForbiddenException.class)
+    ResponseEntity<ProblemDetail> handleForbidden(ForbiddenException error) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                .body(ProblemDetails.of(HttpStatus.FORBIDDEN, error.code()));
+    }
+
+    @ExceptionHandler(RateLimitedException.class)
+    ResponseEntity<ProblemDetail> handleRateLimited(RateLimitedException error) {
+        return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
+                .header(HttpHeaders.RETRY_AFTER, Long.toString(error.retryAfterSeconds()))
+                .body(ProblemDetails.of(HttpStatus.TOO_MANY_REQUESTS, error.code()));
+    }
+
+    @ExceptionHandler(ValidationException.class)
+    ResponseEntity<ProblemDetail> handleValidation(ValidationException error) {
+        ProblemDetail problem = ProblemDetails.of(HttpStatus.BAD_REQUEST, error.code());
+        problem.setProperty("errors", List.of(new FieldProblem(error.field(), error.constraint())));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
