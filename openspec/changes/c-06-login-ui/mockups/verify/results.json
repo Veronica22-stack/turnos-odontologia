@@ -1,0 +1,64 @@
+{
+  "login@390": {
+    "overflowX": false
+  },
+  "login@1440": {
+    "overflowX": false
+  },
+  "login-validation@390": {
+    "overflowX": false
+  },
+  "login-validation@1440": {
+    "overflowX": false
+  },
+  "login-error@390": {
+    "overflowX": false
+  },
+  "login-error@1440": {
+    "overflowX": false
+  },
+  "login-locked@390": {
+    "overflowX": false
+  },
+  "login-locked@1440": {
+    "overflowX": false
+  },
+  "login-submitting@390": {
+    "overflowX": false
+  },
+  "login-submitting@1440": {
+    "overflowX": false
+  },
+  "login-offline@390": {
+    "overflowX": false
+  },
+  "login-offline@1440": {
+    "overflowX": false
+  },
+  "change-password@390": {
+    "overflowX": false
+  },
+  "change-password@1440": {
+    "overflowX": false
+  },
+  "change-password-errors@390": {
+    "overflowX": false
+  },
+  "change-password-errors@1440": {
+    "overflowX": false
+  },
+  "change-password-current-invalid@390": {
+    "overflowX": false
+  },
+  "change-password-current-invalid@1440": {
+    "overflowX": false
+  },
+  "login-password-changed@390": {
+    "overflowX": false
+  },
+  "login-password-changed@1440": {
+    "overflowX": false
+  },
+  "finalUrlAfterPasswordChange": "/login",
+  "consoleErrors": []
+}

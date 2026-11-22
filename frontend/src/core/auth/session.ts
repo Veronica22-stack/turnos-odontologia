@@ -1,15 +1,17 @@
 import { createStore, type Listener } from '../state/store';
 
+/** Forma real de C-04 (`/auth/me` y `/auth/login`): `fullName` no viaja todavia (pedido P1). */
 export interface SessionUser {
-  readonly id: string;
-  readonly fullName: string;
+  readonly userId: string;
   readonly role: string;
-  readonly mustChangePassword?: boolean;
+  readonly mustChangePassword: boolean;
+  readonly expiresAt?: string;
+  readonly fullName?: string;
 }
 
 export type SessionState =
   | { readonly status: 'unknown' }
-  | { readonly status: 'anonymous'; readonly notice?: 'expired' | 'offline' }
+  | { readonly status: 'anonymous'; readonly notice?: 'expired' | 'offline' | 'password-changed' }
   | { readonly status: 'authenticated'; readonly user: SessionUser };
 
 export type SessionResult =
@@ -30,6 +32,10 @@ export interface Session {
   ensureLoaded(): Promise<void>;
   logout(): Promise<void>;
   expire(): void;
+  /** Establece la sesion con el usuario devuelto por el login (sin llamadas HTTP). */
+  signIn(user: SessionUser): void;
+  /** El servidor cerro todas las sesiones al cambiar la contrasena: queda anonima con aviso. */
+  endAfterPasswordChange(): void;
 }
 
 export function createSession(gateway: SessionGateway): Session {
@@ -74,6 +80,12 @@ export function createSession(gateway: SessionGateway): Session {
       if (store.get().status === 'authenticated') {
         store.set({ status: 'anonymous', notice: 'expired' });
       }
+    },
+    signIn(user) {
+      store.set({ status: 'authenticated', user });
+    },
+    endAfterPasswordChange() {
+      store.set({ status: 'anonymous', notice: 'password-changed' });
     },
   };
 }

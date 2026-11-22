@@ -17,6 +17,11 @@ export interface RequestOptions<T> {
   readonly decode?: Decoder<T>;
   /** Consulta inicial de sesion: un 401 es un resultado esperado, no un vencimiento. */
   readonly sessionProbe?: boolean;
+  /**
+   * Intento de credenciales (login, cambio de contrasena): un 401 es una respuesta de negocio
+   * (`INVALID_CREDENTIALS`, `UNAUTHENTICATED`), se devuelve como `problem` y no dispara `onUnauthorized`.
+   */
+  readonly credentialAttempt?: boolean;
   readonly timeoutMs?: number;
 }
 
@@ -50,8 +55,21 @@ function parseFieldErrors(value: unknown): FieldError[] {
   return result;
 }
 
+/** `Retry-After` solo en su forma de segundos enteros; la fecha HTTP se ignora. */
+function parseRetryAfter(response: Response): { retryAfterSeconds: number } | Record<string, never> {
+  const raw = response.headers.get('Retry-After');
+  return raw !== null && /^\d{1,9}$/.test(raw.trim()) ? { retryAfterSeconds: Number(raw.trim()) } : {};
+}
+
 async function toProblem(response: Response): Promise<ApiError> {
-  const unexpected: ApiError = { kind: 'problem', status: response.status, code: 'UNEXPECTED_RESPONSE', errors: [] };
+  const retryAfter = parseRetryAfter(response);
+  const unexpected: ApiError = {
+    kind: 'problem',
+    status: response.status,
+    code: 'UNEXPECTED_RESPONSE',
+    errors: [],
+    ...retryAfter,
+  };
   const contentType = response.headers.get('Content-Type') ?? '';
   if (!contentType.toLowerCase().includes('application/problem+json')) {
     return unexpected;
@@ -72,6 +90,7 @@ async function toProblem(response: Response): Promise<ApiError> {
     code: body['code'],
     errors: parseFieldErrors(body['errors']),
     ...(isString(errorId) ? { errorId } : {}),
+    ...retryAfter,
   };
 }
 
@@ -116,7 +135,7 @@ export function createHttpClient(options: HttpClientOptions): HttpClient {
       try {
         const init = options.transport.decorate({ ...base, signal: controller.signal }, method);
         response = await options.fetch(`${baseUrl}${path}`, init);
-        if (response.status === 401) {
+        if (response.status === 401 && request.credentialAttempt !== true) {
           if (request.sessionProbe !== true) {
             options.onUnauthorized?.();
           }

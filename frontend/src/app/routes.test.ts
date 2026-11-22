@@ -1,12 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import type { Session, SessionState } from '../core/auth/session';
+import type { SessionState } from '../core/auth/session';
+import { safeNext } from '../router/safe-next';
 import type { RouteContext, RouteDef } from '../router/router';
-import { createRoutes } from './routes';
+import { createRoutes, type RoutesDeps } from './routes';
 
-const session: Pick<Session, 'get' | 'ensureLoaded'> = {
-  get: (): SessionState => ({ status: 'anonymous' }),
-  ensureLoaded: async () => {},
-};
+function deps(state: SessionState = { status: 'anonymous' }): RoutesDeps {
+  return {
+    session: { get: () => state, ensureLoaded: async () => {}, signIn: () => {}, endAfterPasswordChange: () => {} },
+    gateway: { login: async () => ({ ok: false, failure: { kind: 'connection' } }), changePassword: async () => ({ ok: true }) },
+    navigate: () => {},
+    onLogout: () => {},
+  };
+}
 
 function ctx(path: string, params: Record<string, string> = {}): RouteContext {
   return { path, params, query: new URLSearchParams() };
@@ -21,7 +26,7 @@ function byPath(routes: readonly RouteDef[], path: string): RouteDef {
 }
 
 describe('createRoutes', () => {
-  const { routes, notFound } = createRoutes(session);
+  const { routes, notFound } = createRoutes(deps());
 
   it('declara las rutas publicas y privadas de KB 03 con su layout', () => {
     const layouts = Object.fromEntries(routes.map((r) => [r.path, r.layout]));
@@ -32,6 +37,7 @@ describe('createRoutes', () => {
       '/reservar/confirmado': 'public',
       '/turno/:token': 'public',
       '/login': 'public',
+      '/cambiar-contrasena': 'public',
       '/agenda': 'private',
       '/pacientes': 'private',
       '/configuracion': 'private',
@@ -39,7 +45,7 @@ describe('createRoutes', () => {
   });
 
   it('protege las privadas con guard, y / y /login tambien tienen guard', () => {
-    for (const path of ['/agenda', '/pacientes', '/configuracion', '/', '/login']) {
+    for (const path of ['/agenda', '/pacientes', '/configuracion', '/', '/login', '/cambiar-contrasena']) {
       expect(byPath(routes, path).guard).toBeTypeOf('function');
     }
     for (const path of ['/reservar', '/reservar/confirmado', '/turno/:token']) {
@@ -76,28 +82,40 @@ describe('createRoutes', () => {
   });
 });
 
-describe('vista de login - avisos de sesion', () => {
-  function loginView(state: SessionState): HTMLElement {
-    const { routes: r } = createRoutes({ get: () => state, ensureLoaded: async () => {} });
-    return byPath(r, '/login').view(ctx('/login'));
-  }
+describe('vistas de acceso (C-06)', () => {
+  const { routes } = createRoutes(deps());
 
-  it('muestra el aviso de sesion vencida con role=status', () => {
-    const content = loginView({ status: 'anonymous', notice: 'expired' });
+  it('/login usa la vista real: formulario con email y contraseña, no el placeholder', () => {
+    const { routes: r } = createRoutes(deps());
 
-    expect(content.querySelector('[role="status"]')?.textContent).toBe('Tu sesión venció. Ingresá de nuevo.');
+    const content = byPath(r, '/login').view(ctx('/login'));
+
+    expect(content.querySelector('form input#email')).not.toBeNull();
+    expect(content.querySelector('form input#password')).not.toBeNull();
+    expect(content.querySelector('.placeholder')).toBeNull();
   });
 
-  it('muestra un aviso generico de conexion cuando el servidor no respondio', () => {
-    const content = loginView({ status: 'anonymous', notice: 'offline' });
+  it('declara la ruta change-password con titulo y layout public', () => {
+    const route = byPath(routes, '/cambiar-contrasena');
 
-    expect(content.querySelector('[role="status"]')?.textContent).toBe(
-      'Sin conexión con el servidor. Reintentá en unos segundos.',
+    expect(route.name).toBe('change-password');
+    expect(route.layout).toBe('public');
+    expect(route.title).toBe('Cambiar contraseña');
+  });
+
+  it('/cambiar-contrasena usa la vista real: tres campos de contraseña', () => {
+    const { routes: r } = createRoutes(
+      deps({ status: 'authenticated', user: { userId: 'u1', role: 'DENTIST', mustChangePassword: true } }),
     );
+
+    const content = byPath(r, '/cambiar-contrasena').view(ctx('/cambiar-contrasena'));
+
+    expect(content.querySelectorAll('input[type="password"]')).toHaveLength(3);
+    expect(content.querySelector('h1')?.textContent).toBe('Elegí una contraseña nueva');
   });
 
-  it('no muestra aviso si no hay motivo', () => {
-    expect(loginView({ status: 'anonymous' }).querySelector('[role="status"]')).toBeNull();
-    expect(loginView({ status: 'unknown' }).querySelector('[role="status"]')).toBeNull();
+  it('safeNext no acepta /cambiar-contrasena como destino (es publica)', () => {
+    expect(safeNext('/cambiar-contrasena', routes)).toBeNull();
+    expect(safeNext('/agenda', routes)).toBe('/agenda');
   });
 });

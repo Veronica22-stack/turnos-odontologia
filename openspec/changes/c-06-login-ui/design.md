@@ -160,7 +160,8 @@ Sin migración de datos. Rollback: revertir el commit del change; vuelve el *pla
 - Decision: yes (2026-11-21)
 - Mockups: openspec/changes/c-06-login-ui/mockups/
 - Mockup revision: 2
-- Approval: pending (aprobador: Lucas; revisión 2)
+- Approval: approved (2026-11-21, by Lucas; revisión 2)
 - Preview: rendered (2026-11-21, revisión 2, `mockups/previews/<pantalla>-390.png` y `-1440.png`; regeneradas login-locked, login-error, change-password-current-invalid, login-password-changed (nueva) y change-password; las otras 6 pantallas conservan las capturas de la revisión 1; Chrome headless por CDP con emulación de viewport 390x844 y 1440x900, página completa, servidor local 127.0.0.1:8765; sin scroll horizontal a 390 px; inspeccionadas visualmente)
+- Visual verify: differences (2026-11-21; Chrome headless por CDP con API interceptada, 390x844 y 1440x900, capturas en `mockups/verify/`; 10 estados verificados, sin scroll horizontal ni errores de consola; diferencias solo minor: padding superior de `.public-main` en escritorio 112 px vs 128 px del mockup y color de fondo del shell; no verificados: login-expired y login-offline-de-sesión)
 - Nota (revisión 2, 2026-11-21): los mockups se ajustaron al contrato real de C-04: `login-locked.html` ahora es 429 `RATE_LIMITED` ("Probá de nuevo en 1 minuto."), `login-error.html` y `change-password-current-invalid.html` usan `INVALID_CREDENTIALS` (401), `change-password.html` anota que el éxito lleva a `/login`, y se agregó `login-password-changed.html`. Requiere nueva aprobación de Lucas.
 - Criterio de aceptación: los HTML de `mockups/` y sus capturas (ver `tasks.md` grupos 6 y 7).

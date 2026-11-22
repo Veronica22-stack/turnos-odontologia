@@ -4,7 +4,8 @@ import { cookieCsrfTransport } from '../http/transport';
 import { createSession, type SessionGateway, type SessionResult, type SessionUser } from './session';
 import { httpSessionGateway } from './session-gateway';
 
-const ROMERO: SessionUser = { id: 'u1', fullName: 'Dra. Romero', role: 'DENTIST' };
+const ROMERO: SessionUser = { userId: 'u1', role: 'DENTIST', mustChangePassword: false, expiresAt: '2026-11-21T22:00:00Z' };
+const ME_BODY = '{"userId":"u1","role":"DENTIST","mustChangePassword":false,"expiresAt":"2026-11-21T22:00:00Z"}';
 
 function gateway(result: SessionResult | (() => Promise<SessionResult>), logout: () => Promise<void> = async () => {}) {
   const me = vi.fn(typeof result === 'function' ? result : async () => result);
@@ -139,6 +140,57 @@ describe('session - logout, expiracion y observacion', () => {
   });
 });
 
+describe('session - signIn y endAfterPasswordChange (C-06)', () => {
+  it('signIn desde anonymous con aviso expired pasa a authenticated sin aviso y notifica una vez', async () => {
+    const g = gateway({ status: 'authenticated', user: ROMERO });
+    const session = createSession(g.gateway);
+    await session.load();
+    session.expire();
+    expect(session.get()).toEqual({ status: 'anonymous', notice: 'expired' });
+    const listener = vi.fn();
+    session.subscribe(listener);
+
+    session.signIn(ROMERO);
+
+    expect(session.get()).toEqual({ status: 'authenticated', user: ROMERO });
+    expect(listener).toHaveBeenCalledTimes(1);
+  });
+
+  it('signIn no hace llamadas HTTP (me no se vuelve a consultar)', async () => {
+    const g = gateway({ status: 'anonymous' });
+    const session = createSession(g.gateway);
+    await session.load();
+
+    session.signIn({ ...ROMERO, mustChangePassword: true });
+
+    expect(g.me).toHaveBeenCalledTimes(1);
+    expect(session.get()).toMatchObject({ status: 'authenticated', user: { mustChangePassword: true } });
+  });
+
+  it('endAfterPasswordChange desde authenticated pasa a anonymous con aviso password-changed y notifica', async () => {
+    const g = gateway({ status: 'authenticated', user: ROMERO });
+    const session = createSession(g.gateway);
+    await session.load();
+    const listener = vi.fn();
+    session.subscribe(listener);
+
+    session.endAfterPasswordChange();
+
+    expect(session.get()).toEqual({ status: 'anonymous', notice: 'password-changed' });
+    expect(listener).toHaveBeenCalledTimes(1);
+    expect(g.logout).not.toHaveBeenCalled();
+  });
+
+  it('endAfterPasswordChange estando anonymous tambien deja el aviso password-changed', async () => {
+    const session = createSession(gateway({ status: 'anonymous' }).gateway);
+    await session.load();
+
+    session.endAfterPasswordChange();
+
+    expect(session.get()).toEqual({ status: 'anonymous', notice: 'password-changed' });
+  });
+});
+
 describe('httpSessionGateway', () => {
   function gatewayWith(respond: (url: string, init: RequestInit) => Response) {
     const calls: Array<{ url: string; init: RequestInit }> = [];
@@ -157,19 +209,34 @@ describe('httpSessionGateway', () => {
   const json = (body: string, status = 200) =>
     new Response(body, { status, headers: { 'Content-Type': 'application/json' } });
 
-  it('me: 200 valido -> authenticated con los datos publicos', async () => {
-    const { gateway: g, calls } = gatewayWith(() => json('{"id":"u1","fullName":"Dra. Romero","role":"DENTIST","extra":1}'));
+  it('me: 200 con la forma real de C-04 -> authenticated (sin id ni fullName)', async () => {
+    const { gateway: g, calls } = gatewayWith(() => json(ME_BODY.replace('}', ',"extra":1}')));
 
     expect(await g.me()).toEqual({ status: 'authenticated', user: ROMERO });
     expect(calls[0]?.url).toBe('/api/v1/auth/me');
   });
 
-  it('me: acepta mustChangePassword opcional booleano', async () => {
-    const { gateway: g } = gatewayWith(() =>
-      json('{"id":"u1","fullName":"Dra. Romero","role":"DENTIST","mustChangePassword":true}'),
-    );
+  it('me: mustChangePassword true se conserva y su ausencia vale false', async () => {
+    const withFlag = gatewayWith(() => json('{"userId":"u1","role":"DENTIST","mustChangePassword":true}'));
+    const without = gatewayWith(() => json('{"userId":"u1","role":"DENTIST"}'));
 
-    expect(await g.me()).toEqual({ status: 'authenticated', user: { ...ROMERO, mustChangePassword: true } });
+    expect(await withFlag.gateway.me()).toEqual({
+      status: 'authenticated',
+      user: { userId: 'u1', role: 'DENTIST', mustChangePassword: true },
+    });
+    expect(await without.gateway.me()).toEqual({
+      status: 'authenticated',
+      user: { userId: 'u1', role: 'DENTIST', mustChangePassword: false },
+    });
+  });
+
+  it('me: fullName presente se conserva', async () => {
+    const { gateway: g } = gatewayWith(() => json('{"userId":"u1","role":"DENTIST","fullName":"Dra. Romero"}'));
+
+    expect(await g.me()).toEqual({
+      status: 'authenticated',
+      user: { userId: 'u1', role: 'DENTIST', mustChangePassword: false, fullName: 'Dra. Romero' },
+    });
   });
 
   it('me: 401 -> anonymous sin avisar onUnauthorized (sessionProbe)', async () => {
@@ -181,6 +248,10 @@ describe('httpSessionGateway', () => {
 
   it('me: forma invalida, 5xx y red -> error', async () => {
     expect(await gatewayWith(() => json('{"id":42}')).gateway.me()).toEqual({ status: 'error' });
+    expect(await gatewayWith(() => json('{"role":"DENTIST"}')).gateway.me()).toEqual({ status: 'error' });
+    expect(await gatewayWith(() => json('{"userId":"u1","role":"DENTIST","mustChangePassword":"si"}')).gateway.me()).toEqual({
+      status: 'error',
+    });
     expect(await gatewayWith(() => new Response('x', { status: 503 })).gateway.me()).toEqual({ status: 'error' });
     const failing = gatewayWith(() => {
       throw new TypeError('offline');

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { h } from '../core/dom/h';
-import { renderPublicLayout } from './public-layout';
+import { markProLink, renderPublicLayout } from './public-layout';
 
 function render(): HTMLElement {
   const layout = renderPublicLayout({ content: h('h1', {}, 'Reservá tu turno') });
@@ -47,5 +47,34 @@ describe('renderPublicLayout', () => {
     const first = document.querySelector('a');
     expect(first?.textContent).toBe('Saltar al contenido');
     expect(first?.getAttribute('href')).toBe('#main');
+  });
+});
+
+describe('enlace "Acceso profesionales" (C-06)', () => {
+  const proLink = () => document.querySelector('a.pro-link');
+
+  it('marca aria-current="page" cuando la ruta es /login', () => {
+    document.body.replaceChildren(renderPublicLayout({ content: h('h1', {}, 'Ingresar'), currentPath: '/login' }));
+
+    expect(proLink()?.getAttribute('aria-current')).toBe('page');
+  });
+
+  it('no lo marca en otras rutas ni sin ruta', () => {
+    document.body.replaceChildren(renderPublicLayout({ content: h('h1', {}, 'x'), currentPath: '/reservar' }));
+    expect(proLink()?.hasAttribute('aria-current')).toBe(false);
+
+    document.body.replaceChildren(renderPublicLayout({ content: h('h1', {}, 'x') }));
+    expect(proLink()?.hasAttribute('aria-current')).toBe(false);
+  });
+
+  it('markProLink actualiza el enlace al navegar sin recrear el layout', () => {
+    const layout = renderPublicLayout({ content: h('h1', {}, 'x'), currentPath: '/reservar' });
+    document.body.replaceChildren(layout);
+
+    markProLink(layout, '/login');
+    expect(proLink()?.getAttribute('aria-current')).toBe('page');
+
+    markProLink(layout, '/reservar');
+    expect(proLink()?.hasAttribute('aria-current')).toBe(false);
   });
 });
