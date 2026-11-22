@@ -336,7 +336,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 3 — Pacientes y turnos
 
 ### [C-10] `patients-management`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 11/11 tareas; implementado por Gabriel (PR #8 mergeado en `master`); archivado desde `dev-veronica` junto con C-16
 - **Scope**:
   - Migración V7: tabla `patient` (nombre, DNI, teléfono, email, `source`, baja lógica, `UNIQUE (practice_id, dni)`)
   - Endpoints `/api/v1/patients` (búsqueda por nombre/DNI/teléfono, ver, editar, baja lógica) (US-050); sin DELETE físico
