@@ -6,6 +6,8 @@ import ar.turnosodontologia.consultorio.historiaclinica.domain.AnamnesisEntry;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.AnamnesisEntryRepository;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.ClinicalRecord;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.ClinicalRecordRepository;
+import ar.turnosodontologia.consultorio.historiaclinica.domain.OdontogramEntry;
+import ar.turnosodontologia.consultorio.historiaclinica.domain.OdontogramEntryRepository;
 import ar.turnosodontologia.consultorio.pacientes.api.PatientLookup;
 import ar.turnosodontologia.consultorio.pacientes.api.PatientStatus;
 import ar.turnosodontologia.consultorio.shared.application.InstallationPractice;
@@ -134,6 +136,48 @@ final class ClinicalFakes {
         public int maxVersion(UUID clinicalRecordId) {
             return entries.stream().filter(e -> e.clinicalRecordId().equals(clinicalRecordId))
                     .mapToInt(AnamnesisEntry::version).max().orElse(0);
+        }
+    }
+
+    /** Odontograma en memoria; los ids crecen con el orden de alta para desempatar entradas del mismo instante. */
+    static final class InMemoryOdontogram implements OdontogramEntryRepository {
+        final List<OdontogramEntry> entries = new ArrayList<>();
+        private long sequence;
+
+        @Override
+        public Optional<OdontogramEntry> findInRecord(UUID clinicalRecordId, UUID entryId) {
+            return entries.stream()
+                    .filter(e -> e.id().equals(entryId) && e.clinicalRecordId().equals(clinicalRecordId))
+                    .findFirst();
+        }
+
+        @Override
+        public boolean isCorrected(UUID entryId) {
+            return entries.stream().anyMatch(e -> entryId.equals(e.correctsEntryId()));
+        }
+
+        @Override
+        public OdontogramEntry save(OdontogramEntry entry) {
+            ReflectionTestUtils.setField(entry, "id", new UUID(0L, ++sequence));
+            entries.add(entry);
+            return entry;
+        }
+
+        @Override
+        public List<OdontogramEntry> findNewestFirst(UUID clinicalRecordId) {
+            return entries.stream()
+                    .filter(e -> e.clinicalRecordId().equals(clinicalRecordId))
+                    .sorted(Comparator.comparing(OdontogramEntry::createdAt).thenComparing(OdontogramEntry::id).reversed())
+                    .toList();
+        }
+
+        @Override
+        public boolean existsNewerAtPosition(UUID clinicalRecordId, OdontogramEntry reference) {
+            return entries.stream()
+                    .filter(e -> e.clinicalRecordId().equals(clinicalRecordId))
+                    .filter(e -> e.position().equals(reference.position()))
+                    .anyMatch(e -> e.createdAt().isAfter(reference.createdAt())
+                            || (e.createdAt().equals(reference.createdAt()) && e.id().compareTo(reference.id()) > 0));
         }
     }
 }
