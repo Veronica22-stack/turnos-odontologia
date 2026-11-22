@@ -301,6 +301,28 @@ describe('bootstrap', () => {
       expect(document.querySelector('h1')?.textContent).toBe('Pacientes');
     });
 
+    it('next invalido en /cambiar-contrasena: se ignora y tras cambiar la contraseña la URL es /login con el aviso, sin next', async () => {
+      const { ready } = start('/cambiar-contrasena?next=%2F%2Fevil.example', (path) => {
+        if (path === '/api/v1/auth/me') {
+          return me(true);
+        }
+        return new Response(null, { status: 200 });
+      });
+      await ready;
+      expect(document.querySelector('h1')?.textContent).toBe('Elegí una contraseña nueva');
+
+      type('#currentPassword', 'clave-de-prueba');
+      type('#newPassword', 'una frase larga segura');
+      type('#confirmPassword', 'una frase larga segura');
+      submitForm();
+
+      await vi.waitFor(() => expect(url()).toBe('/login'));
+      expect(document.querySelector('[role="status"]')?.textContent).toBe(
+        'Contraseña actualizada. Ingresá de nuevo con la contraseña nueva.',
+      );
+      expect(location.href).not.toContain('evil.example');
+    });
+
     it('401 en una llamada privada -> /login?next con aviso de vencida -> reingreso -> /pacientes', async () => {
       const { ready, client } = start('/pacientes', (path) => {
         if (path === '/api/v1/auth/me' || path === '/api/v1/auth/login') {

@@ -154,6 +154,20 @@ Sin migración de datos. Rollback: revertir el commit del change; vuelve el *pla
 - Texto final de ayuda para "¿Olvidaste tu contraseña?" depende de la recuperación de contraseña (OQ-2 de C-04); hoy `(TBD)`.
 - En el cambio voluntario (sesión activa, layout público) el header sigue mostrando "Acceso profesionales"; aceptable hasta que exista la entrada al cambio voluntario (change de Configuración).
 
+## Desviaciones de implementación (2026-11-21)
+
+Registradas tras el verify; todas aceptadas.
+
+- **Alertas**: el mensaje se divide en título + detalle (`AlertMessage`, `messageText`) para respetar la jerarquía visual del mockup; `auth-messages.ts` sigue siendo la única fuente de copy.
+- **`createRoutes`**: recibe `{ session, gateway, navigate, onLogout }` y `requireSession`/`requireAuthenticated` aceptan un `getRoutes` opcional, para probar vistas y guards sin `main.ts`.
+- **`form.ts`** exporta `alertBox` y `formIcon`, compartidos por ambas vistas.
+- **`markProLink`** conserva `aria-current` en el layout público reutilizado ("Acceso profesionales").
+- **`--layout-hairline: 1px`** local en `forms.css`; candidato a token en una próxima Revisión del design system.
+- **Hover del input** usa `--color-text-secondary` (token existente) en lugar del valor del mockup.
+- **200 sin `userId`** en el login se trata como `connection` (D6).
+- **Literales permitidos** (precedente D8 de C-05): bordes de `2px`/`4px`, el hairline de `1px` y `64rem` en media queries; no hay colores ni espaciados literales.
+- **TDD estricto**: las tareas 1.6 (`auth-messages`) y los grupos 8.x (integración en `main.test.ts`) no se observaron en RED (se escribieron junto con el código o ejercitan código preexistente). Desviación aceptada explícitamente; los tests cubren el comportamiento.
+
 ## UI Mockups
 
 - Design system revision: 1
@@ -162,6 +176,6 @@ Sin migración de datos. Rollback: revertir el commit del change; vuelve el *pla
 - Mockup revision: 2
 - Approval: approved (2026-11-21, by Lucas; revisión 2)
 - Preview: rendered (2026-11-21, revisión 2, `mockups/previews/<pantalla>-390.png` y `-1440.png`; regeneradas login-locked, login-error, change-password-current-invalid, login-password-changed (nueva) y change-password; las otras 6 pantallas conservan las capturas de la revisión 1; Chrome headless por CDP con emulación de viewport 390x844 y 1440x900, página completa, servidor local 127.0.0.1:8765; sin scroll horizontal a 390 px; inspeccionadas visualmente)
-- Visual verify: differences (2026-11-21; Chrome headless por CDP con API interceptada, 390x844 y 1440x900, capturas en `mockups/verify/`; 10 estados verificados, sin scroll horizontal ni errores de consola; diferencias solo minor: padding superior de `.public-main` en escritorio 112 px vs 128 px del mockup y color de fondo del shell; no verificados: login-expired y login-offline-de-sesión)
+- Visual verify: passed (2026-11-21; diferencias minor aceptadas: padding superior escritorio 112 vs 128 px heredado de .public-main de C-05, fondo de escritorio más claro, hover de input con --color-text-secondary; login-expired cubierto por tests)
 - Nota (revisión 2, 2026-11-21): los mockups se ajustaron al contrato real de C-04: `login-locked.html` ahora es 429 `RATE_LIMITED` ("Probá de nuevo en 1 minuto."), `login-error.html` y `change-password-current-invalid.html` usan `INVALID_CREDENTIALS` (401), `change-password.html` anota que el éxito lleva a `/login`, y se agregó `login-password-changed.html`. Requiere nueva aprobación de Lucas.
 - Criterio de aceptación: los HTML de `mockups/` y sus capturas (ver `tasks.md` grupos 6 y 7).

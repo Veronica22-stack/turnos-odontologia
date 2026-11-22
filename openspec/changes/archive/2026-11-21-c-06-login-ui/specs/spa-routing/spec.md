@@ -56,4 +56,4 @@ La ruta `/cambiar-contrasena` SHALL requerir una sesión autenticada (sin sesió
 #### Scenario: next inválido en el cambio de contraseña
 - **GIVEN** una sesión con `mustChangePassword = true`
 - **WHEN** se navega a `/cambiar-contrasena?next=%2F%2Fevil.example`
-- **THEN** se muestra el formulario de cambio y, tras completarlo, la URL pasa a ser `/agenda`
+- **THEN** se muestra el formulario de cambio el valor inválido de `next` se ignora y, tras completarlo, la URL pasa a ser `/login` con el aviso de contraseña cambiada (el servidor cierra todas las sesiones al cambiar la contraseña)
