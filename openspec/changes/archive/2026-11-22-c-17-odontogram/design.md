@@ -148,3 +148,15 @@ Las tareas asumen el valor por defecto de cada una; si alguna cambia, se actuali
 - **Q5 (alta por lote)**: `POST` con 1..64 estados en una transacción y **un `HC_CREATE` por entrada**. *Defecto: sí.* Alternativa: un estado por request.
 - **Q6 (derivación)**: pieza sin registros = sin estado (no se asume `HEALTHY`); pieza completa y cada cara son posiciones independientes. *Defecto: sí.*
 - **Q7 (herencia C-16)**: aplicar a C-17 las decisiones aprobadas en C-16 (S-HC-01..08, sin trigger anti-UPDATE para el rol de migración, lectura de inactivos permitida y escritura `409 PATIENT_INACTIVE`). *Defecto: sí.*
+
+## Resolución de las preguntas y desviaciones durante el apply
+
+**Q1–Q7 aprobadas por el usuario (2026-11-22)** con los valores por defecto propuestos.
+
+Desviaciones menores de implementación (ninguna altera esquema, seguridad, endpoints ni inmutabilidad):
+
+1. `OdontogramEntryRepository.existsNewerAtPosition(recordId, OdontogramEntry reference)` recibe la entrada de referencia en lugar de `(recordId, toothCode, surface, createdAt, id)`; internamente usa dos consultas JPQL (pieza completa / cara) para evitar parámetros enum nulos.
+2. `OdontogramState.derive` ordena por `(createdAt, id)` por sí misma (no depende del orden de entrada) y devuelve `OdontogramState(current, history)` con `Item(entry, correctedByEntryId)`.
+3. Los validadores de clase de la API (`SurfaceAllowedForCondition`, `DistinctToothPositions`) reportan sus violaciones sobre `surface` y `entries`.
+4. Desempate por id: Java compara `UUID` con signo y PostgreSQL sin signo; es consistente porque los UUID v7 tienen el bit alto en 0.
+5. Núcleo de C-16 sin cambios: solo se agregó `ClinicalEntryType.ODONTOGRAM` y un `toResponse` en `ClinicalRequestSupport` (permitido por D5).

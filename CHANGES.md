@@ -468,7 +468,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/11_cumplimiento_normativo.md`, `knowledge-base/10_preguntas_abiertas.md` §PA-01, PA-11, PA-18
 
 ### [C-17] `odontogram`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 17/17 tareas, suite completa verde (611 tests); Q1–Q7 aprobadas y desviaciones registradas en `openspec/changes/archive/2026-11-22-c-17-odontogram/design.md`
 - **Scope**:
   - Migración V12: tabla `odontogram_entry` (pieza FDI, estado de catálogo base, `corrects_entry_id`, autor, `created_at` servidor)
   - Endpoints `.../odontogram` (US-061): estado actual derivado de la última entrada vigente por pieza; historial conservado; corrección vía C-16
