@@ -34,7 +34,11 @@ public final class ModuleBoundaries {
     /** Dependencias permitidas entre modulos de negocio (KB 08). Los modulos ausentes no dependen de ninguno. */
     private static final Map<String, Set<String>> ALLOWED_DEPENDENCIES = Map.of(
             "reservas", Set.of("agenda", "pacientes", "notificaciones"),
-            "historiaclinica", Set.of("pacientes", "auditoria"));
+            "historiaclinica", Set.of("pacientes", "auditoria"))
+            RESERVAS, Set.of(AGENDA, PACIENTES, NOTIFICACIONES),
+            PACIENTES, Set.of(AUDITORIA),
+            HISTORIA_CLINICA, Set.of(PACIENTES, AUDITORIA),
+            AUTH, Set.of(AUDITORIA));
 
     private static final List<String> FORBIDDEN_DOMAIN_PACKAGES =
             List.of("org.springframework.", "java.sql.");
