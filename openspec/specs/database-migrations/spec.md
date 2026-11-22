@@ -109,3 +109,68 @@ La migración `V3` SHALL revocar `UPDATE`, `DELETE` y `TRUNCATE` sobre `audit_lo
 - **GIVEN** la base migrada hasta `V3`
 - **WHEN** se comprueban los privilegios del rol de aplicación sobre tablas creadas antes de `V3`
 - **THEN** no se han modificado por la nueva migración
+
+### Requirement: Esquema de historia clínica creado en V11
+La migración `V11` SHALL crear `clinical_record` (una por paciente, con `practice_id`, instante de apertura y responsable) y `anamnesis_entry` (con historia clínica, versión única por historia clínica, contenido JSON objeto, entrada corregida opcional, motivo, autor e instante), con claves foráneas a `practice`, `patient` y `app_user`.
+
+#### Scenario: Base migrada hasta V11
+- **GIVEN** una base con las migraciones previas aplicadas
+- **WHEN** arranca la aplicación y ejecuta Flyway
+- **THEN** `V11` queda registrada y existen `clinical_record` y `anamnesis_entry` con sus restricciones
+
+#### Scenario: Segunda historia clínica para el mismo paciente
+- **GIVEN** la base migrada con una historia clínica para un paciente
+- **WHEN** se inserta otra historia clínica para el mismo paciente
+- **THEN** PostgreSQL rechaza la inserción por unicidad
+
+#### Scenario: Versión duplicada
+- **GIVEN** una anamnesis en versión `1` de una historia clínica
+- **WHEN** se inserta otra anamnesis con versión `1` en la misma historia clínica
+- **THEN** PostgreSQL rechaza la inserción por unicidad
+
+### Requirement: Integridad de correcciones en la base
+Las tablas de entradas clínicas SHALL garantizar en la base que la referencia a la entrada corregida y el motivo estén ambos presentes o ambos ausentes, que el motivo no esté vacío, que la entrada corregida pertenezca a la misma historia clínica y que cada entrada se corrija a lo sumo una vez.
+
+#### Scenario: Motivo sin referencia
+- **WHEN** se inserta una anamnesis con motivo de corrección pero sin entrada corregida
+- **THEN** PostgreSQL rechaza la inserción
+
+#### Scenario: Corrección cruzada entre historias clínicas
+- **WHEN** se inserta una anamnesis que corrige una entrada de otra historia clínica
+- **THEN** PostgreSQL rechaza la inserción por clave foránea
+
+#### Scenario: Doble corrección de la misma entrada
+- **GIVEN** una entrada ya corregida
+- **WHEN** se inserta otra entrada que la corrige
+- **THEN** PostgreSQL rechaza la inserción por unicidad
+
+### Requirement: Historia clínica sin mutación para el rol de aplicación
+La migración `V11` SHALL revocar `UPDATE`, `DELETE` y `TRUNCATE` sobre `clinical_record` y `anamnesis_entry` al rol de aplicación, conservando `SELECT` e `INSERT`.
+
+#### Scenario: Mutación rechazada
+- **GIVEN** la base migrada hasta `V11` con una historia clínica y una anamnesis
+- **WHEN** el rol de aplicación ejecuta `UPDATE`, `DELETE` o `TRUNCATE` sobre cualquiera de las dos tablas
+- **THEN** PostgreSQL rechaza cada sentencia por falta de privilegios
+
+#### Scenario: Alta y lectura permitidas
+- **GIVEN** la base migrada hasta `V11`
+- **WHEN** el rol de aplicación ejecuta `INSERT` y `SELECT` sobre ambas tablas
+- **THEN** ambas sentencias se ejecutan correctamente
+
+### Requirement: Esquema de pacientes creado en V7
+La migración `V7` SHALL crear la tabla `patient` con clave primaria UUID, `practice_id` foráneo a `practice`, `first_name`, `last_name`, `dni`, `phone`, `email`, `source`, marca de baja lógica `active` booleana no nula por defecto verdadera, y restricción de unicidad sobre `(practice_id, dni)`.
+
+#### Scenario: Base migrada hasta V7
+- **GIVEN** una base de datos con migraciones previas aplicadas
+- **WHEN** arranca la aplicación y ejecuta Flyway
+- **THEN** la migración `V7` queda registrada exitosamente y la tabla `patient` existe con sus restricciones
+
+#### Scenario: Restricción de unicidad por DNI en consultorio
+- **GIVEN** la base migrada hasta `V7` con un paciente registrado
+- **WHEN** se intenta insertar otro paciente con el mismo `dni` en el mismo `practice_id`
+- **THEN** PostgreSQL rechaza la inserción por violación de la restricción de unicidad
+
+#### Scenario: Privilegios sin borrado físico en patient
+- **GIVEN** la base migrada hasta `V7` con una fila en `patient`
+- **WHEN** el rol de aplicación intenta ejecutar DELETE sobre `patient`
+- **THEN** PostgreSQL rechaza la sentencia por falta de privilegios
