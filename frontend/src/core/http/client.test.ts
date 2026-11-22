@@ -236,3 +236,86 @@ describe('createHttpClient - sesion vencida y consola', () => {
     }
   });
 });
+
+describe('createHttpClient - intento de credenciales y Retry-After (C-06)', () => {
+  const PROBLEM = 'application/problem+json';
+  const invalid = () => jsonResponse('{"status":401,"code":"INVALID_CREDENTIALS"}', 401, PROBLEM);
+
+  it('401 INVALID_CREDENTIALS con credentialAttempt es un problem y no llama onUnauthorized', async () => {
+    const onUnauthorized = vi.fn();
+    const { client } = setup(invalid, { onUnauthorized });
+
+    const result = await client.request('POST', '/auth/login', { body: {}, credentialAttempt: true });
+
+    expect(result).toEqual({ ok: false, error: { kind: 'problem', status: 401, code: 'INVALID_CREDENTIALS', errors: [] } });
+    expect(onUnauthorized).not.toHaveBeenCalled();
+  });
+
+  it('el mismo 401 sin la opcion sigue siendo unauthorized y llama onUnauthorized (regresion C-05)', async () => {
+    const onUnauthorized = vi.fn();
+    const { client } = setup(invalid, { onUnauthorized });
+
+    const result = await client.request('POST', '/auth/login', { body: {} });
+
+    expect(result).toEqual({ ok: false, error: { kind: 'unauthorized' } });
+    expect(onUnauthorized).toHaveBeenCalledTimes(1);
+  });
+
+  it('en change-password con credentialAttempt, 401 UNAUTHENTICATED tambien llega como problem sin onUnauthorized', async () => {
+    const onUnauthorized = vi.fn();
+    const { client } = setup(() => jsonResponse('{"status":401,"code":"UNAUTHENTICATED"}', 401, PROBLEM), { onUnauthorized });
+
+    const result = await client.request('POST', '/auth/change-password', { body: {}, credentialAttempt: true });
+
+    expect(result).toMatchObject({ ok: false, error: { kind: 'problem', status: 401, code: 'UNAUTHENTICATED' } });
+    expect(onUnauthorized).not.toHaveBeenCalled();
+  });
+
+  it('401 sin cuerpo problem+json con credentialAttempt es un problem inesperado', async () => {
+    const { client } = setup(() => new Response(null, { status: 401 }));
+
+    const result = await client.request('POST', '/auth/login', { credentialAttempt: true });
+
+    expect(result).toEqual({
+      ok: false,
+      error: { kind: 'problem', status: 401, code: 'UNEXPECTED_RESPONSE', errors: [] },
+    });
+  });
+
+  function rateLimited(retryAfter?: string): Response {
+    return new Response('{"status":429,"code":"RATE_LIMITED"}', {
+      status: 429,
+      headers: { 'Content-Type': PROBLEM, ...(retryAfter === undefined ? {} : { 'Retry-After': retryAfter }) },
+    });
+  }
+
+  it('429 con Retry-After en segundos expone retryAfterSeconds', async () => {
+    const { client } = setup(() => rateLimited('45'));
+
+    const result = await client.request('POST', '/auth/login', { credentialAttempt: true });
+
+    expect(result).toMatchObject({ ok: false, error: { kind: 'problem', status: 429, code: 'RATE_LIMITED', retryAfterSeconds: 45 } });
+  });
+
+  it.each([['Wed, 21 Oct 2026 07:28:00 GMT'], ['pronto'], ['-3'], ['4.5']])(
+    'Retry-After %j no es un entero de segundos: no se expone',
+    async (value) => {
+      const { client } = setup(() => rateLimited(value));
+
+      const result = await client.request('POST', '/auth/login', { credentialAttempt: true });
+
+      expect(result.ok).toBe(false);
+      if (!result.ok && result.error.kind === 'problem') {
+        expect(result.error).not.toHaveProperty('retryAfterSeconds');
+      }
+    },
+  );
+
+  it('429 sin Retry-After no expone retryAfterSeconds', async () => {
+    const { client } = setup(() => rateLimited());
+
+    const result = await client.request('POST', '/auth/login', { credentialAttempt: true });
+
+    expect(result).toEqual({ ok: false, error: { kind: 'problem', status: 429, code: 'RATE_LIMITED', errors: [] } });
+  });
+});

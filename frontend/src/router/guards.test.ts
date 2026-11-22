@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { Session, SessionState } from '../core/auth/session';
-import { redirectIfAuthenticated, requireSession, rootRedirect } from './guards';
+import { redirectIfAuthenticated, requireAuthenticated, requireSession, rootRedirect } from './guards';
 import type { LayoutRoute } from './safe-next';
 import type { RouteContext } from './router';
 
@@ -10,7 +10,7 @@ const routes: LayoutRoute[] = [
   { path: '/reservar', layout: 'public' },
 ];
 
-const ROMERO = { id: 'u1', fullName: 'Dra. Romero', role: 'DENTIST' };
+const ROMERO = { userId: 'u1', role: 'DENTIST', mustChangePassword: false };
 
 function fakeSession(initial: SessionState, resolvesTo?: SessionState) {
   let state = initial;
@@ -128,5 +128,83 @@ describe('rootRedirect', () => {
     const { session } = fakeSession({ status: 'unknown' }, { status: 'authenticated', user: ROMERO });
 
     expect(await rootRedirect(session)(ctx('/'))).toEqual({ redirect: '/agenda', replace: true });
+  });
+});
+
+describe('cambio de contrasena obligatorio (C-06)', () => {
+  const mustChange = { status: 'authenticated', user: { ...ROMERO, mustChangePassword: true } } as const;
+
+  it('requireSession con cambio pendiente redirige (replace) a /cambiar-contrasena conservando next', async () => {
+    const { session } = fakeSession(mustChange);
+
+    expect(await requireSession(session, () => routes)(ctx('/pacientes'))).toEqual({
+      redirect: '/cambiar-contrasena?next=%2Fpacientes',
+      replace: true,
+    });
+  });
+
+  it('requireSession con cambio resuelto permite', async () => {
+    const { session } = fakeSession({ status: 'authenticated', user: ROMERO });
+
+    expect(await requireSession(session, () => routes)(ctx('/pacientes'))).toEqual({ allow: true });
+  });
+
+  it('requireSession anonimo sigue yendo a /login?next=', async () => {
+    const { session } = fakeSession({ status: 'anonymous' });
+
+    expect(await requireSession(session, () => routes)(ctx('/agenda'))).toEqual({
+      redirect: '/login?next=%2Fagenda',
+      replace: true,
+    });
+  });
+
+  it('redirectIfAuthenticated con cambio pendiente va a /cambiar-contrasena con next valido', async () => {
+    const { session } = fakeSession(mustChange);
+
+    expect(await redirectIfAuthenticated(session, () => routes)(ctx('/login', 'next=%2Fpacientes'))).toEqual({
+      redirect: '/cambiar-contrasena?next=%2Fpacientes',
+      replace: true,
+    });
+  });
+
+  it('redirectIfAuthenticated con cambio pendiente y next invalido omite next', async () => {
+    const { session } = fakeSession(mustChange);
+
+    expect(await redirectIfAuthenticated(session, () => routes)(ctx('/login', 'next=%2F%2Fevil.example'))).toEqual({
+      redirect: '/cambiar-contrasena',
+      replace: true,
+    });
+  });
+});
+
+describe('requireAuthenticated', () => {
+  it('anonimo va a /login', async () => {
+    const { session } = fakeSession({ status: 'anonymous' });
+
+    expect(await requireAuthenticated(session)(ctx('/cambiar-contrasena'))).toEqual({
+      redirect: '/login',
+      replace: true,
+    });
+  });
+
+  it('conserva next valido al ir a /login', async () => {
+    const { session } = fakeSession({ status: 'anonymous' });
+
+    expect(await requireAuthenticated(session, () => routes)(ctx('/cambiar-contrasena', 'next=%2Fagenda'))).toEqual({
+      redirect: '/login?next=%2Fagenda',
+      replace: true,
+    });
+  });
+
+  it('autenticado con cambio pendiente permite (sin bucle)', async () => {
+    const { session } = fakeSession({ status: 'authenticated', user: { ...ROMERO, mustChangePassword: true } });
+
+    expect(await requireAuthenticated(session)(ctx('/cambiar-contrasena'))).toEqual({ allow: true });
+  });
+
+  it('autenticado voluntario tambien permite', async () => {
+    const { session } = fakeSession({ status: 'authenticated', user: ROMERO });
+
+    expect(await requireAuthenticated(session)(ctx('/cambiar-contrasena'))).toEqual({ allow: true });
   });
 });

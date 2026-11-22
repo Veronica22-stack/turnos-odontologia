@@ -2,21 +2,28 @@ import { isBoolean, isRecord, isString } from '../http/decode';
 import type { HttpClient } from '../http/client';
 import type { SessionGateway, SessionUser } from './session';
 
-function decodeSessionUser(value: unknown): SessionUser | undefined {
+/** Decodifica la forma real de C-04: `userId` y `role` obligatorios; `mustChangePassword` vale `false` si falta. */
+export function decodeSessionUser(value: unknown): SessionUser | undefined {
   if (!isRecord(value)) {
     return undefined;
   }
-  const { id, fullName, role, mustChangePassword } = value;
-  if (!isString(id) || !isString(fullName) || !isString(role)) {
+  const { userId, role, mustChangePassword, expiresAt, fullName } = value;
+  if (!isString(userId) || !isString(role)) {
     return undefined;
   }
   if (mustChangePassword !== undefined && !isBoolean(mustChangePassword)) {
     return undefined;
   }
-  return { id, fullName, role, ...(isBoolean(mustChangePassword) ? { mustChangePassword } : {}) };
+  return {
+    userId,
+    role,
+    mustChangePassword: mustChangePassword === true,
+    ...(isString(expiresAt) ? { expiresAt } : {}),
+    ...(isString(fullName) && fullName.trim() !== '' ? { fullName } : {}),
+  };
 }
 
-/** Contrato supuesto con C-04 (ver design D4): GET /auth/me y POST /auth/logout. */
+/** Contrato de C-04 (design D2): GET /auth/me y POST /auth/logout. */
 export function httpSessionGateway(client: HttpClient): SessionGateway {
   return {
     async me() {

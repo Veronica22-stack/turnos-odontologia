@@ -10,6 +10,7 @@
   --layout-header-height: var(--space-16);
   --layout-sidebar-width: 15rem; /* local: candidato a token en Revision 2 */
   --layout-reading-width: 40rem; /* local: ancho legible del flujo publico */
+  --layout-auth-width: 26rem; /* local: tarjeta de ingreso (C-06), candidato a token en Revision 2 */
   --layout-bottom-nav-height: calc(var(--touch-target) + var(--space-4));
 }
 

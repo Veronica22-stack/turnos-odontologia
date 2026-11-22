@@ -1,9 +1,10 @@
 import type { Session } from '../core/auth/session';
 import { h } from '../core/dom/h';
-import { redirectIfAuthenticated, requireSession, rootRedirect } from '../router/guards';
+import type { AuthGateway } from '../features/auth/auth-gateway';
+import { createChangePasswordView } from '../features/auth/change-password-view';
+import { createLoginView } from '../features/auth/login-view';
+import { redirectIfAuthenticated, requireAuthenticated, requireSession, rootRedirect } from '../router/guards';
 import type { RouteDef, ViewRoute } from '../router/router';
-
-type SessionReader = Pick<Session, 'get' | 'ensureLoaded'>;
 
 function placeholderView(heading: string, description: string): () => HTMLElement {
   return () =>
@@ -15,25 +16,19 @@ function placeholderView(heading: string, description: string): () => HTMLElemen
     );
 }
 
-const NOTICE_TEXT = {
-  expired: 'Tu sesión venció. Ingresá de nuevo.',
-  offline: 'Sin conexión con el servidor. Reintentá en unos segundos.',
-} as const;
-
-function loginView(session: SessionReader): () => HTMLElement {
-  const placeholder = placeholderView('Ingresar', 'El formulario de ingreso llega en C-06.');
-  return () => {
-    const view = placeholder();
-    const state = session.get();
-    if (state.status === 'anonymous' && state.notice !== undefined) {
-      view.querySelector('h1')?.after(h('div', { class: 'notice', attrs: { role: 'status' } }, NOTICE_TEXT[state.notice]));
-    }
-    return view;
-  };
+export interface RoutesDeps {
+  readonly session: Pick<Session, 'get' | 'ensureLoaded' | 'signIn' | 'endAfterPasswordChange'>;
+  readonly gateway: AuthGateway;
+  readonly navigate: (path: string, options?: { replace?: boolean }) => void;
+  readonly onLogout: () => void;
 }
 
-export function createRoutes(session: SessionReader): { routes: RouteDef[]; notFound: ViewRoute } {
-  const privateGuard = requireSession(session);
+export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: ViewRoute } {
+  const { session, gateway, navigate, onLogout } = deps;
+  const getRoutes = (): readonly RouteDef[] => routes;
+  const privateGuard = requireSession(session, getRoutes);
+  const loginView = createLoginView({ gateway, session, navigate, routes: getRoutes });
+  const changePasswordView = createChangePasswordView({ gateway, session, navigate, routes: getRoutes, onLogout });
   const routes: RouteDef[] = [
     {
       name: 'root',
@@ -69,8 +64,16 @@ export function createRoutes(session: SessionReader): { routes: RouteDef[]; notF
       path: '/login',
       layout: 'public',
       title: 'Ingresar',
-      guard: redirectIfAuthenticated(session, () => routes),
-      view: loginView(session),
+      guard: redirectIfAuthenticated(session, getRoutes),
+      view: loginView,
+    },
+    {
+      name: 'change-password',
+      path: '/cambiar-contrasena',
+      layout: 'public',
+      title: 'Cambiar contraseña',
+      guard: requireAuthenticated(session, getRoutes),
+      view: changePasswordView,
     },
     {
       name: 'agenda',

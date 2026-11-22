@@ -1,5 +1,6 @@
 import './styles/base.css';
 import './styles/layout.css';
+import './styles/forms.css';
 import { createRoutes } from './app/routes';
 import { createSession, type Session } from './core/auth/session';
 import { httpSessionGateway } from './core/auth/session-gateway';
@@ -7,7 +8,8 @@ import { h } from './core/dom/h';
 import { createHttpClient, type FetchFn, type HttpClient } from './core/http/client';
 import { cookieCsrfTransport } from './core/http/transport';
 import { renderPrivateLayout, type PrivateSection } from './layouts/private-layout';
-import { renderPublicLayout } from './layouts/public-layout';
+import { createAuthGateway } from './features/auth/auth-gateway';
+import { markProLink, renderPublicLayout } from './layouts/public-layout';
 import { brandName } from './layouts/brand';
 import { findRoute, normalizePath } from './router/match';
 import { createRouter, type RenderArgs, type Router } from './router/router';
@@ -52,6 +54,9 @@ export interface App {
   readonly ready: Promise<void>;
 }
 
+/** C-04 todavia no expone el nombre (pedido P1): etiqueta de respaldo en el encabezado privado. */
+const FALLBACK_USER_LABEL = 'Profesional';
+
 const PRIVATE_SECTIONS: ReadonlySet<string> = new Set<PrivateSection>(['agenda', 'pacientes', 'configuracion']);
 
 function sectionOf(routeName: string): PrivateSection | null {
@@ -78,7 +83,16 @@ export function bootstrap(options: BootstrapOptions = {}): App {
   });
   const sessionRef = createSession(httpSessionGateway(client));
 
-  const { routes, notFound } = createRoutes(sessionRef);
+  const authGateway = createAuthGateway({ client, onSessionExpired: () => sessionRef.expire() });
+
+  const { routes, notFound } = createRoutes({
+    session: sessionRef,
+    gateway: authGateway,
+    navigate: (path, options) => {
+      void router?.navigate(path, options);
+    },
+    onLogout: () => onLogout(),
+  });
 
   function handleUnauthorized(): void {
     if (sessionRef.get().status !== 'authenticated') {
@@ -107,7 +121,7 @@ export function bootstrap(options: BootstrapOptions = {}): App {
     const state = sessionRef.get();
     if (route.layout === 'private' && state.status === 'authenticated') {
       const current = sectionOf(route.name);
-      const fullName = state.user.fullName;
+      const fullName = state.user.fullName ?? FALLBACK_USER_LABEL;
       if (mounted?.kind === 'private' && mounted.current === current && mounted.fullName === fullName) {
         mounted.main.replaceChildren(content);
         return;
@@ -117,11 +131,13 @@ export function bootstrap(options: BootstrapOptions = {}): App {
       root.replaceChildren(layout);
       return;
     }
+    const currentPath = normalizePath(win.location.pathname);
     if (mounted?.kind === 'public') {
       mounted.main.replaceChildren(content);
+      markProLink(root, currentPath);
       return;
     }
-    const layout = renderPublicLayout({ content });
+    const layout = renderPublicLayout({ content, currentPath });
     mounted = { kind: 'public', main: mainOf(layout) };
     root.replaceChildren(layout);
   }

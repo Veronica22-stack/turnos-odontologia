@@ -10,6 +10,8 @@ export type ApiError =
       readonly code: string;
       readonly errors: readonly FieldError[];
       readonly errorId?: string;
+      /** `Retry-After` en segundos enteros (p. ej. 429); ausente si falta o no es un entero. */
+      readonly retryAfterSeconds?: number;
     }
   | { readonly kind: 'unauthorized' }
   | { readonly kind: 'network' }
