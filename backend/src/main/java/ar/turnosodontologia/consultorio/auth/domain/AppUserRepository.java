@@ -8,6 +8,8 @@ public interface AppUserRepository {
 
     AppUser save(AppUser user);
 
+    Optional<AppUser> findById(UUID id);
+
     boolean existsByPracticeIdAndRole(UUID practiceId, Role role);
 
     /** Busca por email ya normalizado (minusculas, sin espacios). */

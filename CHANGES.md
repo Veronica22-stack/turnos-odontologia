@@ -252,7 +252,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-04
 
 ### [C-05] `frontend-core-shell` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS sin críticos, W1 corregido y W2–W4 registrados en design.md (`openspec/changes/archive/2026-11-21-c-05-frontend-core-shell/verify-report.md`); mockups aprobados por Lucas; PR #5 mergeado en `master`
 - **Scope**:
   - Bootstrap `main.ts`, router propio (History API) con guards (`/login`, rutas privadas, públicas `/reservar` y `/turno/{token}`)
   - `core/http` (cliente fetch tipado, manejo de errores, CSRF), `core/auth` (estado de sesión), `core/state` (store pub/sub), `core/dom` (render con escape de HTML, sin `innerHTML` con datos de usuario)
@@ -268,7 +268,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/03_actores_y_roles.md` §Rutas públicas
 
 ### [C-06] `login-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS sin críticos, W1–W4 resueltos (`openspec/changes/archive/2026-11-21-c-06-login-ui/verify-report.md`); mockups revisión 2 aprobados por Lucas; contrato confirmado contra C-04; pendiente PR a `master`
 - **Scope**:
   - Pantalla `/login` y cambio obligatorio de contraseña (US-001, US-002); mensajes genéricos de error y de cuenta bloqueada
   - Redirección a la ruta original tras login; sesión expirada redirige a login conservando la ruta; logout

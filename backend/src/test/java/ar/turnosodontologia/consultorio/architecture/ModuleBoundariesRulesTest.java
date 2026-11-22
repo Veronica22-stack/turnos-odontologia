@@ -87,6 +87,63 @@ class ModuleBoundariesRulesTest {
     }
 
     @Test
+    void auditoriaAisladaDetectaDependenciasDirectasEnLasCuatroCapas() {
+        String root = root("violacion_auditoria");
+
+        assertThatThrownBy(() -> ModuleBoundaries.auditoriaIsolatedFromBusinessModules(root).check(classesOf("violacion_auditoria")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuditoriaApiMal")
+                .hasMessageContaining("AgendaApi")
+                .hasMessageContaining("AuditarMal")
+                .hasMessageContaining("PacientesApi")
+                .hasMessageContaining("AuditoriaDominioMal")
+                .hasMessageContaining("HistoriaClinicaApi")
+                .hasMessageContaining("AuditoriaInfraMal")
+                .hasMessageContaining("ReservasApi");
+    }
+
+    @Test
+    void auditoriaAisladaDetectaDependenciaTransitivaViaShared() {
+        String root = root("violacion_auditoria_transitiva");
+
+        assertThatThrownBy(() -> ModuleBoundaries.auditoriaIsolatedFromBusinessModules(root)
+                .check(classesOf("violacion_auditoria_transitiva")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuditoriaTransitiva")
+                .hasMessageContaining("ReservasApi");
+    }
+
+    @Test
+    void auditoriaAisladaPasaConFixturesQueSoloUsanSharedYSuPropioModulo() {
+        String root = root("ok_auditoria");
+
+        assertThatCode(() -> ModuleBoundaries.auditoriaIsolatedFromBusinessModules(root).check(classesOf("ok_auditoria")))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void eventosDeAuditoriaSoloPorApiPasanConReporteDesdeHistoriaClinica() {
+        String okAuditoria = root("ok_auditoria");
+        String ok = root("ok");
+
+        assertThatCode(() -> {
+            ModuleBoundaries.auditEventsExposedOnlyThroughApi(okAuditoria).check(classesOf("ok_auditoria"));
+            ModuleBoundaries.auditEventsExposedOnlyThroughApi(ok).check(classesOf("ok"));
+            ModuleBoundaries.auditoriaIsolatedFromBusinessModules(ok).check(classesOf("ok"));
+        }).doesNotThrowAnyException();
+    }
+
+    @Test
+    void eventosDeAuditoriaSoloPorApiFallaConUnAdaptadorUsadoDesdeOtroModulo() {
+        String root = root("violacion_auditoria");
+
+        assertThatThrownBy(() -> ModuleBoundaries.auditEventsExposedOnlyThroughApi(root).check(classesOf("violacion_auditoria")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("ReporteMal")
+                .hasMessageContaining("AuditoriaInfraMal");
+    }
+
+    @Test
     void cicloEntreModulosFalla() {
         String root = root("violacion_ciclo");
 
@@ -199,5 +256,53 @@ class ModuleBoundariesRulesTest {
                 .check(classesOf("violacion_modulo_extra")))
                 .isInstanceOf(AssertionError.class)
                 .hasMessageContaining("inventario");
+    }
+
+    @Test
+    void authRegistraAuditoriaEsUnaAristaPermitida() {
+        String root = root("ok_auth");
+
+        assertThatCode(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("ok_auth")))
+                .doesNotThrowAnyException();
+    }
+
+    @Test
+    void authNoPuedeDependerDeUnModuloDeNegocio() {
+        String root = root("violacion_auth");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("violacion_auth")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuthApiMal")
+                .hasMessageContaining("PacientesApi");
+    }
+
+    @Test
+    void authDetectaLaDependenciaTransitivaPeroNombraLaAristaProhibida() {
+        String root = root("violacion_auth_transitiva");
+        JavaClasses classes = classesOf("violacion_auth_transitiva");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classes))
+                .as("la arista prohibida es auditoria -> pacientes, no auth -> auditoria")
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuditoriaPuente")
+                .hasMessageContaining("PacientesApi");
+        assertThatThrownBy(() -> ModuleBoundaries.authIsolatedFromBusinessModules(root).check(classes))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AuditoriaPuente")
+                .hasMessageContaining("PacientesApi")
+                .hasMessageContaining("modulo pacientes");
+    }
+
+    @Test
+    void authPuedeUsarSharedApiSinCrearAristasDeModulo() {
+        String root = root("ok_auth");
+        JavaClasses classes = classesOf("ok_auth");
+
+        assertThatCode(() -> {
+            ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes);
+            ModuleBoundaries.allowedDependencyGraph(root).check(classes);
+            ModuleBoundaries.authIsolatedFromBusinessModules(root).check(classes);
+            ModuleBoundaries.securityConfinedToAuthInfrastructure(root).check(classes);
+        }).doesNotThrowAnyException();
     }
 }

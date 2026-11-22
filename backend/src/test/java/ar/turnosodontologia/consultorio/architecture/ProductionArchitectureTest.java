@@ -48,4 +48,24 @@ class ProductionArchitectureTest {
     void laAplicacionNoDependeDeApiNiInfraestructuraPropias() {
         ModuleBoundaries.applicationIndependent(ROOT).check(production);
     }
+
+    @Test
+    void auditoriaEstaAisladaDeLosModulosDeNegocio() {
+        ModuleBoundaries.auditoriaIsolatedFromBusinessModules(ROOT).check(production);
+    }
+
+    @Test
+    void losEventosDeAuditoriaSoloSeExponenPorSuApi() {
+        ModuleBoundaries.auditEventsExposedOnlyThroughApi(ROOT).check(production);
+    }
+
+    @Test
+    void authEstaAisladoDeLosModulosDeNegocio() {
+        ModuleBoundaries.authIsolatedFromBusinessModules(ROOT).check(production);
+    }
+
+    @Test
+    void laSeguridadHttpEstaConfinadaEnAuthInfrastructure() {
+        ModuleBoundaries.securityConfinedToAuthInfrastructure(ROOT).check(production);
+    }
 }

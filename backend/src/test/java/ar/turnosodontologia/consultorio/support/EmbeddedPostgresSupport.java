@@ -149,6 +149,10 @@ public final class EmbeddedPostgresSupport {
             properties.put("DB_MIGRATION_PASSWORD", credentials.migratorPassword());
             properties.put("BOOTSTRAP_ADMIN_EMAIL", BOOTSTRAP_EMAIL);
             properties.put("BOOTSTRAP_ADMIN_PASSWORD", BOOTSTRAP_PASSWORD);
+            properties.put("AUTH_SESSION_TIMEOUT_MIN", "30");
+            properties.put("AUTH_SESSION_COOKIE_NAME", "SESSIONID");
+            properties.put("AUTH_SESSION_COOKIE_SECURE", "false");
+            properties.put("CORS_ALLOWED_ORIGINS", "http://localhost:5173");
             return properties;
         }
 

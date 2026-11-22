@@ -66,6 +66,54 @@ class MissingConfigurationTest {
                 .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
     }
 
+    /** Todas las variables de base estan presentes: asi el unico motivo de fallo puede ser el que se prueba. */
+    private static SpringApplicationBuilder configuredApplication() {
+        return new SpringApplicationBuilder(ConsultorioApplication.class)
+                .web(WebApplicationType.NONE)
+                .properties(
+                        "DB_URL=jdbc:postgresql://localhost:5432/consultorio",
+                        "DB_USER=app",
+                        "DB_PASSWORD=" + OTHER_SECRET,
+                        "DB_MIGRATION_USER=migrator",
+                        "DB_MIGRATION_PASSWORD=" + OTHER_SECRET);
+    }
+
+    @Test
+    void fallaMencionandoAuthSessionTimeoutMinCuandoNoEsEntero() {
+        SpringApplicationBuilder app = configuredApplication().properties("AUTH_SESSION_TIMEOUT_MIN=abc");
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("AUTH_SESSION_TIMEOUT_MIN")
+                .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
+    }
+
+    @Test
+    void fallaMencionandoCorsAllowedOriginsEnPerfilProductivo() {
+        SpringApplicationBuilder app = configuredApplication();
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("CORS_ALLOWED_ORIGINS")
+                .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
+    }
+
+    @Test
+    void fallaMencionandoAuthSessionTimeoutMinCuandoEsCero() {
+        SpringApplicationBuilder app = configuredApplication().properties("AUTH_SESSION_TIMEOUT_MIN=0");
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("AUTH_SESSION_TIMEOUT_MIN")
+                .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
+    }
+
+    @Test
+    void fallaMencionandoAuthSessionTimeoutMinCuandoEsNegativo() {
+        SpringApplicationBuilder app = configuredApplication().properties("AUTH_SESSION_TIMEOUT_MIN=-1");
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("AUTH_SESSION_TIMEOUT_MIN")
+                .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
+    }
+
     private static String rootMessages(Throwable error) {
         StringBuilder messages = new StringBuilder();
         for (Throwable current = error; current != null; current = current.getCause()) {

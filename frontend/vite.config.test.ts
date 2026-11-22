@@ -43,4 +43,10 @@ describe('vite server', () => {
 
     expect(config.server?.host).toBe('localhost');
   });
+
+  it('permite servir design-system (tokens, brand.js, logo) fuera de la raiz de Vite', async () => {
+    const config = await loadConfig();
+
+    expect(config.server?.fs?.allow).toContain('../design-system');
+  });
 });

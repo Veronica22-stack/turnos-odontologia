@@ -11,9 +11,6 @@ public record BootstrapCredentials(String email, String password) {
     public static final String EMAIL_VARIABLE = "BOOTSTRAP_ADMIN_EMAIL";
     public static final String PASSWORD_VARIABLE = "BOOTSTRAP_ADMIN_PASSWORD";
 
-    /** Largo minimo provisional (RN-AU-03, suposicion); la politica final es de C-04. */
-    static final int MIN_PASSWORD_LENGTH = 12;
-
     private static final int MAX_EMAIL_LENGTH = 254;
     private static final Pattern EMAIL_SHAPE = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 
@@ -22,10 +19,7 @@ public record BootstrapCredentials(String email, String password) {
             throw new IllegalArgumentException(
                     EMAIL_VARIABLE + " no tiene un formato de email valido (maximo " + MAX_EMAIL_LENGTH + " caracteres)");
         }
-        if (password == null || password.length() < MIN_PASSWORD_LENGTH) {
-            throw new IllegalArgumentException(
-                    PASSWORD_VARIABLE + " debe tener al menos " + MIN_PASSWORD_LENGTH + " caracteres");
-        }
+        PasswordPolicy.requireValid(password, PASSWORD_VARIABLE);
         return new BootstrapCredentials(email.trim(), password);
     }
 
