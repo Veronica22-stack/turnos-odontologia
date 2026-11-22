@@ -1,5 +1,6 @@
 package ar.turnosodontologia.consultorio.shared.api;
 
+import ar.turnosodontologia.consultorio.shared.application.ConstraintViolations;
 import ar.turnosodontologia.consultorio.shared.domain.BusinessRuleException;
 import ar.turnosodontologia.consultorio.shared.domain.ConflictException;
 import ar.turnosodontologia.consultorio.shared.domain.DomainException;
@@ -44,6 +45,8 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     private static final Logger LOG = LoggerFactory.getLogger(ApiExceptionHandler.class);
     private static final String SCHEDULE_BLOCK_EXCLUSION = "schedule_block_no_overlap";
     private static final String SCHEDULE_BLOCK_OVERLAP = "SCHEDULE_BLOCK_OVERLAP";
+    private static final String APPOINTMENT_EXCLUSION = "appointment_no_overlap";
+    private static final String APPOINTMENT_SLOT_TAKEN = "APPOINTMENT_SLOT_TAKEN";
 
     /** Un campo invalido: nombre del campo y nombre de la restriccion violada, nunca el valor. */
     public record FieldProblem(String field, String code) {
@@ -91,7 +94,12 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<ProblemDetail> handleDataIntegrity(DataIntegrityViolationException error) {
         // El mensaje de PostgreSQL incluye valores; solo se inspecciona el nombre de la restriccion para elegir el code.
-        String code = isScheduleBlockOverlap(error) ? SCHEDULE_BLOCK_OVERLAP : "CONFLICT";
+        String code = "CONFLICT";
+        if (ConstraintViolations.isExclusionViolation(error, APPOINTMENT_EXCLUSION)) {
+            code = APPOINTMENT_SLOT_TAKEN;
+        } else if (isScheduleBlockOverlap(error)) {
+            code = SCHEDULE_BLOCK_OVERLAP;
+        }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(ProblemDetails.of(HttpStatus.CONFLICT, code));
     }
 

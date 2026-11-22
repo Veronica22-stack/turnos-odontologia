@@ -8,6 +8,7 @@ import ar.turnosodontologia.consultorio.agenda.domain.TimeInterval;
 import ar.turnosodontologia.consultorio.shared.application.InstallationPractice;
 import ar.turnosodontologia.consultorio.shared.domain.ConflictException;
 import ar.turnosodontologia.consultorio.shared.domain.NotFoundException;
+import ar.turnosodontologia.consultorio.shared.domain.PracticeLock;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.Comparator;
@@ -26,13 +27,15 @@ public class ScheduleBlockService {
 
     private final ScheduleBlockRepository repository;
     private final InstallationPractice practice;
+    private final PracticeLock lock;
     private final Clock clock;
     private final Optional<AffectedAppointmentsProvider> appointments;
 
-    public ScheduleBlockService(ScheduleBlockRepository repository, InstallationPractice practice, Clock clock,
-            Optional<AffectedAppointmentsProvider> appointments) {
+    public ScheduleBlockService(ScheduleBlockRepository repository, InstallationPractice practice, PracticeLock lock,
+            Clock clock, Optional<AffectedAppointmentsProvider> appointments) {
         this.repository = repository;
         this.practice = practice;
+        this.lock = lock;
         this.clock = clock;
         this.appointments = appointments;
     }
@@ -58,6 +61,8 @@ public class ScheduleBlockService {
     @Transactional
     public ScheduleBlockResult create(Instant startsAt, Instant endsAt, String reason) {
         UUID practiceId = practice.id();
+        // Serializa con altas y reprogramaciones de turnos del consultorio (design D3).
+        lock.lock(practiceId);
         ensureNoOverlap(practiceId, startsAt, endsAt, null);
         ScheduleBlock block = ScheduleBlock.create(practiceId, startsAt, endsAt, reason, clock);
         return toResult(repository.save(block));
@@ -65,6 +70,7 @@ public class ScheduleBlockService {
 
     @Transactional
     public ScheduleBlockResult update(UUID id, Instant startsAt, Instant endsAt, String reason) {
+        lock.lock(practice.id());
         ScheduleBlock block = requireOwned(id);
         ensureNoOverlap(block.practiceId(), startsAt, endsAt, block.id());
         block.update(startsAt, endsAt, reason, clock);
