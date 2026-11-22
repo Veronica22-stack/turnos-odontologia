@@ -160,13 +160,13 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 
 **Fuera de alcance**: C-23 (visor de auditoría; el registro lo cubre C-03), C-26 (hardening de producción), C-27 (despliegue) y C-28 (checklist legal de lanzamiento). Lo decide la líder.
 
-**Change principal: C-11 `appointments-core`** — núcleo del dominio (turnos sin solapamientos), en el camino crítico. Lucas conduce explore → propose → archive; Elian hace el apply y Gabriel el verify (quien testea no es quien implementó).
+**Change principal: C-11 `appointments-core`** — núcleo del dominio (turnos sin solapamientos), en el camino crítico. **Completado por Lucas** de punta a punta (explore → propose → apply → verify → archive); el verify lo hizo un agente verificador independiente del que implementó (quien testea no es quien implementó).
 
 | Integrante | Responsabilidad principal | Changes |
 |---|---|---|
-| **Lucas (líder)** | Fundación (Discovery, knowledge-base, design system, roadmap, reglas del agente). Conduce el OPSX de C-11 (explore, propose, archive). Decide gates y paralelismo, controla `master` y aprueba todos los PR. Evidencia de Engram. | C-01 · C-11 (explore, propose, archive) |
-| **Elian** | Backend núcleo sobre el camino crítico. **Apply de C-11.** | C-02 · C-03 · C-04 · C-09 · C-11 (apply) · C-12 |
-| **Gabriel** | **Verify de C-11.** Dueño de la matriz de tests (cada escenario de cada spec: feliz, error de negocio y borde). README para clonar y correr los tests. API de reserva pública. | C-11 (verify) · C-08 · C-10 · C-14 · C-15 |
+| **Lucas (líder)** | Fundación (Discovery, knowledge-base, design system, roadmap, reglas del agente). **C-01, C-02 y C-11 completos** (C-11: explore, propose, apply, verify y archive). Decide gates y paralelismo, controla `master` y aprueba todos los PR. Evidencia de Engram. | C-01 ✓ · C-02 ✓ · C-11 ✓ |
+| **Elian** | Backend núcleo sobre el camino crítico. | C-03 · C-04 · C-09 · C-12 |
+| **Gabriel** | Dueño de la matriz de tests (cada escenario de cada spec: feliz, error de negocio y borde). README para clonar y correr los tests. API de reserva pública. | C-08 · C-10 · C-14 · C-15 |
 | **Veronica** | Informe de Discovery en PDF (resumen ejecutivo, A, B, C y D). Backend de historia clínica y notificaciones. | C-13 · C-16 · C-17 · C-18 |
 | **Mayra** | Verificación manual de ≥5 fuentes del informe (no armó la tabla) y hallazgos en la sección F. Revisión de la knowledge-base contra el informe. Frontend base y reserva pública (con mockups). | C-05 · C-06 · C-24 · C-25 |
 | **Tomas** | Revisión del roadmap contra el MVP. Frontend del profesional (con mockups). | C-07 · C-19 · C-20 · C-21 · C-22 |
@@ -174,9 +174,9 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 **Reglas de trabajo**
 
 - Cada integrante trabaja en su rama `dev-<nombre>` (`dev-lucas`, `dev-elian`, …) con commits propios; a `master` solo se entra por Pull Request aprobado por la líder.
-- El paralelismo respeta los gates de este documento; nadie tiene dos changes en el mismo gate (gate 4: Tomas C-07, Gabriel C-08, Mayra C-06 · gate 6: Elian C-11, Veronica C-16, Tomas C-19 · gate 8: Gabriel C-14, Veronica C-17 → C-18, Tomas C-20).
+- El paralelismo respeta los gates de este documento; nadie tiene dos changes en el mismo gate (gate 4: Tomas C-07, Gabriel C-08, Mayra C-06 · gate 6: Lucas C-11, Veronica C-16, Tomas C-19 · gate 8: Gabriel C-14, Veronica C-17 → C-18, Tomas C-20).
 - Tests automatizados por cada escenario de los specs (feliz, error de negocio y borde) en todos los changes, en modo Strict TDD.
-- **Video de defensa**: Lucas (fundación y conducción OPSX), Elian (apply), Gabriel (verify y tests), Veronica (Discovery), Mayra (verificación de fuentes y UI pública), Tomas (roadmap y UI del profesional). **Reflexión escrita**: cada uno su parte.
+- **Video de defensa**: Lucas (fundación, C-01, C-02 y C-11 completo con OPSX), Elian (backend núcleo), Gabriel (matriz de tests y API pública), Veronica (Discovery), Mayra (verificación de fuentes y UI pública), Tomas (roadmap y UI del profesional). **Reflexión escrita**: cada uno su parte.
 
 ---
 
@@ -202,7 +202,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `openspec/config.yaml`
 
 ### [C-02] `core-models-shared`
-- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS, warnings W1–W3 corregidos (`openspec/changes/archive/2026-11-21-c-02-core-models-shared/verify-report.md`); pendiente PR a `master`
+- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS, warnings W1–W3 corregidos (`openspec/changes/archive/2026-11-21-c-02-core-models-shared/verify-report.md`); completado por Lucas; PR #3 mergeado en `master`
 - **Scope**:
   - Migración V2: tablas `practice` (una fila, seed) y `app_user` (email, `password_hash`, `role`, `failed_attempts`, `locked_until`, `must_change_password`)
   - Modelos: `Practice`, `AppUser`, enum `Role { DENTIST }` (diseñado para sumar `SECRETARY` en v2)
@@ -218,7 +218,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/08_arquitectura_propuesta.md` §Módulos
 
 ### [C-03] `audit-log`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — ver `openspec/changes/archive/2026-11-21-audit-log/`
 - **Scope**:
   - Migración V3: tabla `audit_log` (usuario, acción, `patient_id` nullable, referencia, IP, `created_at` servidor) append-only; REVOKE UPDATE/DELETE al rol `app`
   - Puerto `AuditLogger` (interfaz pública del módulo `auditoria`) con acciones `LOGIN_OK, LOGIN_FAIL, PATIENT_READ, HC_READ, HC_CREATE, HC_CORRECT, BOOKING_TOKEN_USE`
@@ -233,7 +233,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/11_cumplimiento_normativo.md`
 
 ### [C-04] `auth-session`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — ver `openspec/changes/archive/2026-11-21-auth-session/`
 - **Scope**:
   - `POST /api/v1/auth/login`, `POST /api/v1/auth/logout`, `GET /api/v1/auth/me`, `POST /api/v1/auth/change-password` (US-001, US-002)
   - Sesión servidor con cookie `HttpOnly; Secure; SameSite=Strict` + protección CSRF (PA-04: confirmar método en el propose)
@@ -287,7 +287,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 2 — Configuración de la agenda
 
 ### [C-07] `services-catalog`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — ver `openspec/changes/archive/2026-11-22-c-07-services-catalog/`; migración V4 coincide con el plan
 - **Scope**:
   - Migración V4: tabla `service` (nombre, duración en minutos, `active`, `public_visible`, `practice_id`)
   - CRUD `/api/v1/services` con baja lógica (nunca borrado físico); validación duración > 0 y múltiplo de la granularidad (US-011)
@@ -303,7 +303,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/03_actores_y_roles.md` §Rutas públicas
 
 ### [C-08] `working-hours-booking-settings`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — ver `openspec/changes/archive/2026-11-22-c-08-working-hours-booking-settings/`
 - **Scope**:
   - Migración V5: tabla `working_hours` (día, tramos, sin solapamiento) y parámetros en `practice` (`slot_granularity_min` default 15, `min_notice_min`, `max_advance_days`, `reminder_hours_before`)
   - Endpoints `/api/v1/working-hours` y `/api/v1/practice/settings` (nombre, zona horaria, contacto) (US-010, US-013)
@@ -318,7 +318,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-19
 
 ### [C-09] `schedule-blocks`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — migración real V8 (no V6); ver `openspec/changes/archive/2026-11-22-c-09-schedule-blocks/`
 - **Scope**:
   - Migración V6: tabla `schedule_block` (rango `tstzrange`, motivo, `practice_id`)
   - CRUD `/api/v1/schedule-blocks` (US-012); validación de rango
@@ -352,9 +352,10 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-13, PA-15
 
 ### [C-11] `appointments-core`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 62/62 tareas; verify PASS WITH WARNINGS, W1 y S4 corregidos (`openspec/changes/archive/2026-11-22-c-11-appointments-core/verify-report.md`); completado por Lucas (explore, propose, apply, verify y archive); 566 unit + 364 IT verdes
 - **Scope**:
-  - Migración V8: tabla `appointment` (`starts_at`, `ends_at` con snapshot de duración, estado `CONFIRMED/CANCELLED/COMPLETED/NO_SHOW`, `cancelled_by`, `source`) con `EXCLUDE USING gist` (`tstzrange` `&&`, solo `CONFIRMED`) por `practice_id`
+  - Migración V13: tabla `appointment` (`starts_at`, `ends_at` con snapshot de duración, estado `CONFIRMED/CANCELLED/COMPLETED/NO_SHOW`, `cancelled_by`, `origin` (PUBLIC/INTERNAL) y `overbooking`) con `EXCLUDE USING gist` (`tstzrange` `&&`, `status <> 'CANCELLED'`) por `practice_id`
+  - Desvíos aprobados: lock por consultorio en toda mutación (D3/D18), listado con tope de 93 días, fix de `ScheduleBlockSchemaIT` (ver design.md)
   - Endpoints `/api/v1/appointments`: crear turno manual (US-021, sobreturno explícito RN-AG-04), cancelar, reprogramar, marcar `COMPLETED`/`NO_SHOW` (US-022); validación previa de aplicación + 409 amigable ante violación de exclusión
   - Rechazo de solapamiento con turnos y bloqueos (RN-AG-01/02); consulta de turnos afectados por un bloqueo (cierra C-09)
   - Reprogramación atómica (RN-RS-09) reutilizable por C-15
@@ -393,7 +394,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ### [C-13] `email-notifications-outbox`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Migración V9: tabla `notification` (tipo `CONFIRMATION/REMINDER/CANCELLATION`, estado `PENDING/SENT/FAILED`, `scheduled_for`, `attempts`, `UNIQUE (appointment_id, type)`)
+  - Migración V9: tabla `notification` (tipo `CONFIRMATION/REMINDER/CANCELLATION`, estado `PENDING/SENT/FAILED`, `scheduled_for`, `attempts`, `UNIQUE (appointment_id, type)`) (número a reasignar: debe ser mayor que la última versión aplicada, ≥ V14, al momento del apply; Flyway outOfOrder=false)
   - Outbox simple + scheduler (cada 5-15 min) con `FOR UPDATE SKIP LOCKED`, reintentos con backoff, idempotencia
   - Puerto `EmailSender` con adaptador SMTP; en dev los emails se escriben en el log, sin envío (DD-10); proveedor definitivo TBD (PA-09)
   - Plantillas sin datos clínicos: fecha, hora, prestación, consultorio y link `/turno/{token}` (RN-NO-06); `APP_BASE_URL`
@@ -413,7 +414,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 - **Estado**: `[ ]` pendiente
 - **Scope**:
   - `POST /api/v1/public/bookings` (US-030): rate limit, honeypot, validaciones de formato, anticipación y horizonte, límite de turnos futuros activos por DNI/email/teléfono (RN-RS-08; definitivo en PA-05)
-  - Migración V10: tabla `booking_token` (hash, `appointment_id`, expiración, revocación); token CSPRNG ≥128 bits Base64URL, solo se guarda el hash (RN-RS-04)
+  - Migración V10: tabla `booking_token` (hash, `appointment_id`, expiración, revocación); token CSPRNG ≥128 bits Base64URL, solo se guarda el hash (RN-RS-04) (número a reasignar: debe ser mayor que la última versión aplicada, ≥ V14, al momento del apply; Flyway outOfOrder=false)
   - Transacción única: `FindOrCreatePatientByDni` → `appointment CONFIRMED` → `booking_token` → encolar `CONFIRMATION` y `REMINDER`; 409 ante slot tomado
   - Respuestas genéricas ante honeypot/rate limit; no loguear token completo ni DNI/email
   - Registro de aceptación del aviso de privacidad en la reserva (texto TBD, PA-10)
@@ -485,7 +486,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ### [C-18] `evolutions`
 - **Estado**: `[ ]` pendiente
 - **Scope**:
-  - Migración V13: tabla `evolution_entry` (texto, `appointment_id` opcional, `corrects_entry_id`, autor, `created_at` servidor)
+  - Migración V13: tabla `evolution_entry` (texto, `appointment_id` opcional, `corrects_entry_id`, autor, `created_at` servidor) (número a reasignar: debe ser mayor que la última versión aplicada, ≥ V14, al momento del apply; Flyway outOfOrder=false)
   - Endpoints `.../evolutions` (US-062): orden cronológico, asociación opcional a un turno; corrección vía C-16
   - Tests: alta, asociación a turno, orden, corrección, auditoría
 - **Dependencias**: `C-11, C-16`

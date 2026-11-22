@@ -30,17 +30,27 @@ El sistema SHALL ofrecer un contrato consultable por cualquier módulo que recib
 - **THEN** la primera consulta devuelve una lista vacía y la segunda se rechaza con un error de rango inválido
 
 ### Requirement: Contrato de turnos afectados por un bloqueo
-El sistema SHALL declarar un contrato para obtener los turnos existentes comprendidos en un rango bloqueado, devolviendo solo identificadores de turno e instantes de inicio y fin, sin datos personales ni clínicos. Mientras el módulo de turnos no esté disponible, el contrato SHALL comportarse como sin resultados sin impedir la creación del bloqueo; cuando esté disponible SHALL devolver los turnos afectados sin modificarlos.
+El sistema SHALL ofrecer un contrato para obtener los turnos `CONFIRMED` de un consultorio cuyo rango intersecta un intervalo semiabierto dado, devolviendo solo identificador de turno e instantes de inicio y fin, ordenados por inicio, sin datos personales ni clínicos y sin modificar los turnos.
+
+#### Scenario: Con proveedor de turnos
+- **GIVEN** un turno confirmado de 10:00 a 10:30 dentro de un rango de 09:00 a 12:00 y el proveedor de turnos de C-11 registrado
+- **WHEN** se consultan los turnos afectados por ese rango
+- **THEN** se devuelve el identificador y los instantes del turno, sin modificar su estado
 
 #### Scenario: Sin proveedor de turnos
-- **GIVEN** una instalación sin persistencia de turnos
+- **GIVEN** una composición de la aplicación sin proveedor de turnos registrado
 - **WHEN** se consultan los turnos afectados por un bloqueo
 - **THEN** se obtiene una lista vacía y la operación de bloqueo continúa
 
-#### Scenario: Con proveedor de turnos
-- **GIVEN** un turno confirmado dentro del rango de un bloqueo y un proveedor de turnos disponible
-- **WHEN** se consultan los turnos afectados por ese bloqueo
-- **THEN** se devuelve el identificador y los instantes del turno, sin modificar su estado
+#### Scenario: Sin turnos en el rango
+- **GIVEN** ningún turno confirmado que intersecte el rango consultado
+- **WHEN** se consultan los turnos afectados
+- **THEN** se obtiene una lista vacía y la operación de bloqueo continúa
+
+#### Scenario: Turnos excluidos
+- **GIVEN** un rango de 09:00 a 12:00, un turno cancelado y uno completado dentro, un turno confirmado de 12:00 a 12:30 y un turno confirmado de otro consultorio dentro
+- **WHEN** se consultan los turnos afectados del consultorio
+- **THEN** no se devuelve ninguno de ellos
 
 ### Requirement: Aplicación de la regla de no reservabilidad
 Todo horario ofrecido por la disponibilidad o aceptado por la carga manual de turnos SHALL comprobar previamente los rangos bloqueados del consultorio. Un intervalo que intersecte un bloqueo MUST NOT ofrecerse ni aceptarse; un intervalo adyacente o posterior al fin del bloqueo SHALL considerarse libre respecto de ese bloqueo.
