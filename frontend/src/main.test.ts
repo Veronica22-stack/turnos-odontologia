@@ -385,4 +385,51 @@ describe('bootstrap', () => {
       expect(document.querySelector('a.pro-link')?.hasAttribute('aria-current')).toBe(false);
     });
   });
+
+  describe('/configuracion dentro del layout privado (C-19)', () => {
+    const PRACTICE = JSON.stringify({
+      id: 'p1',
+      name: 'Consultorio Villa Crespo',
+      timezone: 'America/Argentina/Buenos_Aires',
+      contactEmail: null,
+      contactPhone: null,
+      address: null,
+      slotGranularityMin: 15,
+      minNoticeMin: 0,
+      maxAdvanceDays: 30,
+      reminderHoursBefore: 24,
+    });
+
+    it('con sesión muestra las cuatro secciones y marca Configuración en la navegación', async () => {
+      const { ready } = start('/configuracion', (url) => {
+        if (url === '/api/v1/auth/me') {
+          return json(ROMERO);
+        }
+        if (url.startsWith('/api/v1/practice/settings')) {
+          return json(PRACTICE);
+        }
+        if (url.startsWith('/api/v1/working-hours') || url.includes('/services') || url.includes('/schedule-blocks')) {
+          return json('[]');
+        }
+        return new Response(null, { status: 204 });
+      });
+      await ready;
+
+      expect(document.querySelector('nav a[aria-current="page"]')?.textContent).toBe('Configuración');
+      expect(document.querySelector('h1')?.textContent).toBe('Configuración');
+      await vi.waitFor(() => expect(document.querySelectorAll('.settings-card')).toHaveLength(4));
+      expect(calls.some((c) => c.url === '/api/v1/practice/settings')).toBe(true);
+    });
+
+    it('con fallos de carga mantiene el layout privado y muestra errores por sección', async () => {
+      const { ready } = start('/configuracion', (url) =>
+        url === '/api/v1/auth/me' ? json(ROMERO) : json('{"status":503,"code":"SERVICE_UNAVAILABLE"}', 503),
+      );
+      await ready;
+
+      expect(document.querySelector('.private-shell')).not.toBeNull();
+      expect(document.querySelector('nav a[aria-current="page"]')?.textContent).toBe('Configuración');
+      await vi.waitFor(() => expect(document.querySelectorAll('.settings-card [role="alert"]').length).toBeGreaterThanOrEqual(4));
+    });
+  });
 });

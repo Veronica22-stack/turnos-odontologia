@@ -3,6 +3,8 @@ import { h } from '../core/dom/h';
 import type { AuthGateway } from '../features/auth/auth-gateway';
 import { createChangePasswordView } from '../features/auth/change-password-view';
 import { createLoginView } from '../features/auth/login-view';
+import type { SettingsGateway } from '../features/settings/settings-gateway';
+import { createSettingsView } from '../features/settings/settings-view';
 import { redirectIfAuthenticated, requireAuthenticated, requireSession, rootRedirect } from '../router/guards';
 import type { RouteDef, ViewRoute } from '../router/router';
 
@@ -19,12 +21,13 @@ function placeholderView(heading: string, description: string): () => HTMLElemen
 export interface RoutesDeps {
   readonly session: Pick<Session, 'get' | 'ensureLoaded' | 'signIn' | 'endAfterPasswordChange'>;
   readonly gateway: AuthGateway;
+  readonly settings: SettingsGateway;
   readonly navigate: (path: string, options?: { replace?: boolean }) => void;
   readonly onLogout: () => void;
 }
 
 export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: ViewRoute } {
-  const { session, gateway, navigate, onLogout } = deps;
+  const { session, gateway, settings, navigate, onLogout } = deps;
   const getRoutes = (): readonly RouteDef[] => routes;
   const privateGuard = requireSession(session, getRoutes);
   const loginView = createLoginView({ gateway, session, navigate, routes: getRoutes });
@@ -97,7 +100,7 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       layout: 'private',
       title: 'Configuración',
       guard: privateGuard,
-      view: placeholderView('Configuración', 'La configuracion llega en su propio change.'),
+      view: () => createSettingsView({ gateway: settings }),
     },
   ];
 
