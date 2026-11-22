@@ -42,6 +42,8 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(ApiExceptionHandler.class);
+    private static final String SCHEDULE_BLOCK_EXCLUSION = "schedule_block_no_overlap";
+    private static final String SCHEDULE_BLOCK_OVERLAP = "SCHEDULE_BLOCK_OVERLAP";
 
     /** Un campo invalido: nombre del campo y nombre de la restriccion violada, nunca el valor. */
     public record FieldProblem(String field, String code) {
@@ -79,10 +81,24 @@ public class ApiExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problem);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    ResponseEntity<ProblemDetail> handleIllegalArgument(IllegalArgumentException error) {
+        // Rangos invertidos o instantes mal formados: el mensaje puede contener valores del cliente, no se devuelve.
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ProblemDetails.of(HttpStatus.BAD_REQUEST, "INVALID_RANGE"));
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     ResponseEntity<ProblemDetail> handleDataIntegrity(DataIntegrityViolationException error) {
-        // El mensaje de PostgreSQL incluye el valor duplicado (p. ej. un email): no se usa en la respuesta.
-        return ResponseEntity.status(HttpStatus.CONFLICT).body(ProblemDetails.of(HttpStatus.CONFLICT, "CONFLICT"));
+        // El mensaje de PostgreSQL incluye valores; solo se inspecciona el nombre de la restriccion para elegir el code.
+        String code = isScheduleBlockOverlap(error) ? SCHEDULE_BLOCK_OVERLAP : "CONFLICT";
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(ProblemDetails.of(HttpStatus.CONFLICT, code));
+    }
+
+    private static boolean isScheduleBlockOverlap(DataIntegrityViolationException error) {
+        Throwable cause = error.getMostSpecificCause();
+        String message = cause == null ? null : cause.getMessage();
+        return message != null && message.contains(SCHEDULE_BLOCK_EXCLUSION);
     }
 
     @ExceptionHandler(Exception.class)
