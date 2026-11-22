@@ -250,51 +250,33 @@ La migración `V7` SHALL crear la tabla `patient` con clave primaria UUID, `prac
 - **WHEN** el rol de aplicación intenta ejecutar DELETE sobre `patient`
 - **THEN** PostgreSQL rechaza la sentencia por falta de privilegios
 
-### Requirement: Esquema del odontograma creado en V12
-La migración `V12` SHALL crear `odontogram_entry` con historia clínica, código FDI, cara opcional, estado, notas opcionales, entrada corregida opcional, motivo, autor e instante, con claves foráneas a `clinical_record` y `app_user` y restricciones de dominio (FDI, catálogo de estados, catálogo de caras, cara solo en `CARIES`/`FILLED`, notas ≤ 500).
+### Requirement: Esquema de prestaciones creado en V4
+La migración `V4` SHALL crear la tabla `service` con clave primaria UUID, `practice_id` foráneo a `practice`, nombre obligatorio, descripción opcional, duración en minutos con restricción de valor positivo, marca de baja lógica `active` y marca `public_visible`, ambas no nulas, y timestamps de alta y modificación. Las migraciones ya aplicadas MUST NOT modificarse.
 
-#### Scenario: Base migrada hasta V12
-- **GIVEN** una base con las migraciones previas aplicadas
+#### Scenario: Base migrada hasta V4
+- **GIVEN** una base de datos con las migraciones previas aplicadas
 - **WHEN** arranca la aplicación y ejecuta Flyway
-- **THEN** `V12` queda registrada y existe `odontogram_entry` con sus restricciones
+- **THEN** la migración `V4` queda registrada exitosamente y la tabla `service` existe con sus restricciones e índices
 
-#### Scenario: Código FDI inválido
-- **WHEN** se inserta una entrada con `tooth_code` `19` o `56`
-- **THEN** PostgreSQL rechaza la inserción
+#### Scenario: Duración no positiva rechazada por la base
+- **GIVEN** la base migrada hasta `V4`
+- **WHEN** se intenta insertar o actualizar una prestación con duración cero o negativa
+- **THEN** PostgreSQL rechaza la sentencia por violación de restricción check
 
-#### Scenario: Estado fuera del catálogo
-- **WHEN** se inserta una entrada con `condition` `FRACTURED`
-- **THEN** PostgreSQL rechaza la inserción
+#### Scenario: Valores por defecto de las marcas
+- **GIVEN** la base migrada hasta `V4`
+- **WHEN** se inserta una prestación sin indicar las marcas de estado y visibilidad
+- **THEN** la prestación queda activa y no visible públicamente
 
-#### Scenario: Cara en estado de pieza completa
-- **WHEN** se inserta una entrada `MISSING` con `surface` `MESIAL`
-- **THEN** PostgreSQL rechaza la inserción
+### Requirement: Privilegios sin borrado físico en service
+La migración `V4` SHALL revocar `DELETE` y `TRUNCATE` sobre `service` al rol de aplicación, conservando `SELECT`, `INSERT` y `UPDATE`, de modo que la baja de una prestación solo pueda hacerse por cambio de estado.
 
-### Requirement: Integridad de correcciones del odontograma en la base
-`odontogram_entry` SHALL aplicar la misma convención de corrección que las demás tablas de entradas clínicas: referencia y motivo ambos presentes o ambos ausentes, motivo no vacío de hasta 500 caracteres, entrada corregida de la misma historia clínica y a lo sumo una corrección por entrada.
+#### Scenario: Borrado físico rechazado
+- **GIVEN** la base migrada hasta `V4` con una fila en `service`
+- **WHEN** el rol de aplicación intenta ejecutar `DELETE` o `TRUNCATE` sobre `service`
+- **THEN** PostgreSQL rechaza la sentencia por falta de privilegios y la fila permanece intacta
 
-#### Scenario: Corrección cruzada entre historias clínicas
-- **WHEN** se inserta una entrada de odontograma que corrige una entrada de otra historia clínica
-- **THEN** PostgreSQL rechaza la inserción por clave foránea
-
-#### Scenario: Doble corrección
-- **GIVEN** una entrada de odontograma ya corregida
-- **WHEN** se inserta otra entrada que la corrige
-- **THEN** PostgreSQL rechaza la inserción por unicidad
-
-#### Scenario: Motivo sin referencia
-- **WHEN** se inserta una entrada con motivo de corrección pero sin entrada corregida
-- **THEN** PostgreSQL rechaza la inserción
-
-### Requirement: Odontograma sin mutación para el rol de aplicación
-La migración `V12` SHALL revocar `UPDATE`, `DELETE` y `TRUNCATE` sobre `odontogram_entry` al rol de aplicación, conservando `SELECT` e `INSERT`.
-
-#### Scenario: Mutación rechazada
-- **GIVEN** la base migrada hasta `V12` con una entrada de odontograma
-- **WHEN** el rol de aplicación ejecuta `UPDATE`, `DELETE` o `TRUNCATE` sobre `odontogram_entry`
-- **THEN** PostgreSQL rechaza cada sentencia por falta de privilegios
-
-#### Scenario: Alta y lectura permitidas
-- **GIVEN** la base migrada hasta `V12`
-- **WHEN** el rol de aplicación ejecuta `INSERT` y `SELECT` sobre `odontogram_entry`
-- **THEN** ambas sentencias se ejecutan correctamente
+#### Scenario: Alta, lectura y actualización permitidas
+- **GIVEN** la base migrada hasta `V4`
+- **WHEN** el rol de aplicación ejecuta `INSERT`, `SELECT` y `UPDATE` sobre `service`
+- **THEN** las tres sentencias se ejecutan correctamente

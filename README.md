@@ -109,6 +109,16 @@ curl http://localhost:8080/actuator/health      # {"status":"UP"}
 
 Toda otra ruta responde `401` (deny-by-default).
 
+#### Nota operativa: migración V4 en bases locales ya migradas
+
+`V4__service.sql` (catálogo de prestaciones, C-07) está registrado por delante de `V5`/`V7`/`V11`. En una base local que ya los
+aplicó, Flyway falla con "Detected resolved migration not applied to database: 4" porque `V4` se ve como pendiente anterior a la
+última migración aplicada. En desarrollo local (los tests usan una base nueva y nunca necesitan esto), una solución única es:
+
+- recrear la base local con `infra/postgres/init/01-roles.sql` (los datos locales no son productivos), o
+- correr una vez con `spring.flyway.out-of-order=true` en el perfil local **sin commitear esa propiedad** (no se habilita de
+  forma permanente en `application.yml`).
+
 #### Primer arranque: cuenta del odontólogo
 
 En el **primer** arranque contra una base nueva, el backend crea la cuenta del odontólogo (rol `DENTIST`). Para eso necesita

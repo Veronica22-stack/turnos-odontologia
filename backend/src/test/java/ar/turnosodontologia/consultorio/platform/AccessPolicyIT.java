@@ -57,6 +57,20 @@ class AccessPolicyIT extends AbstractIntegrationTest {
     }
 
     @Test
+    void protectedEndpointOfServicesWithoutSessionResponds401() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/v1/services")).andReturn();
+
+        assertDenied(result, 401);
+    }
+
+    @Test
+    void publicEndpointOfServicesWithoutSessionResponds200() throws Exception {
+        MvcResult result = mockMvc.perform(get("/api/v1/public/services")).andReturn();
+
+        assertThat(result.getResponse().getStatus()).isEqualTo(200);
+    }
+
+    @Test
     void elArranqueNoGeneraNiLoguaUnaContrasenaDeSeguridad(CapturedOutput output) {
         try (ConfigurableApplicationContext started = new SpringApplicationBuilder(ConsultorioApplication.class)
                 .properties(connectionProperties())
