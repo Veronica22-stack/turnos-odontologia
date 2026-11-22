@@ -1,7 +1,7 @@
 # Mockups — C-06 `login-ui`
 
 Design system: Revision 1 (aprobada 2026-11-16) · Política: `system-and-mockups`
-Approval: pending (aprobador: Lucas; revisión 2)
+Approval: approved (2026-11-21, by Lucas; revisión 2)
 Mockup revision: 2
 Preview: rendered (2026-11-21, revisión 2, `previews/`)
 
