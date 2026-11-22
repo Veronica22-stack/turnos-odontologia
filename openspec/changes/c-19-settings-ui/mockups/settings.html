@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Configuración · {{brand}} — mockup C-19</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../../design-system/tokens.css">
+  <link rel="stylesheet" href="settings.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-agenda" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 13h3v3H8z"/></symbol>
+    <symbol id="i-pacientes" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M16 3.5a4 4 0 0 1 0 7M19 14a5 5 0 0 1 3 5v2"/></symbol>
+    <symbol id="i-config" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-salir" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v5M10 6.2v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 20 20"><path d="M10 2.8l8 14H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.8v5M10 13.8v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 10.3l2.4 2.4 4.6-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.4-3.5M13 2.5V5h-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-edit" viewBox="0 0 16 16"><path d="M11.2 2.6l2.2 2.2-8 8-3 .8.8-3zM10 3.8l2.2 2.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-trash" viewBox="0 0 16 16"><path d="M3 4.5h10M6 4.5V3h4v1.5M4.5 4.5l.6 9h5.8l.6-9M6.5 7v4M9.5 7v4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-clock" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M8 4.5V8l2.3 1.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></symbol>
+    <symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 10h17M8 3v4M16 3v4" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></symbol>
+    <symbol id="i-copy" viewBox="0 0 16 16"><rect x="5.5" y="5.5" width="8" height="8" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 5.5V4A1.5 1.5 0 009 2.5H4A1.5 1.5 0 002.5 4v5A1.5 1.5 0 004 10.5h1.5" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+  </svg>
+
+  <!-- Barra exclusiva del mockup: permite elegir y capturar cada estado -->
+  <div class="mock-bar" role="region" aria-label="Selector de estado del mockup">
+    <span class="mock-bar-title">Mockup C-19 · <strong id="state-label">Datos cargados</strong></span>
+    <label class="sr-only" for="state-select">Estado del mockup</label>
+    <select class="input mock-select" id="state-select">
+      <option value="loaded">Datos cargados (4 secciones)</option>
+      <option value="empty-hours">Vacío: horarios</option>
+      <option value="empty-services">Vacío: prestaciones</option>
+      <option value="empty-blocks">Vacío: bloqueos</option>
+      <option value="empty-all">Vacío: horarios + prestaciones + bloqueos</option>
+      <option value="error-section">Error de carga por sección (Reintentar)</option>
+      <option value="hours-overlap">Validación: tramos superpuestos</option>
+      <option value="hours-inverted">Validación: tramo invertido</option>
+      <option value="service-duration">Prestación: duración no múltiplo</option>
+      <option value="service-deactivate">Prestación: confirmar baja</option>
+      <option value="service-reactivate">Prestación: reactivación</option>
+      <option value="block-affected">Bloqueo con turnos afectados</option>
+      <option value="block-overlap-409">Bloqueo: conflicto 409</option>
+      <option value="delete-confirm">Confirmación de eliminación</option>
+      <option value="save-success">Guardado con éxito</option>
+      <option value="session-expired">Sesión vencida</option>
+      <option value="clipboard-ok">Portapapeles disponible</option>
+      <option value="clipboard-fallback">Fallback del link público</option>
+    </select>
+    <span class="mock-bar-hint">También: <code>settings.html?state=loaded</code></span>
+  </div>
+
+  <div class="private-shell">
+    <a class="skip-link" href="#main">Saltar al contenido</a>
+
+    <header class="app-header" role="banner">
+      <a class="brand-link" href="#main" aria-label="La Muela — ir a la agenda" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <div class="user-slot">
+        <span class="avatar" aria-hidden="true">DR</span>
+        <span class="user-name">Dra. Romero <span class="tbd">(TBD)</span></span>
+        <span class="sr-only">Sesión iniciada como Dra. Romero</span>
+        <button class="btn btn-ghost btn-logout" type="button" aria-label="Salir">
+          <svg aria-hidden="true"><use href="#i-salir"/></svg><span class="label">Salir</span>
+        </button>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Principal">
+      <ul>
+        <li><a class="nav-link" href="#main"><svg aria-hidden="true"><use href="#i-agenda"/></svg><span>Agenda</span></a></li>
+        <li><a class="nav-link" href="#main"><svg aria-hidden="true"><use href="#i-pacientes"/></svg><span>Pacientes</span></a></li>
+        <li><a class="nav-link" href="#main" aria-current="page"><svg aria-hidden="true"><use href="#i-config"/></svg><span>Configuración</span></a></li>
+      </ul>
+    </nav>
+
+    <main id="main" class="private-main" tabindex="-1">
+      <div class="page-head">
+        <h1 tabindex="-1">Configuración</h1>
+        <p class="lead">Datos del consultorio, horarios de atención, prestaciones y bloqueos. Cada sección se guarda por separado.</p>
+      </div>
+
+      <div class="settings-layout" id="settings-layout">
+        <aside class="section-index" aria-label="Secciones de esta página">
+          <h2>En esta página</h2>
+          <ol>
+            <li><a href="#practice" aria-current="true">Consultorio y reserva</a></li>
+            <li><a href="#hours">Horarios de atención</a></li>
+            <li><a href="#services">Prestaciones</a></li>
+            <li><a href="#blocks">Bloqueos</a></li>
+          </ol>
+        </aside>
+
+        <div class="settings-content">
+          <!-- ============ 1. CONSULTORIO ============ -->
+          <section class="settings-card" id="practice" aria-labelledby="h-practice">
+            <div class="section-head">
+              <div>
+                <h2 id="h-practice">Consultorio y parámetros de reserva</h2>
+                <p class="section-desc">Datos de contacto y reglas de la reserva online. La zona horaria se muestra como dato del consultorio.</p>
+              </div>
+              <span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-info"/></svg>1 de 4 secciones</span>
+            </div>
+
+            <div data-practice-notice="saved" hidden>
+              <div class="alert alert-success" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><div><strong>Cambios guardados.</strong>Los valores del consultorio se actualizaron. Las demás secciones conservaron sus borradores.</div></div>
+            </div>
+
+            <form class="form-grid" novalidate>
+              <div class="field span-2">
+                <label for="practice-name">Nombre del consultorio <span class="req" aria-hidden="true">*</span></label>
+                <input class="input" id="practice-name" name="name" value="Consultorio Villa Crespo">
+                <span class="help">Nombre que ven los pacientes al reservar. <span class="tbd">(TBD)</span> texto definitivo.</span>
+              </div>
+              <div class="field">
+                <label for="practice-tz">Zona horaria</label>
+                <input class="input" id="practice-tz" value="America/Argentina/Buenos_Aires" disabled aria-describedby="practice-tz-help">
+                <span class="help" id="practice-tz-help">Fija en la instalación. Edición <span class="tbd">(TBD)</span> — D7.</span>
+              </div>
+              <div class="field">
+                <label for="practice-email">Email de contacto</label>
+                <input class="input" id="practice-email" type="email" value="recepcion@villacrespo.example">
+                <span class="help">Se usa en las confirmaciones de turno.</span>
+              </div>
+              <div class="field">
+                <label for="practice-phone">Teléfono</label>
+                <input class="input" id="practice-phone" type="tel" value="+54 11 4471 0916">
+              </div>
+              <div class="field">
+                <label for="practice-address">Dirección</label>
+                <input class="input" id="practice-address" value="Av. Corrientes 3954, Piso 2">
+              </div>
+              <div class="field span-2">
+                <label for="practice-granularity">Granularidad de turnos</label>
+                <select class="select" id="practice-granularity" aria-describedby="practice-granularity-help">
+                  <option>10</option><option selected>15</option><option>20</option><option>30</option><option>60</option>
+                </select>
+                <span class="help" id="practice-granularity-help">Valores permitidos: 10, 15, 20, 30 o 60 minutos.</span>
+              </div>
+              <div class="field">
+                <label for="practice-notice">Anticipación mínima (minutos)</label>
+                <input class="input num" id="practice-notice" type="number" min="0" value="120" aria-describedby="practice-notice-help">
+                <span class="help" id="practice-notice-help">Mínimo 0.</span>
+              </div>
+              <div class="field">
+                <label for="practice-horizon">Horizonte máximo (días)</label>
+                <input class="input num" id="practice-horizon" type="number" min="1" max="365" value="30" aria-describedby="practice-horizon-help">
+                <span class="help" id="practice-horizon-help">Entre 1 y 365 días.</span>
+              </div>
+              <div class="field">
+                <label for="practice-reminder">Recordatorio (horas antes)</label>
+                <input class="input num" id="practice-reminder" type="number" min="1" max="168" value="24" aria-describedby="practice-reminder-help">
+                <span class="help" id="practice-reminder-help">Entre 1 y 168 horas.</span>
+              </div>
+              <div class="field span-2">
+                <div class="form-actions">
+                  <button class="btn btn-primary" type="button">Guardar datos del consultorio</button>
+                </div>
+              </div>
+            </form>
+
+            <div class="link-box" aria-labelledby="h-link">
+              <div class="subhead" id="h-link"><span>Link público de reserva</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-lock"/></svg>Sin cuenta</span></div>
+              <p class="help">Se compone con el origen de esta aplicación: <code>/reservar</code>. Dominio definitivo <span class="tbd">(TBD)</span>.</p>
+              <div class="form-actions">
+                <button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-copy"/></svg>Copiar link público de reserva</button>
+              </div>
+              <div data-practice-notice="clipboard" hidden>
+                <div class="alert alert-success" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><div><strong>Link copiado.</strong>Ya podés pegarlo donde quieras compartirlo.</div></div>
+              </div>
+              <div data-practice-notice="fallback" hidden>
+                <div class="alert alert-info" role="status"><svg aria-hidden="true"><use href="#i-info"/></svg><div><strong>No pudimos copiar automáticamente.</strong>Seleccioná y copiá el enlace desde el campo.</div></div>
+                <label class="sr-only" for="public-link">Enlace público de reserva</label>
+                <input class="input copy-readonly" id="public-link" readonly value="https://consultorio.ejemplo/reservar">
+              </div>
+            </div>
+          </section>
+
+          <!-- ============ 2. HORARIOS ============ -->
+          <section class="settings-card" id="hours" aria-labelledby="h-hours">
+            <div class="section-head">
+              <div>
+                <h2 id="h-hours">Horarios de atención</h2>
+                <p class="section-desc">Varios tramos por día, en hora del consultorio (Buenos Aires).</p>
+              </div>
+              <button class="btn btn-sm btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar tramo</button>
+            </div>
+
+            <div class="variant" data-section="hours" data-variant="loaded">
+              <div data-hours-saved hidden>
+                <div class="alert alert-success" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><div><strong>Horarios guardados.</strong>Los tramos se actualizaron sin tocar los borradores de otras secciones.</div></div>
+              </div>
+              <div class="day-block">
+                <div class="day-title"><span>Lunes</span><span class="muted num">2 tramos</span></div>
+                <div class="range-row">
+                  <div class="field"><label for="h-lun-1">Inicio</label><input class="input num" id="h-lun-1" type="time" value="09:00"></div>
+                  <div class="field"><label for="h-lun-1-f">Fin</label><input class="input num" id="h-lun-1-f" type="time" value="13:00"></div>
+                  <div class="range-actions"><button class="btn btn-sm btn-ghost" type="button">Quitar</button></div>
+                </div>
+                <div class="range-row">
+                  <div class="field"><label for="h-lun-2">Inicio</label><input class="input num" id="h-lun-2" type="time" value="14:00"></div>
+                  <div class="field"><label for="h-lun-2-f">Fin</label><input class="input num" id="h-lun-2-f" type="time" value="18:00"></div>
+                  <div class="range-actions"><button class="btn btn-sm btn-ghost" type="button">Quitar</button></div>
+                </div>
+              </div>
+              <div class="day-block">
+                <div class="day-title"><span>Martes a viernes</span><span class="muted num">1 tramo</span></div>
+                <div class="range-row">
+                  <div class="field"><label for="h-lv">Inicio</label><input class="input num" id="h-lv" type="time" value="09:00"></div>
+                  <div class="field"><label for="h-lv-f">Fin</label><input class="input num" id="h-lv-f" type="time" value="18:00"></div>
+                  <div class="range-actions"><button class="btn btn-sm btn-ghost" type="button">Quitar</button></div>
+                </div>
+              </div>
+              <div class="day-block">
+                <div class="day-title"><span>Sábado</span><span class="muted num">1 tramo</span></div>
+                <div class="range-row">
+                  <div class="field"><label for="h-sab">Inicio</label><input class="input num" id="h-sab" type="time" value="09:00"></div>
+                  <div class="field"><label for="h-sab-f">Fin</label><input class="input num" id="h-sab-f" type="time" value="12:00"></div>
+                  <div class="range-actions"><button class="btn btn-sm btn-ghost" type="button">Quitar</button></div>
+                </div>
+              </div>
+              <div class="day-block">
+                <div class="day-title"><span>Domingo</span><span class="muted">Sin tramos</span></div>
+                <button class="btn btn-sm btn-ghost" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar tramo</button>
+              </div>
+              <div class="alert alert-warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>Los turnos confirmados no se cancelan automáticamente.</strong>Si cambiás los horarios, revisalos en la agenda.</div></div>
+              <div class="form-actions"><button class="btn btn-primary" type="button">Guardar horarios</button></div>
+            </div>
+
+            <div class="variant" data-section="hours" data-variant="empty" hidden>
+              <div class="empty">
+                <span class="ico"><svg aria-hidden="true"><use href="#i-cal"/></svg></span>
+                <h3>Todavía no hay horarios de atención</h3>
+                <p>Agregá tramos por día para habilitar los turnos en la reserva online.</p>
+                <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Agregar tramo</button>
+              </div>
+            </div>
+
+            <div class="variant" data-section="hours" data-variant="overlap" hidden>
+              <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se guardó: hay tramos superpuestos.</strong>Corregí los horarios marcados antes de enviar.</div></div>
+              <div class="day-block">
+                <div class="day-title"><span>Lunes</span><span class="muted num">2 tramos</span></div>
+                <div class="range-row">
+                  <div class="field"><label for="ov-1">Inicio</label><input class="input num" id="ov-1" type="time" value="09:00" aria-invalid="true" aria-describedby="ov-1-err"></div>
+                  <div class="field"><label for="ov-1-f">Fin</label><input class="input num" id="ov-1-f" type="time" value="13:00" aria-invalid="true" aria-describedby="ov-1-err"></div>
+                  <div class="range-actions"><button class="btn btn-sm btn-ghost" type="button">Quitar</button></div>
+                  <span class="error-msg" id="ov-1-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>Este tramo se superpone con otro del mismo día.</span>
+                </div>
+                <div class="range-row">
+                  <div class="field"><label for="ov-2">Inicio</label><input class="input num" id="ov-2" type="time" value="12:30" aria-invalid="true" aria-describedby="ov-2-err"></div>
+                  <div class="field"><label for="ov-2-f">Fin</label><input class="input num" id="ov-2-f" type="time" value="18:00" aria-invalid="true" aria-describedby="ov-2-err"></div>
+                  <div class="range-actions"><button class="btn btn-sm btn-ghost" type="button">Quitar</button></div>
+                  <span class="error-msg" id="ov-2-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>Este tramo se superpone con 09:00 – 13:00.</span>
+                </div>
+                <p class="help">Tramos adyacentes (por ejemplo 09:00 – 13:00 y 13:00 – 18:00) sí son válidos.</p>
+              </div>
+              <div class="form-actions"><button class="btn btn-primary" type="button">Guardar horarios</button></div>
+            </div>
+
+            <div class="variant" data-section="hours" data-variant="inverted" hidden>
+              <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se guardó: revisá el tramo marcado.</strong>La hora de fin debe ser posterior a la de inicio.</div></div>
+              <div class="day-block">
+                <div class="day-title"><span>Lunes</span><span class="muted num">1 tramo</span></div>
+                <div class="range-row">
+                  <div class="field"><label for="inv-1">Inicio</label><input class="input num" id="inv-1" type="time" value="13:00" aria-invalid="true" aria-describedby="inv-err"></div>
+                  <div class="field"><label for="inv-1-f">Fin</label><input class="input num" id="inv-1-f" type="time" value="09:00" aria-invalid="true" aria-describedby="inv-err"></div>
+                  <div class="range-actions"><button class="btn btn-sm btn-ghost" type="button">Quitar</button></div>
+                  <span class="error-msg" id="inv-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>La hora de fin debe ser posterior a la de inicio.</span>
+                </div>
+              </div>
+              <div class="form-actions"><button class="btn btn-primary" type="button">Guardar horarios</button></div>
+            </div>
+          </section>
+
+          <!-- ============ 3. PRESTACIONES ============ -->
+          <section class="settings-card" id="services" aria-labelledby="h-services">
+            <div class="section-head">
+              <div>
+                <h2 id="h-services">Prestaciones</h2>
+                <p class="section-desc">Se listan activas e inactivas. La baja es lógica: los turnos ya agendados no se modifican.</p>
+              </div>
+              <button class="btn btn-sm btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Nueva prestación</button>
+            </div>
+
+            <div class="variant" data-section="services" data-variant="loaded">
+              <div class="only-mobile">
+                <ul class="data-list">
+                  <li><div class="row-title">Consulta y diagnóstico <span class="badge badge-active"><svg aria-hidden="true"><use href="#i-check"/></svg>Activa</span></div><div class="row-meta"><span>Duración: 30 min</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible en /reservar</span></div><div class="row-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Dar de baja</button></div></li>
+                  <li><div class="row-title">Limpieza <span class="badge badge-active"><svg aria-hidden="true"><use href="#i-check"/></svg>Activa</span></div><div class="row-meta"><span>Duración: 45 min</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible en /reservar</span></div><div class="row-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Dar de baja</button></div></li>
+                  <li><div class="row-title">Arreglo de caries <span class="badge badge-inactive"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Inactiva</span></span></div><div class="row-meta"><span>Duración: 60 min</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible en /reservar</span></div><div class="row-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-secondary" type="button">Reactivar</button></div></li>
+                </ul>
+              </div>
+              <div class="only-desktop">
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Prestación</th><th>Duración</th><th>Estado</th><th>Visibilidad pública</th><th>Acciones</th></tr></thead>
+                    <tbody>
+                      <tr><td><strong>Consulta y diagnóstico</strong></td><td class="num">30 min</td><td><span class="badge badge-active"><svg aria-hidden="true"><use href="#i-check"/></svg>Activa</span></td><td><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible</span></td><td><div class="cell-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Dar de baja</button></div></td></tr>
+                      <tr><td><strong>Limpieza</strong></td><td class="num">45 min</td><td><span class="badge badge-active"><svg aria-hidden="true"><use href="#i-check"/></svg>Activa</span></td><td><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible</span></td><td><div class="cell-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Dar de baja</button></div></td></tr>
+                      <tr><td><strong>Arreglo de caries</strong></td><td class="num">60 min</td><td><span class="badge badge-inactive"><svg aria-hidden="true"><use href="#i-lock"/></svg><span>Inactiva</span></span></td><td><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible</span></td><td><div class="cell-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-secondary" type="button">Reactivar</button></div></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <p class="help">La visibilidad pública puede tardar hasta 60 s en reflejarse en <code>/reservar</code> (caché del catálogo público).</p>
+            </div>
+
+            <div class="variant" data-section="services" data-variant="empty" hidden>
+              <div class="empty">
+                <span class="ico"><svg aria-hidden="true"><use href="#i-plus"/></svg></span>
+                <h3>Todavía no cargaste prestaciones</h3>
+                <p>Creá la primera para publicarla en la reserva online. Podés darla de baja después sin borrarla.</p>
+                <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Nueva prestación</button>
+              </div>
+            </div>
+
+            <div class="variant" data-section="services" data-variant="error" hidden>
+              <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se pudo cargar las prestaciones.</strong>Revisá tu conexión e intentá de nuevo. Las otras secciones siguen disponibles.</div><div class="alert-actions"><button class="btn btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-refresh"/></svg>Reintentar</button></div></div>
+            </div>
+
+            <div class="variant" data-section="services" data-variant="duration" hidden>
+              <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se guardó la prestación.</strong>La duración debe ser múltiplo de la granularidad vigente (15 min).</div></div>
+              <form class="form-grid" novalidate>
+                <div class="field span-2">
+                  <label for="svc-name">Nombre <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input" id="svc-name" value="Blanqueamiento">
+                </div>
+                <div class="field span-2">
+                  <label for="svc-desc">Descripción <span class="opt">(opcional)</span></label>
+                  <textarea class="textarea" id="svc-desc">Sesión de blanqueamiento ambulatorio.</textarea>
+                </div>
+                <div class="field">
+                  <label for="svc-duration">Duración (minutos) <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input num" id="svc-duration" type="number" value="20" aria-invalid="true" aria-describedby="svc-duration-err">
+                  <span class="error-msg" id="svc-duration-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>Debe ser un múltiplo de 15 minutos (15, 30, 45, 60…).</span>
+                </div>
+                <div class="field">
+                  <label class="check"><input type="checkbox" checked><span>Visible en la reserva pública</span></label>
+                  <span class="help">Una prestación inactiva nunca se publica, aunque quede marcada como visible.</span>
+                </div>
+                <div class="form-actions"><button class="btn btn-primary" type="button">Guardar prestación</button><button class="btn btn-secondary" type="button">Cancelar</button></div>
+              </form>
+              <p class="help">Granularidad vigente obtenida de <code>GET /practice/settings</code>: 15 min. Si cambiara en el servidor, se mostrará el error 422 correspondiente sin autocorregir el valor.</p>
+            </div>
+
+            <div class="variant" data-section="services" data-variant="reactivated" hidden>
+              <div class="alert alert-success" role="status"><svg aria-hidden="true"><use href="#i-check-circle"/></svg><div><strong>Prestación reactivada.</strong>Arreglo de caries volvió a estar activa y conservó su visibilidad pública.</div></div>
+              <ul class="data-list">
+                <li><div class="row-title">Consulta y diagnóstico <span class="badge badge-active"><svg aria-hidden="true"><use href="#i-check"/></svg>Activa</span></div><div class="row-meta"><span>Duración: 30 min</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible en /reservar</span></div></li>
+                <li><div class="row-title">Arreglo de caries <span class="badge badge-active"><svg aria-hidden="true"><use href="#i-check"/></svg>Activa</span></div><div class="row-meta"><span>Duración: 60 min</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Visible en /reservar</span></div><div class="row-actions"><button class="btn btn-sm btn-danger-outline" type="button">Dar de baja</button></div></li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- ============ 4. BLOQUEOS ============ -->
+          <section class="settings-card" id="blocks" aria-labelledby="h-blocks">
+            <div class="section-head">
+              <div>
+                <h2 id="h-blocks">Bloqueos de agenda</h2>
+                <p class="section-desc">Rangos en hora del consultorio (Buenos Aires). No ingreses datos de pacientes en el motivo.</p>
+              </div>
+              <button class="btn btn-sm btn-secondary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Nuevo bloqueo</button>
+            </div>
+
+            <div class="variant" data-section="blocks" data-variant="loaded">
+              <div data-block-draft hidden>
+                <span class="badge badge-draft"><svg aria-hidden="true"><use href="#i-warn"/></svg>Cambios sin guardar en esta sección</span>
+              </div>
+              <div class="only-mobile">
+                <ul class="data-list">
+                  <li><div class="row-title"><svg aria-hidden="true"><use href="#i-lock"/></svg>mié 18/03/2026 · 09:00 – 11:00</div><div class="row-meta"><span>Motivo: Mantenimiento</span><span>0 turnos afectados</span></div><div class="row-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Eliminar</button></div></li>
+                  <li><div class="row-title"><svg aria-hidden="true"><use href="#i-lock"/></svg>vie 20/03/2026 · 14:00 – 15:30</div><div class="row-meta"><span>Motivo: Capacitación del equipo</span><span>0 turnos afectados</span></div><div class="row-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Eliminar</button></div></li>
+                </ul>
+              </div>
+              <div class="only-desktop">
+                <div class="table-wrap">
+                  <table class="data">
+                    <thead><tr><th>Rango (hora del consultorio)</th><th>Motivo</th><th>Turnos afectados</th><th>Acciones</th></tr></thead>
+                    <tbody>
+                      <tr><td><strong>mié 18/03/2026 · 09:00 – 11:00</strong></td><td>Mantenimiento</td><td class="num">0</td><td><div class="cell-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Eliminar</button></div></td></tr>
+                      <tr><td><strong>vie 20/03/2026 · 14:00 – 15:30</strong></td><td>Capacitación del equipo</td><td class="num">0</td><td><div class="cell-actions"><button class="btn btn-sm btn-secondary" type="button">Editar</button><button class="btn btn-sm btn-danger-outline" type="button">Eliminar</button></div></td></tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <form class="form-grid" novalidate>
+                <div class="field">
+                  <label for="block-start">Inicio <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input num" id="block-start" type="datetime-local" value="2026-03-23T09:00">
+                </div>
+                <div class="field">
+                  <label for="block-end">Fin <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input num" id="block-end" type="datetime-local" value="2026-03-23T11:00">
+                </div>
+                <div class="field span-2">
+                  <label for="block-reason">Motivo <span class="req" aria-hidden="true">*</span></label>
+                  <textarea class="textarea" id="block-reason" placeholder="Ej.: Mantenimiento del consultorio"></textarea>
+                  <span class="help">No incluyas nombres ni datos de pacientes. De 1 a 500 caracteres.</span>
+                </div>
+                <div class="form-actions"><button class="btn btn-primary" type="button">Guardar bloqueo</button></div>
+              </form>
+            </div>
+
+            <div class="variant" data-section="blocks" data-variant="empty" hidden>
+              <div class="empty">
+                <span class="ico"><svg aria-hidden="true"><use href="#i-lock"/></svg></span>
+                <h3>Todavía no hay bloqueos</h3>
+                <p>Bloqueá un rango cuando no quieras ofrecer turnos (vacaciones, mantenimiento, capacitación).</p>
+                <button class="btn btn-primary" type="button"><svg aria-hidden="true"><use href="#i-plus"/></svg>Nuevo bloqueo</button>
+              </div>
+            </div>
+
+            <div class="variant" data-section="blocks" data-variant="affected" hidden>
+              <div class="alert alert-warning" role="status"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>Bloqueo guardado: 2 turnos quedan dentro del rango.</strong>No se cancelaron ni se modificaron. Revisalos en la agenda antes del 23/03.</div></div>
+              <div class="link-box">
+                <p class="subhead">Turnos afectados · lun 23/03/2026, 09:00 – 11:00</p>
+                <ul class="data-list">
+                  <li><div class="row-meta"><span class="num">09:30 – 10:00</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></div></li>
+                  <li><div class="row-meta"><span class="num">10:15 – 10:45</span><span class="badge badge-visible"><svg aria-hidden="true"><use href="#i-check"/></svg>Confirmado</span></div></li>
+                </ul>
+                <p class="help">Los identificadores de turno son internos y no se muestran. Sin la integración de turnos (C-11) el aviso dice «No hay turnos confirmados dentro del rango según la información disponible».</p>
+              </div>
+              <ul class="data-list">
+                <li><div class="row-title"><svg aria-hidden="true"><use href="#i-lock"/></svg>lun 23/03/2026 · 09:00 – 11:00</div><div class="row-meta"><span>Motivo: Mantenimiento</span><span class="num">2 turnos afectados</span></div></li>
+              </ul>
+            </div>
+
+            <div class="variant" data-section="blocks" data-variant="conflict" hidden>
+              <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>Conflicto: el rango se superpone con un bloqueo existente.</strong>Elegí otro horario. No se creó el bloqueo.</div></div>
+              <form class="form-grid" novalidate>
+                <div class="field">
+                  <label for="cf-start">Inicio <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input num" id="cf-start" type="datetime-local" value="2026-03-18T10:00" aria-invalid="true" aria-describedby="cf-err">
+                </div>
+                <div class="field">
+                  <label for="cf-end">Fin <span class="req" aria-hidden="true">*</span></label>
+                  <input class="input num" id="cf-end" type="datetime-local" value="2026-03-18T12:00" aria-invalid="true" aria-describedby="cf-err">
+                </div>
+                <span class="error-msg" id="cf-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>El rango se solapa con «mié 18/03/2026 · 09:00 – 11:00».</span>
+                <div class="field span-2">
+                  <label for="cf-reason">Motivo <span class="req" aria-hidden="true">*</span></label>
+                  <textarea class="textarea" id="cf-reason">Reparación de instrumental</textarea>
+                </div>
+                <div class="form-actions"><button class="btn btn-primary" type="button">Guardar bloqueo</button><button class="btn btn-secondary" type="button">Cancelar</button></div>
+              </form>
+              <p class="help">Conflicto del servidor: <code>409 SCHEDULE_BLOCK_OVERLAP</code>. El formulario conserva los valores cargados.</p>
+            </div>
+          </section>
+        </div>
+      </div>
+
+      <!-- Sesión vencida: sin datos parciales, deriva al login de C-06 -->
+      <div class="session-panel" data-session-panel hidden>
+        <span class="ico"><svg aria-hidden="true"><use href="#i-lock"/></svg></span>
+        <h2>Sesión vencida</h2>
+        <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>Tu sesión venció.</strong>No se mostraron datos parciales de la configuración. Ingresá de nuevo para continuar.</div></div>
+        <p>Un 401 en cualquier sección delega en el manejo de sesión de la SPA y lleva a <code>/login?next=%2Fconfiguracion</code> (pantalla cubierta por el mockup de C-06).</p>
+        <a class="btn btn-primary" href="#main">Ir a ingresar <span class="tbd">(TBD · destino)</span></a>
+      </div>
+
+      <p class="mock-note">
+        <span>Mockup C-19 · design system Revision 1 aprobada · ruta privada <code>/configuracion</code> con «Configuración» como sección actual.</span>
+        <span>Valores de ejemplo y dominio, nombre profesional y dirección definitivos: <span class="tbd">(TBD)</span>. Logo <span class="tbd">(logo provisional)</span>. Zona horaria editable: <span class="tbd">(TBD · D7)</span>.</span>
+        <span>Las alertas usan ícono + texto (nunca solo color). Los textos de la API se muestran literales, sin <code>innerHTML</code>.</span>
+      </p>
+    </main>
+  </div>
+
+  <!-- Diálogos de confirmación (representación visual del <dialog> nativo de D8) -->
+  <div class="dialog-layer" data-dialog="service-deactivate" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-service-title" aria-describedby="dialog-service-desc">
+      <div class="dialog-head"><h3 id="dialog-service-title">¿Dar de baja «Limpieza»?</h3></div>
+      <div class="dialog-body">
+        <p id="dialog-service-desc">La prestación quedará inactiva y no aceptará nuevas reservas. Los turnos ya agendados no se modifican. Podés reactivarla cuando quieras y conservará su visibilidad pública.</p>
+      </div>
+      <div class="dialog-foot"><button class="btn btn-secondary" type="button">Cancelar</button><button class="btn btn-danger" type="button">Dar de baja</button></div>
+    </div>
+  </div>
+
+  <div class="dialog-layer" data-dialog="block-delete" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="dialog-block-title" aria-describedby="dialog-block-desc">
+      <div class="dialog-head"><h3 id="dialog-block-title">¿Eliminar este bloqueo?</h3></div>
+      <div class="dialog-body">
+        <p id="dialog-block-desc"><strong>mié 18/03/2026 · 09:00 – 11:00</strong> · Mantenimiento.</p>
+        <p>El rango deja de estar bloqueado en la agenda. Esta acción no cancela ni modifica turnos.</p>
+      </div>
+      <div class="dialog-foot"><button class="btn btn-secondary" type="button">Cancelar</button><button class="btn btn-danger" type="button">Eliminar bloqueo</button></div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      "use strict";
+      var states = {
+        loaded: { label: "Datos cargados (4 secciones)" },
+        "empty-hours": { label: "Vacío: horarios", hours: "empty" },
+        "empty-services": { label: "Vacío: prestaciones", services: "empty" },
+        "empty-blocks": { label: "Vacío: bloqueos", blocks: "empty" },
+        "empty-all": { label: "Vacío: horarios + prestaciones + bloqueos", hours: "empty", services: "empty", blocks: "empty" },
+        "error-section": { label: "Error de carga por sección (Reintentar)", services: "error" },
+        "hours-overlap": { label: "Validación: tramos superpuestos", hours: "overlap" },
+        "hours-inverted": { label: "Validación: tramo invertido", hours: "inverted" },
+        "service-duration": { label: "Prestación: duración no múltiplo", services: "duration" },
+        "service-deactivate": { label: "Prestación: confirmar baja", dialog: "service-deactivate" },
+        "service-reactivate": { label: "Prestación: reactivación", services: "reactivated" },
+        "block-affected": { label: "Bloqueo con turnos afectados", blocks: "affected" },
+        "block-overlap-409": { label: "Bloqueo: conflicto 409", blocks: "conflict" },
+        "delete-confirm": { label: "Confirmación de eliminación", dialog: "block-delete" },
+        "save-success": { label: "Guardado con éxito", practiceNotice: "saved", hoursSaved: true, blockDraft: true },
+        "session-expired": { label: "Sesión vencida", session: true },
+        "clipboard-ok": { label: "Portapapeles disponible", practiceNotice: "clipboard" },
+        "clipboard-fallback": { label: "Fallback del link público", practiceNotice: "fallback" }
+      };
+
+      var params = new URLSearchParams(window.location.search);
+      var key = params.get("state") || "loaded";
+      if (!Object.prototype.hasOwnProperty.call(states, key)) { key = "loaded"; }
+      var config = states[key];
+
+      document.getElementById("state-label").textContent = config.label;
+      document.getElementById("state-select").value = key;
+
+      ["hours", "services", "blocks"].forEach(function (section) {
+        var wanted = config[section] || "loaded";
+        document.querySelectorAll('.variant[data-section="' + section + '"]').forEach(function (node) {
+          node.hidden = node.getAttribute("data-variant") !== wanted;
+        });
+      });
+
+      document.querySelectorAll("[data-practice-notice]").forEach(function (node) {
+        node.hidden = node.getAttribute("data-practice-notice") !== config.practiceNotice;
+      });
+      document.querySelector("[data-hours-saved]").hidden = config.hoursSaved !== true;
+      document.querySelector("[data-block-draft]").hidden = config.blockDraft !== true;
+      document.querySelectorAll("[data-dialog]").forEach(function (node) {
+        node.hidden = node.getAttribute("data-dialog") !== config.dialog;
+      });
+      document.getElementById("settings-layout").hidden = config.session === true;
+      document.querySelector("[data-session-panel]").hidden = config.session !== true;
+
+      document.getElementById("state-select").addEventListener("change", function (event) {
+        window.location.search = "?state=" + encodeURIComponent(event.target.value);
+      });
+    })();
+  </script>
+</body>
+</html>
