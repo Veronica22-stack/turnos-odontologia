@@ -40,30 +40,40 @@ Mientras el intento de ingreso está en curso, el formulario SHALL indicar el es
 - **THEN** se realizó una sola petición `POST /api/v1/auth/login` y el botón muestra "Ingresando…"
 
 ### Requirement: Credenciales inválidas con mensaje genérico
-Si el servidor rechaza las credenciales, la vista SHALL mostrar el mismo mensaje genérico "Email o contraseña incorrectos." exista o no el email, vaciar el campo contraseña conservando el email y mover el foco a la contraseña; MUST NOT mostrar textos del servidor.
+Si el servidor rechaza las credenciales, la vista SHALL mostrar el mismo mensaje genérico "Email o contraseña incorrectos." exista o no el email, vaciar el campo contraseña conservando el email y mover el foco a la contraseña; MUST NOT mostrar textos del servidor. El mismo mensaje SHALL mostrarse para contraseña incorrecta, email inexistente, cuenta bloqueada (C-04 la devuelve como el mismo 401) y rechazo de validación del servidor.
 
 #### Scenario: Contraseña incorrecta
-- **GIVEN** `POST /api/v1/auth/login` responde 401 con código `AUTH_INVALID_CREDENTIALS`
+- **GIVEN** `POST /api/v1/auth/login` responde 401 con código `INVALID_CREDENTIALS`
 - **WHEN** se envía el formulario
 - **THEN** se ve un mensaje con `role="alert"` "Email o contraseña incorrectos.", la contraseña está vacía, el email se conserva y la sesión sigue anónima sin aviso de sesión vencida
 
+#### Scenario: Rechazo de validación del servidor
+- **GIVEN** `POST /api/v1/auth/login` responde 400 con código `VALIDATION_FAILED`
+- **WHEN** se envía el formulario
+- **THEN** se ve el mismo mensaje "Email o contraseña incorrectos." con `role="alert"`
+
 #### Scenario: Email inexistente
-- **GIVEN** `POST /api/v1/auth/login` responde 401 con código `AUTH_INVALID_CREDENTIALS` para un email que no existe
+- **GIVEN** `POST /api/v1/auth/login` responde 401 con código `INVALID_CREDENTIALS` para un email que no existe
 - **WHEN** se envía el formulario
 - **THEN** el mensaje visible es idéntico al del caso de contraseña incorrecta
 
-### Requirement: Bloqueo temporal con mensaje genérico
-Si el servidor informa cuenta bloqueada o demasiados intentos, la vista SHALL mostrar un mensaje genérico que indique reintentar más tarde, con los minutos aproximados de espera cuando el servidor los informa, sin confirmar que la cuenta existe.
+#### Scenario: Cuenta bloqueada por intentos fallidos
+- **GIVEN** una cuenta con bloqueo temporal vigente, de modo que `POST /api/v1/auth/login` responde 401 con código `INVALID_CREDENTIALS` (C-04 no distingue el bloqueo)
+- **WHEN** se envía el formulario con la contraseña correcta
+- **THEN** se ve el mismo mensaje "Email o contraseña incorrectos." que ante una contraseña incorrecta
 
-#### Scenario: Bloqueo con tiempo informado
-- **GIVEN** `POST /api/v1/auth/login` responde 423 con código `AUTH_ACCOUNT_LOCKED` y `Retry-After: 840`
+### Requirement: Límite de tasa con mensaje genérico
+Si el servidor responde 429 `RATE_LIMITED` (límite por IP y email), la vista SHALL mostrar un mensaje genérico que indique reintentar más tarde, con los minutos aproximados de espera cuando el servidor los informa en `Retry-After`, sin confirmar que la cuenta existe.
+
+#### Scenario: Límite con tiempo informado
+- **GIVEN** `POST /api/v1/auth/login` responde 429 con código `RATE_LIMITED` y `Retry-After: 45`
 - **WHEN** se envía el formulario
-- **THEN** se ve un mensaje con `role="alert"` que dice que el ingreso está bloqueado temporalmente por seguridad y que se puede reintentar en unos 14 minutos
+- **THEN** se ve un mensaje con `role="alert"` que dice que el ingreso está bloqueado temporalmente por seguridad y que se puede reintentar en 1 minuto
 
-#### Scenario: Demasiados intentos sin tiempo informado
+#### Scenario: Límite sin tiempo informado
 - **GIVEN** `POST /api/v1/auth/login` responde 429 sin cabecera `Retry-After`
 - **WHEN** se envía el formulario
-- **THEN** se ve el mismo mensaje de bloqueo temporal indicando reintentar en unos minutos
+- **THEN** se ve el mismo mensaje indicando reintentar en unos minutos
 
 ### Requirement: Error de conexión o inesperado
 Ante falla de red, timeout o una respuesta de error no prevista, la vista SHALL mostrar un mensaje genérico de conexión, conservar el email y permitir reintentar.
@@ -74,7 +84,7 @@ Ante falla de red, timeout o una respuesta de error no prevista, la vista SHALL 
 - **THEN** se ve "No pudimos conectar con el servidor. Revisá tu conexión e intentá de nuevo." y el botón "Ingresar" vuelve a estar habilitado
 
 ### Requirement: Destino tras el ingreso
-Con un ingreso exitoso, la SPA SHALL establecer la sesión autenticada con los datos devueltos y navegar, reemplazando la entrada del historial, al parámetro `next` si es una ruta privada declarada o a `/agenda` en otro caso.
+Con un ingreso exitoso, la SPA SHALL establecer la sesión autenticada con los datos devueltos (`userId`, `role`, `mustChangePassword`, `expiresAt`) y navegar, reemplazando la entrada del historial, al parámetro `next` si es una ruta privada declarada o a `/agenda` en otro caso.
 
 #### Scenario: Ingreso con destino original
 - **GIVEN** la URL `/login?next=%2Fpacientes` y `POST /api/v1/auth/login` respondiendo 200 con `mustChangePassword: false`
@@ -91,13 +101,18 @@ Con un ingreso exitoso, la SPA SHALL establecer la sesión autenticada con los d
 - **WHEN** se envía el formulario con credenciales válidas
 - **THEN** la URL es `/cambiar-contrasena?next=%2Fpacientes`
 
-### Requirement: Aviso de sesión vencida o sin conexión en el ingreso
-Si la sesión llegó a `/login` por vencimiento o por falta de conexión, la vista SHALL mostrar el aviso correspondiente encima del formulario; el aviso MUST NOT reemplazar al formulario.
+### Requirement: Aviso de sesión vencida, sin conexión o contraseña cambiada en el ingreso
+Si la sesión llegó a `/login` por vencimiento, por falta de conexión o por haber cambiado la contraseña (el servidor cierra todas las sesiones al cambiarla), la vista SHALL mostrar el aviso correspondiente encima del formulario; el aviso MUST NOT reemplazar al formulario.
 
 #### Scenario: Llegada por vencimiento
 - **GIVEN** la sesión anónima con aviso de sesión vencida
 - **WHEN** se muestra `/login?next=%2Fagenda`
 - **THEN** se ve "Tu sesión venció. Ingresá de nuevo." con `role="status"` y el formulario de ingreso habilitado
+
+#### Scenario: Llegada tras cambiar la contraseña
+- **GIVEN** la sesión anónima con aviso de contraseña cambiada
+- **WHEN** se muestra `/login`
+- **THEN** se ve "Contraseña actualizada. Ingresá de nuevo con la contraseña nueva." con `role="status"` y el formulario de ingreso habilitado
 
 ### Requirement: Credenciales fuera de registros y almacenamiento
 La vista de ingreso MUST NOT escribir el email ni la contraseña en la consola, en la URL ni en `localStorage`/`sessionStorage`, y MUST enviarlos solo en el cuerpo de `POST /api/v1/auth/login`.

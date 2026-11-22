@@ -3,16 +3,21 @@
 ## MODIFIED Requirements
 
 ### Requirement: Estados de la sesión
-La sesión SHALL estar en exactamente uno de tres estados: `unknown` (todavía no consultada), `anonymous` o `authenticated` con los datos públicos del usuario (`id`, `fullName`, `role`) y la indicación `mustChangePassword` (falsa si el servidor no la informa); MUST NOT guardar contraseñas, tokens ni la sesión en `localStorage` o `sessionStorage`.
+La sesión SHALL estar en exactamente uno de tres estados: `unknown` (todavía no consultada), `anonymous` o `authenticated` con los datos que informa el servidor (`userId`, `role`, `expiresAt` y `fullName` opcional, que C-04 hoy no envía) y la indicación `mustChangePassword` (falsa si el servidor no la informa); `anonymous` puede llevar un aviso (`expired`, `offline` o `password-changed`); MUST NOT guardar contraseñas, tokens ni la sesión en `localStorage` o `sessionStorage`.
 
 #### Scenario: Estado inicial
 - **WHEN** arranca la SPA
 - **THEN** la sesión está en `unknown` y no hay datos de sesión en `localStorage` ni `sessionStorage`
 
 #### Scenario: Cambio de contraseña pendiente informado
-- **GIVEN** `GET /api/v1/auth/me` responde 200 `{"id":"u1","fullName":"Dra. Romero","role":"DENTIST","mustChangePassword":true}`
+- **GIVEN** `GET /api/v1/auth/me` responde 200 `{"userId":"u1","role":"DENTIST","mustChangePassword":true,"expiresAt":"2026-11-21T15:30:00Z"}`
 - **WHEN** arranca la SPA
 - **THEN** la sesión es `authenticated` con `mustChangePassword = true`
+
+#### Scenario: Sin nombre del usuario
+- **GIVEN** `GET /api/v1/auth/me` responde 200 sin `fullName`
+- **WHEN** arranca la SPA
+- **THEN** la sesión es `authenticated` (no es una respuesta inválida) y el app shell privado muestra la etiqueta de respaldo "Profesional" en lugar del nombre
 
 #### Scenario: Indicación ausente
 - **GIVEN** `GET /api/v1/auth/me` responde 200 sin el campo `mustChangePassword`
@@ -44,17 +49,17 @@ Un ingreso exitoso (`POST /api/v1/auth/login` con 200 y un usuario válido) SHAL
 
 #### Scenario: Ingreso exitoso
 - **GIVEN** la sesión `anonymous` con aviso de sesión vencida
-- **WHEN** `POST /api/v1/auth/login` responde 200 `{"id":"u1","fullName":"Dra. Romero","role":"DENTIST","mustChangePassword":false}`
-- **THEN** la sesión es `authenticated` con `fullName = "Dra. Romero"` y los suscriptores reciben ese estado
+- **WHEN** `POST /api/v1/auth/login` responde 200 `{"userId":"u1","role":"DENTIST","mustChangePassword":false,"expiresAt":"2026-11-21T15:30:00Z"}`
+- **THEN** la sesión es `authenticated` con `userId = "u1"` y `mustChangePassword = false` y los suscriptores reciben ese estado
 
 #### Scenario: Respuesta de ingreso inválida
-- **WHEN** `POST /api/v1/auth/login` responde 200 con un cuerpo sin `id`
+- **WHEN** `POST /api/v1/auth/login` responde 200 con un cuerpo sin `userId`
 - **THEN** la sesión sigue `anonymous` y la vista muestra el error genérico de conexión
 
-### Requirement: Sesión actualizada tras cambiar la contraseña
-Un cambio de contraseña exitoso SHALL dejar la sesión `authenticated` con `mustChangePassword = false` y el resto de los datos del usuario sin cambios.
+### Requirement: Sesión cerrada por el cambio de contraseña
+Un cambio de contraseña exitoso invalida en el servidor todas las sesiones de la cuenta; la SPA SHALL pasar la sesión a `anonymous` con aviso `password-changed`, sin consultar `GET /api/v1/auth/me`.
 
 #### Scenario: Cambio obligatorio resuelto
 - **GIVEN** una sesión `authenticated` con `mustChangePassword = true`
-- **WHEN** `POST /api/v1/auth/change-password` responde 204
-- **THEN** la sesión es `authenticated` con `mustChangePassword = false` y el mismo `fullName`
+- **WHEN** `POST /api/v1/auth/change-password` responde 200
+- **THEN** la sesión es `anonymous` con aviso `password-changed` y los suscriptores reciben ese estado

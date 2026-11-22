@@ -26,7 +26,7 @@
           <h1 id="login-title" tabindex="-1">Ingresar</h1>
           <p class="lead">Acceso para el profesional del consultorio. Los pacientes reservan sin cuenta.</p>
         </div>
-        <div class="alert alert-warning" role="alert"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="9" width="12" height="8.5" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><div><strong>Ingreso bloqueado temporalmente</strong>Por seguridad, hubo demasiados intentos. Probá de nuevo en unos 14 minutos.</div></div>
+        <div class="alert alert-warning" role="alert"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="4" y="9" width="12" height="8.5" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M7 9V6.5a3 3 0 0 1 6 0V9" fill="none" stroke="currentColor" stroke-width="1.6"/></svg><div><strong>Ingreso bloqueado temporalmente</strong>Por seguridad, hubo demasiados intentos. Probá de nuevo en 1 minuto.</div></div>
         <form class="auth-form" action="/login" method="post" novalidate>
             <div class="field">
               <label for="email">Email</label>
@@ -47,7 +47,7 @@
           <p>¿Olvidaste tu contraseña? La recuperación todavía no está definida <span class="tbd">(TBD · PA-04)</span>.</p>
         </div>
       </section>
-      <p class="mock-note">Mockup C-06 · cuenta bloqueada o demasiados intentos (423 <code>AUTH_ACCOUNT_LOCKED</code> / 429 con <code>Retry-After: 840</code>): mismo mensaje en ambos casos, sin confirmar que la cuenta existe.</p>
+      <p class="mock-note">Mockup C-06 · demasiados intentos (429 <code>RATE_LIMITED</code> con <code>Retry-After</code> ≤ 60 s; con 60 s se muestra "en 1 minuto"): mensaje genérico, sin confirmar que la cuenta existe. El bloqueo de cuenta de C-04 no tiene estado propio: se ve como credenciales inválidas.</p>
     </main>
 
     <footer class="public-footer" role="contentinfo">

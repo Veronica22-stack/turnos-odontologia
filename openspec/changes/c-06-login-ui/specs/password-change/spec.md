@@ -20,7 +20,7 @@ La vista `/cambiar-contrasena` SHALL mostrar un título de nivel 1 y campos "Con
 - **THEN** se ve el título "Cambiar contraseña", los tres campos y un enlace "Cancelar" que lleva a `/agenda`
 
 ### Requirement: Política mínima validada antes de enviar
-El formulario SHALL validar en el cliente que los tres campos tengan contenido, que la contraseña nueva tenga al menos 12 caracteres, que sea distinta de la actual y que la confirmación coincida; si algo falla MUST NOT llamar a la API y SHALL marcar cada campo inválido con su mensaje y mover el foco al primero.
+El formulario SHALL validar en el cliente que los tres campos tengan contenido, que la contraseña nueva tenga entre 12 y 128 caracteres (unidades UTF-16, el mismo criterio que el servidor), no esté compuesta solo por espacios, que sea distinta de la actual y que la confirmación coincida; si algo falla MUST NOT llamar a la API y SHALL marcar cada campo inválido con su mensaje y mover el foco al primero.
 
 #### Scenario: Contraseña nueva corta
 - **GIVEN** contraseña actual escrita y la nueva `corta123` repetida igual
@@ -37,41 +37,56 @@ El formulario SHALL validar en el cliente que los tres campos tengan contenido, 
 - **WHEN** se envía el formulario
 - **THEN** no se realiza ninguna petición y el campo nuevo muestra "La contraseña nueva tiene que ser distinta de la actual."
 
+#### Scenario: Más de 128 caracteres
+- **GIVEN** la nueva y la confirmación iguales de 129 caracteres
+- **WHEN** se envía el formulario
+- **THEN** no se realiza ninguna petición y el campo nuevo muestra "Usá como máximo 128 caracteres."
+
 #### Scenario: Doce caracteres exactos
 - **GIVEN** la nueva y la confirmación iguales de exactamente 12 caracteres, distintas de la actual
 - **WHEN** se envía el formulario
 - **THEN** se realiza una petición `POST /api/v1/auth/change-password`
 
 ### Requirement: Errores informados por el servidor
-Si el servidor rechaza el cambio, la vista SHALL mostrar el error en el campo correspondiente con textos propios: contraseña actual incorrecta en "Contraseña actual" (vaciándolo) y errores de política en "Contraseña nueva"; MUST NOT tratar el rechazo de la contraseña actual como sesión vencida.
+Si el servidor rechaza el cambio, la vista SHALL mostrar el error en el campo correspondiente con textos propios: contraseña actual incorrecta (401 `INVALID_CREDENTIALS`) en "Contraseña actual" (vaciándolo) y rechazos de validación (400 `VALIDATION_FAILED` con `errors[{field, code}]`) en el campo indicado; MUST NOT tratar el 401 `INVALID_CREDENTIALS` como sesión vencida y SHALL tratar el 401 `UNAUTHENTICATED` como sesión vencida.
 
 #### Scenario: Contraseña actual incorrecta
-- **GIVEN** `POST /api/v1/auth/change-password` responde 400 con código `AUTH_CURRENT_PASSWORD_INVALID`
+- **GIVEN** `POST /api/v1/auth/change-password` responde 401 con código `INVALID_CREDENTIALS`
 - **WHEN** se envía el formulario válido
-- **THEN** el campo "Contraseña actual" está vacío con `aria-invalid="true"` y "La contraseña actual no es correcta.", y la URL sigue siendo `/cambiar-contrasena`
+- **THEN** el campo "Contraseña actual" está vacío con `aria-invalid="true"` y "La contraseña actual no es correcta.", la URL sigue siendo `/cambiar-contrasena` y la sesión sigue `authenticated`
 
-#### Scenario: Política rechazada por el servidor
-- **GIVEN** `POST /api/v1/auth/change-password` responde 400 con `errors: [{"field":"newPassword","code":"PASSWORD_TOO_SHORT"}]`
+#### Scenario: Validación rechazada por el servidor
+- **GIVEN** `POST /api/v1/auth/change-password` responde 400 con `code: "VALIDATION_FAILED"` y `errors: [{"field":"newPassword","code":"Size"}]`
 - **WHEN** se envía el formulario
-- **THEN** el campo "Contraseña nueva" muestra "Usá al menos 12 caracteres."
+- **THEN** el campo "Contraseña nueva" muestra "Usá entre 12 y 128 caracteres."
 
 #### Scenario: Sesión vencida durante el cambio
-- **GIVEN** `POST /api/v1/auth/change-password` responde 401 sin código de contraseña actual
+- **GIVEN** `POST /api/v1/auth/change-password` responde 401 con código `UNAUTHENTICATED`
 - **WHEN** se envía el formulario
-- **THEN** la sesión es `anonymous` y la URL es `/login` con el aviso de sesión vencida
+- **THEN** la sesión es `anonymous` con aviso de sesión vencida y la URL es `/login`
 
-### Requirement: Destino tras cambiar la contraseña
-Con un cambio exitoso, la SPA SHALL marcar la sesión sin cambio obligatorio pendiente, vaciar los campos y navegar, reemplazando la entrada del historial, al parámetro `next` si es una ruta privada declarada o a `/agenda` en otro caso.
+#### Scenario: Página desactualizada
+- **GIVEN** `POST /api/v1/auth/change-password` responde 403 con código `CSRF_REQUIRED`
+- **WHEN** se envía el formulario
+- **THEN** se ve "La página quedó desactualizada. Recargala e intentá de nuevo." y los campos conservan su estado
+
+### Requirement: Reingreso tras cambiar la contraseña
+Con un cambio exitoso (200 sin cuerpo), el servidor invalida todas las sesiones de la cuenta, incluida la actual; la SPA SHALL pasar la sesión a `anonymous` con aviso de contraseña cambiada, vaciar los campos y navegar, reemplazando la entrada del historial, a `/login` conservando `next` solo si es una ruta privada declarada.
 
 #### Scenario: Cambio obligatorio completado
-- **GIVEN** una sesión con `mustChangePassword: true` en `/cambiar-contrasena?next=%2Fpacientes` y el servidor respondiendo 204
+- **GIVEN** una sesión con `mustChangePassword: true` en `/cambiar-contrasena?next=%2Fpacientes` y el servidor respondiendo 200
 - **WHEN** se envía el formulario válido
-- **THEN** la URL es `/pacientes` y navegar a `/agenda` ya no redirige al cambio de contraseña
+- **THEN** la sesión es `anonymous` con aviso de contraseña cambiada, la URL es `/login?next=%2Fpacientes` y los campos de contraseña quedaron vacíos
 
 #### Scenario: Cambio voluntario completado
-- **GIVEN** una sesión con `mustChangePassword: false` en `/cambiar-contrasena` y el servidor respondiendo 204
+- **GIVEN** una sesión con `mustChangePassword: false` en `/cambiar-contrasena` y el servidor respondiendo 200
 - **WHEN** se envía el formulario válido
-- **THEN** la URL es `/agenda`
+- **THEN** la URL es `/login` con el aviso de contraseña cambiada
+
+#### Scenario: next inválido descartado
+- **GIVEN** `/cambiar-contrasena?next=%2F%2Fevil.example` y el servidor respondiendo 200
+- **WHEN** se envía el formulario válido
+- **THEN** la URL es `/login`
 
 ### Requirement: Salida en modo obligatorio
 En modo obligatorio, la única salida alternativa al cambio SHALL ser "Salir", que cierra la sesión como el "Salir" del app shell privado.
