@@ -3,7 +3,9 @@ package ar.turnosodontologia.consultorio.agenda.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.inOrder;
 import static org.mockito.Mockito.lenient;
+import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -16,6 +18,7 @@ import ar.turnosodontologia.consultorio.shared.application.InstallationPractice;
 import ar.turnosodontologia.consultorio.shared.domain.ConflictException;
 import ar.turnosodontologia.consultorio.shared.domain.DomainException;
 import ar.turnosodontologia.consultorio.shared.domain.NotFoundException;
+import ar.turnosodontologia.consultorio.shared.domain.PracticeLock;
 import java.time.Clock;
 import java.time.Instant;
 import java.time.ZoneOffset;
@@ -26,6 +29,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.InOrder;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -53,6 +57,9 @@ class ScheduleBlockServiceTest {
 
     @Mock
     private AffectedAppointmentsProvider appointments;
+
+    @Mock
+    private PracticeLock lock;
 
     @BeforeEach
     void configurePractice() {
@@ -237,8 +244,57 @@ class ScheduleBlockServiceTest {
                 .isInstanceOf(NotFoundException.class);
     }
 
+    // ---- serializacion con turnos (C-11, D3) ----
+
+    @Test
+    void crearTomaElLockPorConsultorioAntesDeValidarSolapamientos() {
+        stubSave();
+
+        service(CREATED_CLOCK, Optional.empty()).create(NINE, ELEVEN, "Vacaciones");
+
+        InOrder order = inOrder(lock, repository);
+        order.verify(lock).lock(PRACTICE_ID);
+        order.verify(repository).findOverlapping(PRACTICE_ID, NINE, ELEVEN);
+        order.verify(repository).save(any(ScheduleBlock.class));
+    }
+
+    @Test
+    void editarTomaElLockAntesDeCargarYValidar() {
+        when(repository.findById(ID)).thenReturn(Optional.of(block(ID, PRACTICE_ID, NINE, ELEVEN)));
+        stubSave();
+
+        service(UPDATED_CLOCK, Optional.empty()).update(ID, NINE, TWELVE, "Nuevo motivo");
+
+        InOrder order = inOrder(lock, repository);
+        order.verify(lock).lock(PRACTICE_ID);
+        order.verify(repository).findById(ID);
+        order.verify(repository).findOverlapping(PRACTICE_ID, NINE, TWELVE);
+    }
+
+    @Test
+    void eliminarNoTomaElLock() {
+        when(repository.findById(ID)).thenReturn(Optional.of(block(ID, PRACTICE_ID, NINE, ELEVEN)));
+
+        service(CREATED_CLOCK, Optional.empty()).delete(ID);
+
+        verifyNoInteractions(lock);
+        verify(repository).delete(any(ScheduleBlock.class));
+    }
+
+    @Test
+    void unRangoInvertidoOUnSolapamientoNoDejanElLockSinLiberarseAlSerTransaccional() {
+        when(repository.findOverlapping(PRACTICE_ID, NINE, ELEVEN))
+                .thenReturn(List.of(block(OTHER_ID, PRACTICE_ID, NINE, ELEVEN)));
+
+        assertThatThrownBy(() -> service(CREATED_CLOCK, Optional.empty()).create(NINE, ELEVEN, "Vacaciones"))
+                .isInstanceOf(ConflictException.class)
+                .satisfies(e -> assertThat(((DomainException) e).code()).isEqualTo("SCHEDULE_BLOCK_OVERLAP"));
+        verify(lock).lock(PRACTICE_ID);
+        verify(repository, never()).save(any());
+    }
+
     private ScheduleBlockService service(Clock clock, Optional<AffectedAppointmentsProvider> provider) {
-        return new ScheduleBlockService(repository, practice, clock, provider);
+        return new ScheduleBlockService(repository, practice, lock, clock, provider);
     }
 
     private void stubSave() {

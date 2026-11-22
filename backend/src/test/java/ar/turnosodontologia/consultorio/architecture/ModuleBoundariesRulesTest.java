@@ -305,4 +305,78 @@ class ModuleBoundariesRulesTest {
             ModuleBoundaries.securityConfinedToAuthInfrastructure(root).check(classes);
         }).doesNotThrowAnyException();
     }
+
+    // ---- agenda -> pacientes (C-11, D4) ----
+
+    @Test
+    void agendaPuedeUsarLaApiDePacientes() {
+        String root = root("ok_agenda_pacientes");
+        JavaClasses classes = classesOf("ok_agenda_pacientes");
+
+        assertThatCode(() -> {
+            ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes);
+            ModuleBoundaries.allowedDependencyGraph(root).check(classes);
+            ModuleBoundaries.noCycles(root).check(classes);
+        }).doesNotThrowAnyException();
+    }
+
+    @Test
+    void agendaNoPuedeUsarApplicationDomainNiInfrastructureDePacientes() {
+        String root = root("violacion_agenda_pacientes");
+        JavaClasses classes = classesOf("violacion_agenda_pacientes");
+
+        assertThatThrownBy(() -> ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AgendaUsaPacienteCasoDeUso")
+                .hasMessageContaining("PacienteCasoDeUso")
+                .hasMessageContaining("AgendaUsaPacienteDominio")
+                .hasMessageContaining("PacienteDominio")
+                .hasMessageContaining("AgendaUsaPacienteRepositorio")
+                .hasMessageContaining("PacienteRepositorio");
+        // El grafo si permite agenda -> pacientes: solo falla la regla de acceso por api.
+        assertThatCode(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classes)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void pacientesNoPuedeUsarLaApiDeAgenda() {
+        String root = root("violacion_pacientes_agenda");
+        JavaClasses classes = classesOf("violacion_pacientes_agenda");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classes))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("PacientesUsaAgenda")
+                .hasMessageContaining("AgendaApi");
+    }
+
+    @Test
+    void agendaSigueSinPoderUsarReservas() {
+        String root = root("violacion_grafo");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("violacion_grafo")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AgendaMal")
+                .hasMessageContaining("ReservasApi");
+    }
+
+    @Test
+    void reservasPuedeUsarLaOperacionDeReprogramacionDeLaApiDeAgenda() {
+        String root = root("ok_reservas_agenda_api");
+        JavaClasses classes = classesOf("ok_reservas_agenda_api");
+
+        assertThatCode(() -> {
+            ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes);
+            ModuleBoundaries.allowedDependencyGraph(root).check(classes);
+        }).doesNotThrowAnyException();
+    }
+
+    @Test
+    void reservasNoPuedeUsarElServicioDeAplicacionDeTurnosDeAgenda() {
+        String root = root("violacion_reservas_agenda_application");
+
+        assertThatThrownBy(() -> ModuleBoundaries.crossModuleAccessOnlyThroughApi(root)
+                .check(classesOf("violacion_reservas_agenda_application")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("ReservasCreaTurno")
+                .hasMessageContaining("AppointmentService");
+    }
 }

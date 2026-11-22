@@ -51,6 +51,7 @@ public final class ModuleBoundaries {
     /** Dependencias permitidas entre modulos de negocio (KB 08). Los modulos ausentes no dependen de ninguno. */
  private static final Map<String, Set<String>> ALLOWED_DEPENDENCIES = Map.of(
             RESERVAS, Set.of(AGENDA, PACIENTES, NOTIFICACIONES),
+            AGENDA, Set.of(PACIENTES),
             PACIENTES, Set.of(AUDITORIA),
             HISTORIA_CLINICA, Set.of(PACIENTES, AUDITORIA),
             AUTH, Set.of(AUDITORIA));
