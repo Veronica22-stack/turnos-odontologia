@@ -185,7 +185,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 > C-05 corre en paralelo con C-02..C-04 (solo depende de C-01).
 
 ### [C-01] `foundation-setup`
-- **Estado**: `[x]` completado y archivado (2026-11-21) — PR #1 mergeado en `master`; verify PASS WITH WARNINGS sin críticos (`openspec/changes/archive/2026-11-21-c-01-foundation-setup/verify-report.md`)
+- **Estado**: `[x]` completado y archivado (2026-11-21) — PR #1 (implementación) y PR #2 (verify y archive) mergeados en `master`; 39/39 tareas; verify PASS WITH WARNINGS sin críticos (`openspec/changes/archive/2026-11-21-c-01-foundation-setup/verify-report.md`)
 - **Scope**:
   - Monorepo `backend/` (Spring Boot, Gradle Kotlin DSL, paquete base `…consultorio`) y `frontend/` (Vite + TypeScript estricto, sin framework)
   - Estructura modular `agenda, reservas, pacientes, historiaclinica, notificaciones, auth, auditoria, shared` con capas api/application/domain/infrastructure; verificación de dependencias entre módulos (ArchUnit o Spring Modulith)
@@ -202,7 +202,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `openspec/config.yaml`
 
 ### [C-02] `core-models-shared`
-- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS, warnings W1–W3 corregidos (`openspec/changes/archive/2026-11-21-c-02-core-models-shared/verify-report.md`); pendiente PR a `master`
+- **Estado**: `[x]` completado y archivado (2026-11-21) — 43/43 tareas; PR #3 mergeado en `master`; verify PASS WITH WARNINGS, warnings W1–W3 corregidos (`openspec/changes/archive/2026-11-21-c-02-core-models-shared/verify-report.md`)
 - **Scope**:
   - Migración V2: tablas `practice` (una fila, seed) y `app_user` (email, `password_hash`, `role`, `failed_attempts`, `locked_until`, `must_change_password`)
   - Modelos: `Practice`, `AppUser`, enum `Role { DENTIST }` (diseñado para sumar `SECRETARY` en v2)
@@ -218,7 +218,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/08_arquitectura_propuesta.md` §Módulos
 
 ### [C-03] `audit-log`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — 30/30 tareas; implementado por Elian (PR #4); specs archivadas junto con C-04 en PR #6 (`openspec/changes/archive/2026-11-21-audit-log/`)
 - **Scope**:
   - Migración V3: tabla `audit_log` (usuario, acción, `patient_id` nullable, referencia, IP, `created_at` servidor) append-only; REVOKE UPDATE/DELETE al rol `app`
   - Puerto `AuditLogger` (interfaz pública del módulo `auditoria`) con acciones `LOGIN_OK, LOGIN_FAIL, PATIENT_READ, HC_READ, HC_CREATE, HC_CORRECT, BOOKING_TOKEN_USE`
@@ -233,7 +233,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/11_cumplimiento_normativo.md`
 
 ### [C-04] `auth-session`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-21) — 44/44 tareas; implementado por Elian (PR #6 mergeado en `master`) (`openspec/changes/archive/2026-11-21-auth-session/`)
 - **Scope**:
   - `POST /api/v1/auth/login`, `POST /api/v1/auth/logout`, `GET /api/v1/auth/me`, `POST /api/v1/auth/change-password` (US-001, US-002)
   - Sesión servidor con cookie `HttpOnly; Secure; SameSite=Strict` + protección CSRF (PA-04: confirmar método en el propose)
@@ -268,7 +268,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/03_actores_y_roles.md` §Rutas públicas
 
 ### [C-06] `login-ui` **[UI]**
-- **Estado**: `[x]` completado y archivado (2026-11-21) — verify PASS WITH WARNINGS sin críticos, W1–W4 resueltos (`openspec/changes/archive/2026-11-21-c-06-login-ui/verify-report.md`); mockups revisión 2 aprobados por Lucas; contrato confirmado contra C-04; pendiente PR a `master`
+- **Estado**: `[x]` completado y archivado (2026-11-21) — 38/38 tareas; PR #7 mergeado en `master`; verify PASS WITH WARNINGS sin críticos, W1–W4 resueltos (`openspec/changes/archive/2026-11-21-c-06-login-ui/verify-report.md`); mockups revisión 2 aprobados por Lucas; contrato confirmado contra C-04
 - **Scope**:
   - Pantalla `/login` y cambio obligatorio de contraseña (US-001, US-002); mensajes genéricos de error y de cuenta bloqueada
   - Redirección a la ruta original tras login; sesión expirada redirige a login conservando la ruta; logout
@@ -287,7 +287,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 2 — Configuración de la agenda
 
 ### [C-07] `services-catalog`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 39/39 tareas; PR #12 mergeado en `master`; implementado con TDD estricto (`openspec/changes/archive/2026-11-22-c-07-services-catalog/`)
 - **Scope**:
   - Migración V4: tabla `service` (nombre, duración en minutos, `active`, `public_visible`, `practice_id`)
   - CRUD `/api/v1/services` con baja lógica (nunca borrado físico); validación duración > 0 y múltiplo de la granularidad (US-011)
@@ -303,7 +303,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/03_actores_y_roles.md` §Rutas públicas
 
 ### [C-08] `working-hours-booking-settings`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 13/13 tareas; implementado por Gabriel (PR #8); archivado desde `dev-elian` en PR #10 junto con C-09 (`openspec/changes/archive/2026-11-22-c-08-working-hours-booking-settings/`)
 - **Scope**:
   - Migración V5: tabla `working_hours` (día, tramos, sin solapamiento) y parámetros en `practice` (`slot_granularity_min` default 15, `min_notice_min`, `max_advance_days`, `reminder_hours_before`)
   - Endpoints `/api/v1/working-hours` y `/api/v1/practice/settings` (nombre, zona horaria, contacto) (US-010, US-013)
@@ -318,7 +318,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-19
 
 ### [C-09] `schedule-blocks`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 29/29 tareas; implementado por Elian (PR #10 mergeado en `master`) (`openspec/changes/archive/2026-11-22-c-09-schedule-blocks/`)
 - **Scope**:
   - Migración V6: tabla `schedule_block` (rango `tstzrange`, motivo, `practice_id`)
   - CRUD `/api/v1/schedule-blocks` (US-012); validación de rango
