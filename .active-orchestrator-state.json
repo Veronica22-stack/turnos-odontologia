@@ -238,7 +238,7 @@
   "registry": {
     "created_by": "skill-registry",
     "file": ".atl/skill-registry.md",
-    "skills_count": 19
+    "skills_count": 13
   },
   "agents": {
     "created_by": "agent-instruction",
