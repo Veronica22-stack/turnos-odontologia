@@ -98,7 +98,7 @@ REVOKE UPDATE, DELETE, TRUNCATE ON anamnesis_entry FROM ${app_role};
   3. `findInRecord` → 404 `CLINICAL_ENTRY_NOT_FOUND`.
   4. `isCorrected` → 409 `CLINICAL_ENTRY_ALREADY_CORRECTED`; `store.assertCorrectable` (anamnesis: solo la vigente → 409 `CLINICAL_ENTRY_NOT_CURRENT`).
   5. `factory` construye la nueva entrada con `Correction(original.id, reason)` + autor/instante del servidor; `saveAndFlush`.
-  6. `AuditLogger.log(HC_CORRECT, entity_id = nueva, details = {entryType, correctsEntryId})`.
+  6. `AuditLogger.log(HC_CORRECT, entity_id = nueva, details = {entry_type, corrects_entry_id})`.
   - Una violación de `*_corrects_once_unique` en el flush (carrera) se traduce a 409 `CLINICAL_ENTRY_ALREADY_CORRECTED`.
 - **API**: cada tipo expone `POST /api/v1/patients/{patientId}/clinical-record/{segmento}/{entryId}/corrections` con body `{ reason, content }` tipado por su propio record. C-17/C-18 solo agregan: tabla (con la convención D2), entidad que extiende `ClinicalEntry`, store, DTOs y método de controlador.
 - **Alternativa descartada**: un único endpoint `POST .../corrections` con `{entryType, entryId, payload}` y despacho dinámico. Pierde validación tipada (Bean Validation por record) y obliga a deserializar a mano.
@@ -121,7 +121,7 @@ REVOKE UPDATE, DELETE, TRUNCATE ON anamnesis_entry FROM ${app_role};
 ### D8: Lectura, auditoría y puerto de pacientes
 - `GET .../clinical-record` → `{opened, clinicalRecordId, openedAt, currentAnamnesis}`; `GET .../anamnesis` → `{current, history[]}` con `correctedByEntryId` calculado (una consulta por HC: entradas + mapa `corrects_entry_id → id`).
 - Toda lectura con paciente existente registra **un** `HC_READ` (también si la HC no está abierta) con `entity_type` = `clinical_record` o `anamnesis_entry`. Las transacciones de lectura **no** son `readOnly` (la auditoría escribe en la misma transacción, igual que `PATIENT_READ` en C-10).
-- `details` de auditoría solo con claves permitidas: `entryType`, `correctsEntryId`, `version`. Nunca `content`/`reason` (además el CHECK de V3 rechaza `content`/`note`).
+- `details` de auditoría solo con claves permitidas (snake_case): `entry_type`, `corrects_entry_id`, `version`. Nunca `content`/`reason` (además el CHECK de V3 rechaza `content`/`note`).
 - **Puerto `pacientes.api.PatientLookup`**: `Optional<PatientStatus> findStatus(UUID patientId)` donde `PatientStatus(UUID id, boolean active)`; adaptador `PatientLookupAdapter` en `pacientes.infrastructure` que filtra por `InstallationPractice.id()`. No registra `PATIENT_READ` (no expone datos personales). Modifica código de C-10 (no archivado) → coordinar con su autor.
 
 ### D9: Versión de migración: **V11** (reservada) y riesgo de colisión
@@ -159,3 +159,10 @@ REVOKE UPDATE, DELETE, TRUNCATE ON anamnesis_entry FROM ${app_role};
 - **Q3 (PA-18)**: confirmar campos de anamnesis (`allergies`, `medications`, `medicalConditions`, `habits`, `notes`, ≤ 2000 c/u).
 - **Q4**: confirmar que escribir en la HC de un paciente dado de baja se rechaza (`409 PATIENT_INACTIVE`) y que la lectura se permite.
 - **Q5**: confirmar que la anamnesis solo admite corregir la versión vigente (las evoluciones de C-18 permitirán corregir cualquiera no corregida).
+
+## Desviaciones durante el apply
+
+1. **Allowlist del sanitizador de auditoría**: `SensitiveDataSanitizer` permite además las claves `entry_type`, `version` y `corrects_entry_id`. Un UUID exacto no se redacta únicamente bajo la clave `corrects_entry_id`; la lista negra no cambia. Los detalles usan snake_case (no camelCase como figuraba en D4/D8).
+2. **POST sin sesión devuelve 403**: el filtro CSRF rechaza el POST antes de la autenticación, por lo que una escritura sin sesión responde 403 y no 401.
+3. **Doble corrección concurrente**: dos correcciones simultáneas de la misma entrada terminan con una exitosa y la otra en `409 CLINICAL_RECORD_CONCURRENT_WRITE` (no `CLINICAL_ENTRY_ALREADY_CORRECTED`).
+4. **IP del contexto de auditoría**: `RequestContext` usa `getRemoteAddr()`; no se interpreta `X-Forwarded-For`.

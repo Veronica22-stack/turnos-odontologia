@@ -33,3 +33,18 @@ Los eventos `HC_READ`, `HC_CREATE` y `HC_CORRECT` MUST NOT incluir contenido de 
 #### Scenario: Detalles de una corrección
 - **WHEN** se corrige una anamnesis con motivo "alergia mal cargada"
 - **THEN** la fila `HC_CORRECT` no contiene el texto del motivo ni el contenido de la anamnesis
+
+### Requirement: Detalles de auditoría clínicos permitidos
+El sanitizador de detalles de auditoría SHALL admitir las claves `entry_type`, `version` y `corrects_entry_id`, y MUST conservar sin redactar un UUID exacto únicamente bajo la clave `corrects_entry_id`; la lista de claves prohibidas MUST permanecer sin cambios.
+
+#### Scenario: Referencia a la entrada corregida
+- **WHEN** se audita una corrección con detalles `entry_type` y `corrects_entry_id` con un UUID exacto
+- **THEN** ambos se conservan tal cual en el evento
+
+#### Scenario: UUID bajo otra clave
+- **WHEN** un detalle con una clave distinta de `corrects_entry_id` contiene un UUID exacto
+- **THEN** el valor sigue el tratamiento habitual del sanitizador
+
+#### Scenario: Clave prohibida sigue descartada
+- **WHEN** los detalles incluyen una clave prohibida (por ejemplo `email` o `content`)
+- **THEN** esa clave no se persiste

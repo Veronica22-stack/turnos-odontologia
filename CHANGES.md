@@ -451,7 +451,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 > Rama independiente de la reserva pública; avanza en paralelo con FASE 4. Condicionada por PA-01 (Ley 27.706 no relevada): el propose de C-16 debe explicitar qué se asume y registrar la validación legal pendiente.
 
 ### [C-16] `clinical-record-core`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 18/18 tareas, suite completa verde (462 tests); desviaciones registradas en `openspec/changes/archive/2026-11-22-c-16-clinical-record-core/design.md`
 - **Scope**:
   - Migración V11: tablas `clinical_record` y `anamnesis_entry` (`author_id`, `created_at` del servidor, `corrects_entry_id`, motivo); entradas inmutables
   - REVOKE UPDATE/DELETE al rol `app` sobre tablas de HC; sin endpoints de edición ni borrado (RN-HC-01, RN-GL-01)
