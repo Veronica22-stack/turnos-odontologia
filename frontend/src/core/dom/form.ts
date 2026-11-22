@@ -43,9 +43,12 @@ export function formIcon(name: FormIconName): SVGElement {
 export interface FieldOptions {
   readonly id: string;
   readonly label: string;
-  readonly type?: 'text' | 'email' | 'password';
+  readonly type?: 'text' | 'email' | 'password' | 'tel' | 'time' | 'number' | 'datetime-local';
   readonly autocomplete: string;
   readonly inputmode?: string;
+  readonly min?: string;
+  readonly max?: string;
+  readonly step?: string;
   readonly help?: string;
   readonly value?: string;
   /** Agrega el boton "Mostrar contraseña" (solo para `type: 'password'`). */
@@ -59,11 +62,13 @@ export interface Field {
   conceal(): void;
 }
 
-function describedBy(input: HTMLInputElement): string[] {
+type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
+
+function describedBy(input: FormControl): string[] {
   return (input.getAttribute('aria-describedby') ?? '').split(/\s+/).filter((id) => id !== '');
 }
 
-function setDescribedBy(input: HTMLInputElement, ids: readonly string[]): void {
+function setDescribedBy(input: FormControl, ids: readonly string[]): void {
   if (ids.length === 0) {
     input.removeAttribute('aria-describedby');
   } else {
@@ -83,6 +88,9 @@ export function field(options: FieldOptions): Field {
       autocomplete: options.autocomplete,
       required: '',
       ...(options.inputmode === undefined ? {} : { inputmode: options.inputmode }),
+      ...(options.min === undefined ? {} : { min: options.min }),
+      ...(options.max === undefined ? {} : { max: options.max }),
+      ...(options.step === undefined ? {} : { step: options.step }),
       ...(type === 'email' ? { autocapitalize: 'none', spellcheck: 'false' } : {}),
     },
   });
@@ -128,7 +136,7 @@ export function field(options: FieldOptions): Field {
 }
 
 /** Marca el campo como invalido y muestra `message` (como texto) vinculado por `aria-describedby`. */
-export function setFieldError(input: HTMLInputElement, message: string): void {
+export function setFieldError(input: FormControl, message: string): void {
   const errorId = `${input.id}-error`;
   const container = input.closest('.field');
   if (container === null) {
@@ -148,7 +156,7 @@ export function setFieldError(input: HTMLInputElement, message: string): void {
 }
 
 /** Quita el error de un campo conservando la ayuda. */
-export function clearFieldError(input: HTMLInputElement): void {
+export function clearFieldError(input: FormControl): void {
   const errorId = `${input.id}-error`;
   input.closest('.field')?.querySelector(`#${CSS.escape(errorId)}`)?.remove();
   input.removeAttribute('aria-invalid');
@@ -159,13 +167,13 @@ export function clearFieldError(input: HTMLInputElement): void {
 }
 
 export function clearFieldErrors(root: ParentNode): void {
-  for (const input of root.querySelectorAll<HTMLInputElement>('input[aria-invalid="true"]')) {
+  for (const input of root.querySelectorAll<FormControl>('input[aria-invalid="true"], select[aria-invalid="true"], textarea[aria-invalid="true"]')) {
     clearFieldError(input);
   }
 }
 
 export interface AlertOptions {
-  readonly variant: 'info' | 'warning' | 'danger';
+  readonly variant: 'info' | 'success' | 'warning' | 'danger';
   /** `alert` anuncia de inmediato (errores); `status` es informativo. */
   readonly role: 'alert' | 'status';
   readonly icon: FormIconName;

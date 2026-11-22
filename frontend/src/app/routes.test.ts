@@ -1,13 +1,36 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import type { SessionState } from '../core/auth/session';
+import type { SettingsGateway } from '../features/settings/settings-gateway';
 import { safeNext } from '../router/safe-next';
 import type { RouteContext, RouteDef } from '../router/router';
 import { createRoutes, type RoutesDeps } from './routes';
 
-function deps(state: SessionState = { status: 'anonymous' }): RoutesDeps {
+const SETTINGS_GATEWAY = {
+  getPractice: async () => ({
+    ok: true,
+    data: {
+      id: 'p1',
+      name: 'Consultorio',
+      timezone: 'America/Argentina/Buenos_Aires',
+      contactEmail: null,
+      contactPhone: null,
+      address: null,
+      slotGranularityMin: 15,
+      minNoticeMin: 0,
+      maxAdvanceDays: 30,
+      reminderHoursBefore: 24,
+    },
+  }),
+  getWorkingHours: async () => ({ ok: true, data: [] }),
+  getServices: async () => ({ ok: true, data: [] }),
+  getBlocks: async () => ({ ok: true, data: [] }),
+} as unknown as SettingsGateway;
+
+function deps(state: SessionState = { status: 'anonymous' }, settings: SettingsGateway = SETTINGS_GATEWAY): RoutesDeps {
   return {
     session: { get: () => state, ensureLoaded: async () => {}, signIn: () => {}, endAfterPasswordChange: () => {} },
     gateway: { login: async () => ({ ok: false, failure: { kind: 'connection' } }), changePassword: async () => ({ ok: true }) },
+    settings,
     navigate: () => {},
     onLogout: () => {},
   };
@@ -117,5 +140,56 @@ describe('vistas de acceso (C-06)', () => {
   it('safeNext no acepta /cambiar-contrasena como destino (es publica)', () => {
     expect(safeNext('/cambiar-contrasena', routes)).toBeNull();
     expect(safeNext('/agenda', routes)).toBe('/agenda');
+  });
+});
+
+describe('/configuracion operativa (C-19)', () => {
+  const authenticated = (mustChangePassword: boolean): SessionState => ({
+    status: 'authenticated',
+    user: { userId: 'u1', role: 'DENTIST', mustChangePassword },
+  });
+
+  it('con sesión autenticada muestra la vista de cuatro secciones, no el placeholder', async () => {
+    const { routes } = createRoutes(deps(authenticated(false)));
+
+    const content = byPath(routes, '/configuracion').view(ctx('/configuracion'));
+    document.body.replaceChildren(content);
+
+    expect(content.querySelector('h1')?.textContent).toBe('Configuración');
+    await vi.waitFor(() => expect(content.querySelectorAll('.settings-card')).toHaveLength(4));
+    expect(content.querySelector('.placeholder')).toBeNull();
+  });
+
+  it('sin sesión redirige a /login?next=%2Fconfiguracion', async () => {
+    const { routes } = createRoutes(deps());
+
+    const result = await byPath(routes, '/configuracion').guard?.(ctx('/configuracion'));
+
+    expect(result).toEqual({ redirect: '/login?next=%2Fconfiguracion', replace: true });
+  });
+
+  it('con cambio de contraseña pendiente redirige a /cambiar-contrasena?next=%2Fconfiguracion', async () => {
+    const { routes } = createRoutes(deps(authenticated(true)));
+
+    const result = await byPath(routes, '/configuracion').guard?.(ctx('/configuracion'));
+
+    expect(result).toEqual({ redirect: '/cambiar-contrasena?next=%2Fconfiguracion', replace: true });
+  });
+
+  it('con fallos de carga muestra errores por sección sin impedir las demás', async () => {
+    const settings = {
+      getPractice: async () => ({ ok: false, failure: { kind: 'connection' } }),
+      getWorkingHours: async () => ({ ok: false, failure: { kind: 'connection' } }),
+      getServices: async () => ({ ok: false, failure: { kind: 'connection' } }),
+      getBlocks: async () => ({ ok: false, failure: { kind: 'connection' } }),
+    } as unknown as SettingsGateway;
+    const { routes } = createRoutes(deps(authenticated(false), settings));
+
+    const content = byPath(routes, '/configuracion').view(ctx('/configuracion'));
+    document.body.replaceChildren(content);
+
+    await vi.waitFor(() => expect(content.querySelectorAll('.settings-card [role="alert"]')).toHaveLength(4));
+    expect(content.querySelectorAll('.settings-card')).toHaveLength(4);
+    expect(content.textContent).toContain('Reintentar');
   });
 });
