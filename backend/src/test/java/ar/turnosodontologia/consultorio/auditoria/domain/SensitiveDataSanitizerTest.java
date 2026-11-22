@@ -67,6 +67,35 @@ class SensitiveDataSanitizerTest {
     }
 
     @Test
+    void referenciasClinicasPermitidasConservanTipoVersionYEntradaCorregida() {
+        String corrected = "01900000-0000-7000-8000-0000000000aa";
+        Map<String, Object> details = new LinkedHashMap<>();
+        details.put("entry_type", "ANAMNESIS");
+        details.put("version", 3);
+        details.put("corrects_entry_id", corrected);
+        details.put("content", "penicilina");
+        details.put("reason", "alergia mal cargada");
+
+        Map<String, Object> sanitized = SensitiveDataSanitizer.sanitize(details);
+
+        assertThat(sanitized).containsOnlyKeys("entry_type", "version", "corrects_entry_id");
+        assertThat(sanitized.get("entry_type")).isEqualTo("ANAMNESIS");
+        assertThat(sanitized.get("version")).isEqualTo("3");
+        assertThat(sanitized.get("corrects_entry_id")).isEqualTo(corrected);
+    }
+
+    @Test
+    void laEntradaCorregidaSoloSeConservaSiTieneFormaDeUuidYEnOtraClaveSigueRedactado() {
+        Map<String, Object> notUuid = Map.of("corrects_entry_id", "eyJhbGciOiJIUzI1NiJ9.payloadBase64UrlLargo1234567890");
+        Map<String, Object> uuidInOtherKey = Map.of("source", "01900000-0000-7000-8000-0000000000aa");
+
+        assertThat(SensitiveDataSanitizer.sanitize(notUuid).get("corrects_entry_id"))
+                .isEqualTo(SensitiveDataSanitizer.REDACTED);
+        assertThat(SensitiveDataSanitizer.sanitize(uuidInOtherKey).get("source"))
+                .isEqualTo(SensitiveDataSanitizer.REDACTED);
+    }
+
+    @Test
     void credencialesDiagnosticosYTokensTambienSeDescartan() {
         Map<String, Object> details = new LinkedHashMap<>();
         details.put("password", "secreto");

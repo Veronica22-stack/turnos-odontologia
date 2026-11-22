@@ -26,7 +26,13 @@ public final class SensitiveDataSanitizer {
     private static final class Rules {
         private static final Pattern KEY_SEPARATOR = Pattern.compile("[\\s-]+");
         private static final Set<String> ALLOWED_KEYS = Set.of(
-                "outcome", "reason_code", "attempt", "entity_version", "field_names", "duration_ms", "source");
+                "outcome", "reason_code", "attempt", "entity_version", "field_names", "duration_ms", "source",
+                // C-16: referencias de historia clinica (tipo de entrada, version e id de la entrada corregida).
+                "entry_type", "version", "corrects_entry_id");
+        /** Claves cuyo valor es un identificador opaco: un UUID exacto no se redacta (no es dato personal). */
+        private static final Set<String> UUID_KEYS = Set.of("corrects_entry_id");
+        private static final Pattern UUID_SHAPE = Pattern.compile(
+                "[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}");
         private static final Set<String> BLACKLISTED_KEYS = Set.of(
                 "dni", "document", "documento", "email", "mail", "phone", "telefono", "name", "nombre",
                 "apellido", "fullname", "full_name", "password", "pass", "secret", "token", "authorization",
@@ -68,7 +74,8 @@ public final class SensitiveDataSanitizer {
             if (!Rules.ALLOWED_KEYS.contains(key) || Rules.BLACKLISTED_KEYS.contains(key)) {
                 continue;
             }
-            Object value = sanitizeValue(entry.getValue(), depth);
+            Object value = Rules.UUID_KEYS.contains(key) && entry.getValue() instanceof String text
+                    && Rules.UUID_SHAPE.matcher(text).matches() ? text : sanitizeValue(entry.getValue(), depth);
             if (value != null) {
                 result.put(key, value);
                 entries++;

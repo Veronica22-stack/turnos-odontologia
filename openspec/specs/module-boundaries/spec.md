@@ -26,7 +26,7 @@ Una clase de un módulo SHALL depender de otro módulo únicamente a través de 
 - **THEN** la verificación falla nombrando la clase de origen y la de destino
 
 ### Requirement: Grafo de dependencias permitido
-Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `agenda`, `pacientes`, `notificaciones`; `historiaclinica` → `pacientes`, `auditoria`; `auth` → `auditoria`. `auth` y `auditoria` MUST NOT depender de módulos de negocio (`agenda`, `reservas`, `pacientes`, `historiaclinica`, `notificaciones`), directa ni transitivamente. No se permiten ciclos.
+Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `agenda`, `pacientes`, `notificaciones`; `historiaclinica` → `pacientes`, `auditoria`; `pacientes` → `auditoria`; `auth` → `auditoria`. `auth` y `auditoria` MUST NOT depender de módulos de negocio (`agenda`, `reservas`, `pacientes`, `historiaclinica`, `notificaciones`), directa ni transitivamente. No se permiten ciclos.
 
 #### Scenario: Dependencia no declarada
 - **GIVEN** una clase de `agenda` que usa un tipo de `reservas.api`
@@ -40,6 +40,11 @@ Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `ag
 
 #### Scenario: auth registra auditoría
 - **GIVEN** una clase de `auth.application` que usa `auditoria.api.AuditLogger`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación pasa
+
+#### Scenario: pacientes registra auditoría
+- **GIVEN** una clase de `pacientes.application` que usa `auditoria.api.AuditLogger`
 - **WHEN** se ejecuta la verificación de arquitectura
 - **THEN** la verificación pasa
 

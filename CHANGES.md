@@ -336,7 +336,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 3 — Pacientes y turnos
 
 ### [C-10] `patients-management`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 11/11 tareas; implementado por Gabriel (PR #8 mergeado en `master`); archivado desde `dev-veronica` junto con C-16
 - **Scope**:
   - Migración V7: tabla `patient` (nombre, DNI, teléfono, email, `source`, baja lógica, `UNIQUE (practice_id, dni)`)
   - Endpoints `/api/v1/patients` (búsqueda por nombre/DNI/teléfono, ver, editar, baja lógica) (US-050); sin DELETE físico
@@ -451,7 +451,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 > Rama independiente de la reserva pública; avanza en paralelo con FASE 4. Condicionada por PA-01 (Ley 27.706 no relevada): el propose de C-16 debe explicitar qué se asume y registrar la validación legal pendiente.
 
 ### [C-16] `clinical-record-core`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 18/18 tareas, suite completa verde (462 tests); desviaciones registradas en `openspec/changes/archive/2026-11-22-c-16-clinical-record-core/design.md`
 - **Scope**:
   - Migración V11: tablas `clinical_record` y `anamnesis_entry` (`author_id`, `created_at` del servidor, `corrects_entry_id`, motivo); entradas inmutables
   - REVOKE UPDATE/DELETE al rol `app` sobre tablas de HC; sin endpoints de edición ni borrado (RN-HC-01, RN-GL-01)
