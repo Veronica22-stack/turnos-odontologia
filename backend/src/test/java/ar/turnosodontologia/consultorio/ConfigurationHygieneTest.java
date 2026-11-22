@@ -29,7 +29,7 @@ class ConfigurationHygieneTest {
             "DB_MIGRATION_USER", "DB_MIGRATION_PASSWORD",
             "APP_BASE_URL", "APP_TIMEZONE",
             "BOOTSTRAP_ADMIN_EMAIL", "BOOTSTRAP_ADMIN_PASSWORD",
-            "AUTH_SESSION_TIMEOUT_MIN",
+            "AUTH_SESSION_TIMEOUT_MIN", "AUTH_SESSION_COOKIE_NAME", "AUTH_SESSION_COOKIE_SECURE",
             "MAIL_PROVIDER", "MAIL_HOST", "MAIL_PORT", "MAIL_USER", "MAIL_PASSWORD", "MAIL_FROM",
             "REMINDER_HOURS_BEFORE", "RATE_LIMIT_PUBLIC_PER_MIN", "BOOKING_TOKEN_TTL_DAYS",
             "CORS_ALLOWED_ORIGINS",
@@ -68,6 +68,16 @@ class ConfigurationHygieneTest {
         String content = Files.readString(ENV_EXAMPLE);
 
         assertThat(content).contains("C-04").contains("C-02");
+    }
+
+    @Test
+    void variablesDeCookieDeSesionNoSonSensibles() throws IOException {
+        Map<String, String> variables = parseEnv(Files.readAllLines(ENV_EXAMPLE));
+
+        assertThat(variables.get("AUTH_SESSION_COOKIE_NAME")).isEqualTo("SESSIONID");
+        assertThat(variables.get("AUTH_SESSION_COOKIE_SECURE")).isEqualTo("true");
+        assertThat(variables.get("AUTH_SESSION_COOKIE_NAME")).doesNotContain("change-me", "password", "secret");
+        assertThat(variables.get("AUTH_SESSION_COOKIE_SECURE")).doesNotContain("change-me", "password", "secret");
     }
 
     @Test

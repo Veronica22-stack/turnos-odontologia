@@ -120,6 +120,41 @@ public class AppUser {
         return Optional.ofNullable(lastLoginAt);
     }
 
+    /** Verdadero mientras el bloqueo temporal siga vigente en el instante dado (UTC). */
+    public boolean lockedAt(Instant now) {
+        return lockedUntil != null && now.isBefore(lockedUntil);
+    }
+
+    /** Registra un fallo. Durante un bloqueo vigente no cuenta ni consulta el hasher (design D4). */
+    public void registerFailedAttempt(Clock clock, LockoutPolicy policy) {
+        Objects.requireNonNull(clock, "clock");
+        Objects.requireNonNull(policy, "policy");
+        Instant now = clock.instant();
+        if (lockedAt(now)) {
+            return;
+        }
+        lockedUntil = null;
+        failedAttempts++;
+        policy.durationFor(failedAttempts).ifPresent(duration -> lockedUntil = now.plus(duration));
+    }
+
+    /** Reinicia el contador, limpia el bloqueo y registra el acceso con el reloj del servidor. */
+    public void registerSuccessfulLogin(Clock clock) {
+        Objects.requireNonNull(clock, "clock");
+        failedAttempts = 0;
+        lockedUntil = null;
+        lastLoginAt = clock.instant();
+    }
+
+    /** Guarda el hash ya calculado; la validación de la contraseña en claro vive en {@link PasswordPolicy}. */
+    public void changePassword(String passwordHash) {
+        this.passwordHash = Objects.requireNonNull(passwordHash, "passwordHash");
+    }
+
+    public void clearMustChangePassword() {
+        this.mustChangePassword = false;
+    }
+
     /** Solo el id y el rol: nunca el email ni el hash (reglas duras 6 y 8). */
     @Override
     public String toString() {

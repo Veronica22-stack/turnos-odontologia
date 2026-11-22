@@ -41,6 +41,17 @@ cp .env.example .env        # PowerShell: Copy-Item .env.example .env
 Editá `.env` y reemplazá todos los `change-me` por contraseñas propias. `.env` no se versiona.
 **Spring Boot no lee `.env` por sí solo**: hay que cargar las variables en la consola (o en el IDE) antes de iniciar el backend (ver paso 3).
 
+Variables de la sesión (C-04):
+
+| Variable | Default | Significado |
+|---|---|---|
+| `AUTH_SESSION_TIMEOUT_MIN` | `30` | Minutos de inactividad permitidos. Debe ser un entero mayor que 0; un valor inválido hace fallar el arranque y nombra la variable. |
+| `AUTH_SESSION_COOKIE_NAME` | `SESSIONID` | Nombre de la cookie opaca de sesión. No contiene datos de la cuenta. |
+| `AUTH_SESSION_COOKIE_SECURE` | `true` (`false` en el perfil `dev`) | Si la cookie exige HTTPS. `HttpOnly`, `SameSite=Strict` y CSRF no se relajan en `dev`. |
+| `CORS_ALLOWED_ORIGINS` | — en producción | Lista explícita de orígenes con credenciales (separados por coma). Es obligatoria fuera de `dev` y nunca admite `*`. |
+
+La cookie CSRF es fija: `XSRF-TOKEN`; la cabecera exigida en escrituras autenticadas es `X-XSRF-TOKEN`.
+
 ### 2. Crear la base y los roles (una sola vez)
 
 `infra/postgres/init/01-roles.sql` crea el rol de migración (`DB_MIGRATION_USER`, con DDL, usado solo por Flyway), el rol de aplicación
@@ -110,6 +121,41 @@ Si faltan o no son válidas, el arranque falla con un mensaje que nombra la vari
 es provisoria: la cuenta queda marcada para **cambiarla en el primer login** (pantalla de acceso: change C-04). Los arranques
 siguientes no leen estas variables: si ya existe un `DENTIST` no se crea ni se modifica nada, por eso conviene **quitar las
 variables del `.env` después del primer arranque**. El log solo muestra el id de la cuenta, nunca el email ni la contraseña.
+
+#### API de autenticación (C-04)
+
+El frontend es una SPA que llama a la API con credenciales (cookies). Los cuatro endpoints son:
+
+| Método y ruta | CSRF | Respuesta | Uso |
+|---|---|---|---|
+| `POST /api/v1/auth/login` | No (es pública) | `200` + `AuthMeResponse`; cookies `SESSIONID` (HttpOnly) y `XSRF-TOKEN` | Iniciar sesión con `{ "email", "password" }` |
+| `GET /api/v1/auth/me` | No (GET) | `200` + `userId`, `role`, `mustChangePassword`, `expiresAt` (UTC) | Consultar la sesión actual; sin email, DNI ni teléfono |
+| `POST /api/v1/auth/change-password` | Sí | `200` | Enviar `{ "currentPassword", "newPassword" }` (12–128 caracteres); invalida todas las sesiones |
+| `POST /api/v1/auth/logout` | Sí | `204` | Cierra solo la sesión actual; es idempotente |
+
+La sesión viaja en la cookie `SESSIONID` (`HttpOnly`, `SameSite=Strict`; `Secure` salvo en `dev`). El valor de la token CSRF se entrega en la cookie legible `XSRF-TOKEN` **y** en la cabecera de respuesta `X-CSRF-TOKEN`. En cada `POST` autenticado (salvo `/login`) el cliente debe reenviar ese mismo valor en la cabecera `X-XSRF-TOKEN` **y** en la cookie `XSRF-TOKEN`; si falta o no coincide, la respuesta es `403` con `code = CSRF_REQUIRED` y la sesión sigue activa. En `/login` se rota la token: el cliente debe reemplazar la que tenía por la devuelta en esa respuesta.
+
+Ejemplo de primer login (sin secretos en el comando: se toman de las variables cargadas desde `.env`):
+
+```bash
+# La cookie de sesión se guarda en cookies.txt (no versionarlo).
+curl -sS -c cookies.txt -H 'Content-Type: application/json' \
+  -d "{\"email\":\"$BOOTSTRAP_ADMIN_EMAIL\",\"password\":\"$BOOTSTRAP_ADMIN_PASSWORD\"}" \
+  http://localhost:8080/api/v1/auth/login
+
+# La respuesta incluye X-CSRF-TOKEN: copiar ese valor a $CSRF antes de escribir.
+# Con mustChangePassword=true solo responden /me, /change-password y /logout;
+# cualquier otra ruta privada devuelve 403 PASSWORD_CHANGE_REQUIRED.
+curl -sS -b cookies.txt -c cookies.txt \
+  -H "X-XSRF-TOKEN: $CSRF" -b "XSRF-TOKEN=$CSRF" \
+  -H 'Content-Type: application/json' \
+  -d "{\"currentPassword\":\"$BOOTSTRAP_ADMIN_PASSWORD\",\"newPassword\":\"$NUEVA_CONTRASENA\"}" \
+  http://localhost:8080/api/v1/auth/change-password
+
+# El cambio invalida la sesión: hay que volver a /login con la nueva contraseña.
+```
+
+Errores: `401 UNAUTHENTICATED` (sin sesión o expirada), `401 INVALID_CREDENTIALS` (credenciales, cuenta bloqueada o inexistente — el cuerpo es idéntico), `403 FORBIDDEN`, `403 PASSWORD_CHANGE_REQUIRED`, `403 CSRF_REQUIRED`, `400 VALIDATION_FAILED` y `429 RATE_LIMITED` (con `Retry-After`). Todas usan `application/problem+json` y no incluyen `WWW-Authenticate: Basic` ni redirecciones a `/login`.
 
 ### 4. Frontend
 
