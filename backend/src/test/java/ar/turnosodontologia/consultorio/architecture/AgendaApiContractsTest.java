@@ -51,6 +51,26 @@ class AgendaApiContractsTest {
     }
 
     @Test
+    void losContratosDeOcupacionConservanSusFirmasParaElMotorDeDisponibilidad() throws NoSuchMethodException {
+        Method blocked = BlockedRanges.class.getMethod(
+                "findOverlapping", java.util.UUID.class, java.time.Instant.class, java.time.Instant.class);
+        Method appointments = AffectedAppointments.class.getMethod(
+                "findWithin", java.util.UUID.class, java.time.Instant.class, java.time.Instant.class);
+
+        assertThat(blocked.getReturnType()).isEqualTo(List.class);
+        assertThat(appointments.getReturnType()).isEqualTo(List.class);
+        assertThat(blocked.getParameterTypes())
+                .containsExactly(java.util.UUID.class, java.time.Instant.class, java.time.Instant.class);
+        assertThat(appointments.getParameterTypes())
+                .containsExactly(java.util.UUID.class, java.time.Instant.class, java.time.Instant.class);
+        assertThat(blockedIntervalTypes()).containsExactly(BlockedInterval.class, AffectedAppointment.class);
+    }
+
+    private static List<Class<?>> blockedIntervalTypes() {
+        return List.of(BlockedInterval.class, AffectedAppointment.class);
+    }
+
+    @Test
     void elRequestNoPermiteEditarMarcasDeAuditoriaYLaRespuestaNoExponeJpa() {
         assertThat(ScheduleBlockRequest.class.getRecordComponents())
                 .extracting(RecordComponent::getName)
