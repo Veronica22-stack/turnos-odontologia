@@ -26,7 +26,7 @@ Una clase de un módulo SHALL depender de otro módulo únicamente a través de 
 - **THEN** la verificación falla nombrando la clase de origen y la de destino
 
 ### Requirement: Grafo de dependencias permitido
-Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `agenda`, `pacientes`, `notificaciones`; `agenda` → `pacientes`; `notificaciones` → `agenda`, `pacientes`; `historiaclinica` → `pacientes`, `auditoria`; `pacientes` → `auditoria`; `auth` → `auditoria`. `auth` y `auditoria` MUST NOT depender de módulos de negocio (`agenda`, `reservas`, `pacientes`, `historiaclinica`, `notificaciones`), directa ni transitivamente. No se permiten ciclos.
+Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `agenda`, `pacientes`, `notificaciones`; `agenda` → `pacientes`; `notificaciones` → `agenda`, `pacientes`; `historiaclinica` → `pacientes`, `auditoria`, `agenda`; `pacientes` → `auditoria`; `auth` → `auditoria`. `auth` y `auditoria` MUST NOT depender de módulos de negocio (`agenda`, `reservas`, `pacientes`, `historiaclinica`, `notificaciones`), directa ni transitivamente. No se permiten ciclos.
 
 #### Scenario: Dependencia no declarada
 - **GIVEN** una clase de `agenda` que usa un tipo de `reservas.api`
@@ -97,6 +97,21 @@ Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `ag
 - **GIVEN** una clase de `auth.api` que usa el limitador de tasa de `shared.api` o el bean `java.time.Clock` provisto por `shared.infrastructure`
 - **WHEN** se ejecuta la verificación de arquitectura
 - **THEN** la verificación pasa
+
+#### Scenario: historiaclinica consulta turnos por la api de agenda
+- **GIVEN** una clase de `historiaclinica.application` que usa la consulta de turnos de `agenda.api`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación pasa
+
+#### Scenario: historiaclinica no accede a capas internas de agenda
+- **GIVEN** una clase de `historiaclinica` que usa un tipo de `agenda.application`, `agenda.domain` o `agenda.infrastructure`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla nombrando la clase de origen y la de destino
+
+#### Scenario: Ciclo agenda historiaclinica prohibido
+- **GIVEN** una clase de `agenda` que usa un tipo de `historiaclinica.api`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla
 
 ### Requirement: Dominio independiente del framework
 La capa `domain` de cada módulo MUST NOT depender de las capas `api`, `application` ni `infrastructure`, ni de ningún paquete de Spring, ni de JDBC (`java.sql`). Las únicas dependencias de framework permitidas en `domain` son las anotaciones de mapeo de persistencia (`jakarta.persistence` y `org.hibernate.annotations`). La capa `application` MUST NOT depender de `api` ni de `infrastructure`.
