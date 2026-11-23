@@ -175,6 +175,7 @@ class AppointmentConcurrencyIT extends AbstractIntegrationTest {
         int blockedFirst = 0;
         for (int i = 0; i < ITERATIONS; i++) {
             jdbc.update("DELETE FROM schedule_block");
+            AppointmentFixtures.execute("DELETE FROM notification");
             AppointmentFixtures.execute("DELETE FROM appointment");
 
             List<Outcome<?>> outcomes = new ArrayList<>(runConcurrently(

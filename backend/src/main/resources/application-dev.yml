@@ -6,3 +6,6 @@ spring:
 logging:
   level:
     ar.turnosodontologia.consultorio: DEBUG
+
+# Emails (C-13): en desarrollo se simulan; el log solo muestra identificadores, tipo y plantilla (nunca destinatario ni cuerpo).
+MAIL_PROVIDER: log

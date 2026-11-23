@@ -29,7 +29,8 @@ class MissingConfigurationTest {
                 .properties(
                         "DB_USER=app",
                         "DB_MIGRATION_USER=migrator",
-                        "DB_MIGRATION_PASSWORD=" + OTHER_SECRET);
+                        "DB_MIGRATION_PASSWORD=" + OTHER_SECRET,
+                        "MAIL_PROVIDER=log");
     }
 
     @Test
@@ -59,7 +60,8 @@ class MissingConfigurationTest {
                         "DB_URL=jdbc:postgresql://localhost:5432/consultorio",
                         "DB_USER=app",
                         "DB_PASSWORD=" + OTHER_SECRET,
-                        "DB_MIGRATION_USER=migrator");
+                        "DB_MIGRATION_USER=migrator",
+                        "MAIL_PROVIDER=log");
 
         assertThatThrownBy(() -> app.run().close())
                 .hasStackTraceContaining("DB_MIGRATION_PASSWORD")
@@ -78,9 +80,14 @@ class MissingConfigurationTest {
                         "DB_MIGRATION_PASSWORD=" + OTHER_SECRET);
     }
 
+    /** Igual que {@link #configuredApplication()} pero con el email resuelto: aisla el motivo de fallo bajo prueba. */
+    private static SpringApplicationBuilder configuredWithMail() {
+        return configuredApplication().properties("MAIL_PROVIDER=log");
+    }
+
     @Test
     void fallaMencionandoAuthSessionTimeoutMinCuandoNoEsEntero() {
-        SpringApplicationBuilder app = configuredApplication().properties("AUTH_SESSION_TIMEOUT_MIN=abc");
+        SpringApplicationBuilder app = configuredWithMail().properties("AUTH_SESSION_TIMEOUT_MIN=abc");
 
         assertThatThrownBy(() -> app.run().close())
                 .hasStackTraceContaining("AUTH_SESSION_TIMEOUT_MIN")
@@ -89,7 +96,7 @@ class MissingConfigurationTest {
 
     @Test
     void fallaMencionandoCorsAllowedOriginsEnPerfilProductivo() {
-        SpringApplicationBuilder app = configuredApplication();
+        SpringApplicationBuilder app = configuredWithMail();
 
         assertThatThrownBy(() -> app.run().close())
                 .hasStackTraceContaining("CORS_ALLOWED_ORIGINS")
@@ -98,7 +105,7 @@ class MissingConfigurationTest {
 
     @Test
     void fallaMencionandoAuthSessionTimeoutMinCuandoEsCero() {
-        SpringApplicationBuilder app = configuredApplication().properties("AUTH_SESSION_TIMEOUT_MIN=0");
+        SpringApplicationBuilder app = configuredWithMail().properties("AUTH_SESSION_TIMEOUT_MIN=0");
 
         assertThatThrownBy(() -> app.run().close())
                 .hasStackTraceContaining("AUTH_SESSION_TIMEOUT_MIN")
@@ -107,10 +114,58 @@ class MissingConfigurationTest {
 
     @Test
     void fallaMencionandoAuthSessionTimeoutMinCuandoEsNegativo() {
-        SpringApplicationBuilder app = configuredApplication().properties("AUTH_SESSION_TIMEOUT_MIN=-1");
+        SpringApplicationBuilder app = configuredWithMail().properties("AUTH_SESSION_TIMEOUT_MIN=-1");
 
         assertThatThrownBy(() -> app.run().close())
                 .hasStackTraceContaining("AUTH_SESSION_TIMEOUT_MIN")
+                .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
+    }
+
+    // ---- Email de notificaciones (C-13): el arranque falla antes de crear beans, sin base de datos ----
+
+    private static SpringApplicationBuilder configuredWithCors() {
+        return configuredApplication().properties("CORS_ALLOWED_ORIGINS=https://turnos.ejemplo.com");
+    }
+
+    @Test
+    void fallaMencionandoMailProviderCuandoFaltaFueraDeDev() {
+        assumeThat(System.getenv("MAIL_PROVIDER")).isNull();
+        SpringApplicationBuilder app = configuredWithCors();
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("MAIL_PROVIDER")
+                .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
+    }
+
+    @Test
+    void fallaMencionandoMailProviderCuandoElValorEsInvalido() {
+        SpringApplicationBuilder app = configuredWithCors().properties("MAIL_PROVIDER=sendgrid");
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("MAIL_PROVIDER")
+                .satisfies(error -> assertThat(rootMessages(error)).doesNotContain("sendgrid").doesNotContain(OTHER_SECRET));
+    }
+
+    @Test
+    void fallaMencionandoMailPasswordConSmtpSinContrasenaYSinMostrarElUsuario() {
+        assumeThat(System.getenv("MAIL_PASSWORD")).isNull();
+        SpringApplicationBuilder app = configuredWithCors().properties("MAIL_PROVIDER=smtp",
+                "MAIL_HOST=smtp.ejemplo.com", "MAIL_PORT=587", "MAIL_FROM=turnos@ejemplo.com",
+                "MAIL_USER=usuario-smtp-visible");
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("MAIL_PASSWORD")
+                .satisfies(error -> assertThat(rootMessages(error))
+                        .doesNotContain("usuario-smtp-visible").doesNotContain(OTHER_SECRET));
+    }
+
+    @Test
+    void fallaMencionandoNotificationMaxAttemptsCuandoEsCero() {
+        SpringApplicationBuilder app = configuredWithCors().properties("MAIL_PROVIDER=log",
+                "NOTIFICATION_MAX_ATTEMPTS=0");
+
+        assertThatThrownBy(() -> app.run().close())
+                .hasStackTraceContaining("NOTIFICATION_MAX_ATTEMPTS")
                 .satisfies(error -> assertThat(rootMessages(error)).doesNotContain(OTHER_SECRET));
     }
 

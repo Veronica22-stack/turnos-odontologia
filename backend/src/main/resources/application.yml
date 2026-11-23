@@ -28,6 +28,10 @@ server:
     include-stacktrace: never
 
 management:
+  health:
+    mail:
+      # El health del SMTP no debe poner la aplicacion en DOWN: un proveedor caido solo demora emails (C-13).
+      enabled: false
   endpoints:
     web:
       exposure:

@@ -72,6 +72,18 @@ public final class AppointmentFixtures {
         }
     }
 
+    /** Ejecuta un {@code SELECT count(*) ...} con el rol de migracion. */
+    public static int count(String sql) {
+        try (Connection connection = AbstractIntegrationTest.DATABASE.migratorConnection();
+                Statement statement = connection.createStatement();
+                java.sql.ResultSet rows = statement.executeQuery(sql)) {
+            rows.next();
+            return rows.getInt(1);
+        } catch (SQLException error) {
+            throw new IllegalStateException(error);
+        }
+    }
+
     public static String statusOf(UUID appointmentId) {
         try (Connection connection = AbstractIntegrationTest.DATABASE.migratorConnection();
                 Statement statement = connection.createStatement();
@@ -83,8 +95,10 @@ public final class AppointmentFixtures {
         }
     }
 
-    /** Borra todo lo que crean estos fixtures (turnos, bloqueos, horarios, pacientes y prestaciones de prueba). */
+    /** Borra todo lo que crean estos fixtures (notificaciones, turnos, bloqueos, horarios, pacientes y prestaciones de prueba). */
     public static void cleanAll() {
+        // notification referencia appointment con ON DELETE RESTRICT (V14): se vacia antes que los turnos.
+        execute("DELETE FROM notification");
         execute("DELETE FROM appointment");
         execute("DELETE FROM schedule_block");
         execute("DELETE FROM working_hours");

@@ -52,6 +52,19 @@ Variables de la sesión (C-04):
 
 La cookie CSRF es fija: `XSRF-TOKEN`; la cabecera exigida en escrituras autenticadas es `X-XSRF-TOKEN`.
 
+Emails de notificación (C-13):
+
+En desarrollo (`SPRING_PROFILES_ACTIVE=dev`) los emails **no se envían**: el perfil `dev` fija `MAIL_PROVIDER=log` y el log de la aplicación solo registra, por cada envío simulado, los identificadores de la notificación y del turno, el tipo y el nombre de la plantilla (nunca el destinatario, el asunto ni el cuerpo). Para enviar emails de verdad, definí `MAIL_PROVIDER=smtp` junto con `MAIL_HOST`, `MAIL_PORT`, `MAIL_USER`, `MAIL_PASSWORD` y `MAIL_FROM` (STARTTLS obligatorio, timeouts de 10 s).
+
+| Variable | Default | Significado |
+|---|---|---|
+| `MAIL_PROVIDER` | `log` en `dev`; obligatoria fuera de `dev` | `log` (simulado) o `smtp`. Un valor distinto, o `smtp` sin alguna de sus variables, hace fallar el arranque y nombra solo la variable. Con `log` fuera de `dev` el arranque registra una advertencia. |
+| `NOTIFICATION_POLL_INTERVAL` | `PT5M` | Cada cuánto se despachan las notificaciones vencidas (ISO-8601, mayor que 0). Además, tras confirmar o cancelar un turno se despacha enseguida. |
+| `NOTIFICATION_MAX_ATTEMPTS` | `5` | Intentos de envío (backoff de 5, 10, 20 y 40 min) antes de dejar la notificación en `FAILED`. Debe ser al menos 1. |
+| `NOTIFICATION_DISPATCH_ENABLED` | `true` | Con `false` las notificaciones se encolan pero no se envían. |
+
+La anticipación del recordatorio no es una variable de entorno: sale de `reminder_hours_before` del consultorio (configuración del consultorio, 1 a 168 horas, 24 por defecto).
+
 ### 2. Crear la base y los roles (una sola vez)
 
 `infra/postgres/init/01-roles.sql` crea el rol de migración (`DB_MIGRATION_USER`, con DDL, usado solo por Flyway), el rol de aplicación
