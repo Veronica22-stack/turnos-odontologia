@@ -4,12 +4,19 @@ import type { SettingsGateway } from '../features/settings/settings-gateway';
 import { safeNext } from '../router/safe-next';
 import type { RouteContext, RouteDef } from '../router/router';
 import type { BookingGateway } from '../features/booking/booking-types';
+import type { ManageGateway } from '../features/manage-booking/manage-types';
 import { createRoutes, type RoutesDeps } from './routes';
 
 const BOOKING_GATEWAY: BookingGateway = {
   listServices: async () => ({ kind: 'ok', services: [{ id: 's-1', name: 'Limpieza', description: null, durationMin: 30 }] }),
   availability: async () => ({ kind: 'ok', slots: [] }),
   book: async () => ({ kind: 'unknown-outcome' }),
+};
+
+const MANAGE_GATEWAY: ManageGateway = {
+  view: async () => ({ kind: 'invalid' }),
+  cancel: async () => ({ kind: 'invalid' }),
+  reschedule: async () => ({ kind: 'invalid' }),
 };
 
 const SETTINGS_GATEWAY = {
@@ -39,6 +46,7 @@ function deps(state: SessionState = { status: 'anonymous' }, settings: SettingsG
     gateway: { login: async () => ({ ok: false, failure: { kind: 'connection' } }), changePassword: async () => ({ ok: true }) },
     settings,
     booking: BOOKING_GATEWAY,
+    manage: MANAGE_GATEWAY,
     replaceUrl: () => {},
     goBack: () => {},
     navigate: () => {},
@@ -87,7 +95,6 @@ describe('createRoutes', () => {
   });
 
   it.each([
-    ['/turno/:token', 'Gestionar turno'],
     ['/login', 'Ingresar'],
     ['/agenda', 'Agenda'],
     ['/pacientes', 'Pacientes'],
@@ -125,9 +132,31 @@ describe('createRoutes', () => {
     expect(content.querySelector('a[href="/reservar"]')).not.toBeNull();
   });
 
-  it('la vista de gestion de turno no muestra el token', () => {
+  it('/turno/:token usa la vista real (no el placeholder), layout public, sin guard y titulo fijo', async () => {
+    const view = vi.spyOn(MANAGE_GATEWAY, 'view');
+    const { routes: r } = createRoutes(deps());
+    const route = byPath(r, '/turno/:token');
+    const token = 'tok_Abc-123_xyz456789012345';
+
+    const content = route.view(ctx(`/turno/${token}`, { token }));
+    expect(content.querySelector('h1')?.textContent).toBe('Tu turno');
+    await Promise.resolve();
+
+    expect(route.title).toBe('Gestionar turno');
+    expect(route.layout).toBe('public');
+    expect(route.guard).toBeUndefined();
+    expect(content.querySelector('.placeholder')).toBeNull();
+    expect(view).toHaveBeenCalledWith(token);
+    expect(content.textContent).not.toContain(token);
+  });
+
+  it('la vista de gestion con un token imposible no consulta y no muestra el token', () => {
+    const view = vi.spyOn(MANAGE_GATEWAY, 'view');
+    view.mockClear();
     const content = byPath(routes, '/turno/:token').view(ctx('/turno/AbC-123_x', { token: 'AbC-123_x' }));
 
+    expect(content.querySelector('h1')?.textContent).toBe('Este enlace no es válido');
+    expect(view).not.toHaveBeenCalled();
     expect(content.textContent).not.toContain('AbC-123_x');
   });
 

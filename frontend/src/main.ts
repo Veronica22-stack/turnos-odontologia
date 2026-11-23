@@ -12,6 +12,7 @@ import { cookieCsrfTransport } from './core/http/transport';
 import { renderPrivateLayout, type PrivateSection } from './layouts/private-layout';
 import { createAuthGateway } from './features/auth/auth-gateway';
 import { createBookingGateway } from './features/booking/booking-gateway';
+import { createManageGateway } from './features/manage-booking/manage-gateway';
 import { createSettingsGateway } from './features/settings/settings-gateway';
 import { markProLink, renderPublicLayout } from './layouts/public-layout';
 import { brandName } from './layouts/brand';
@@ -90,12 +91,14 @@ export function bootstrap(options: BootstrapOptions = {}): App {
   const authGateway = createAuthGateway({ client, onSessionExpired: () => sessionRef.expire() });
   const settingsGateway = createSettingsGateway({ client });
   const bookingGateway = createBookingGateway({ client });
+  const manageGateway = createManageGateway({ client });
 
   const { routes, notFound } = createRoutes({
     session: sessionRef,
     gateway: authGateway,
     settings: settingsGateway,
     booking: bookingGateway,
+    manage: manageGateway,
     replaceUrl: (path) => win.history.replaceState(null, '', path),
     goBack: () => win.history.back(),
     navigate: (path, options) => {
