@@ -81,7 +81,7 @@ Clasificación en el gateway (las vistas solo ven estos tipos):
 - **Un paso por entrada de historial (decisión de Mayra, 2026-11-23, resuelve OQ-3)**: la URL refleja el paso: `/reservar` (paso 1), `/reservar?paso=2`, `/reservar?paso=3`. Avanzar de paso usa `navigate(path)` del router (`history.pushState`), así el "atrás" del celular vuelve al paso anterior sin perder las elecciones en memoria, y "adelante" también funciona. La URL **no** lleva prestación, horario ni datos personales: solo el número de paso (`booking-step-url.ts`: `parseStep(query)` → 1|2|3, cualquier otro valor → 1).
 - **Estado entre renders**: el router de C-05 vuelve a invocar `view(context)` en cada navegación o `popstate` (también dentro de `/reservar`). `createBookingView` guarda el estado del flujo en su *closure* (memoria, nunca storage) y lo conserva si el elemento raíz de la invocación anterior sigue conectado al documento (re-render dentro de `/reservar`); si ya no lo está (se pasó por otra ruta) o es la primera invocación, arranca vacío. Así los datos se descartan al abandonar `/reservar`.
 - **Normalización**: el paso pedido por la URL se valida contra el estado en memoria (2 exige prestación elegida; 3 exige además horario). Si no alcanza —recarga o enlace directo a `?paso=2|3` sin estado— se hace `history.replaceState` a `/reservar` y se muestra el paso 1 (si hay estado parcial, al paso más alto válido). Nunca se restauran datos desde la URL.
-- **Navegación interna**: "Continuar" = `navigate('/reservar?paso=N')` (push); "Volver" = `history.back()` (no apila entradas repetidas); el retorno por conflicto 409 (paso 3 → 2) y por `service-gone` (→ 1) usan `replace`, para no dejar entradas con estado inválido. La confirmación sigue en `/reservar/confirmado` con `replace` (D6).
+- **Navegación interna**: "Continuar" = `navigate('/reservar?paso=N')` (push); "Volver" = `history.back()` (no apila entradas repetidas); el retorno por conflicto 409 (paso 3 → 2) usa `history.back()` hacia la entrada `?paso=2` ya existente (no duplica entradas, así "Volver" llega al paso 1 de a un paso) y `service-gone` (→ 1) usa `replace`, para no dejar entradas con estado inválido. La confirmación sigue en `/reservar/confirmado` con `replace` (D6).
 - Al cambiar de prestación se descartan día y slot; al cambiar de día se descarta el slot. Los datos del formulario se conservan en memoria mientras la vista `/reservar` esté montada.
 
 ### D4 — Paso 2: días y horarios
@@ -184,6 +184,19 @@ Sin migración de datos ni cambios de backend. Rollback: revertir el commit del 
 - OQ-5 (PA-21): nivel WCAG objetivo; hoy se aplica la línea base del design system (contraste AA de tokens, foco visible, objetivos de 44 px, errores con ícono + texto).
 - OQ-6: los datos de contacto del consultorio para "Reservas no disponibles" y el pie siguen `(TBD)` (design system TBD 8).
 
+## Desviaciones de implementación (registradas en el verify, 2026-11-23)
+
+- **D7 (copy)**: los textos de las alertas siguen los mockups aprobados (título con punto final; `slot-unavailable`: "Elegí otro. Te mostramos los más cercanos; tus datos quedan guardados."); la tabla D7 es orientativa y manda `booking-messages.ts`.
+- **D5**: la ayuda del DNI es la del mockup ("Como figura en el documento; podés usar puntos.").
+- **D2**: el gateway devuelve uniones por `kind` (`{ kind: 'ok', services }`, `{ kind: 'ok', slots }`) en lugar de `{ ok, ... }`; mismos casos.
+- **D3**: las transiciones del flujo son `selectService`, `selectDate`, `selectSlot`, `setForm`, `next`, `back`, `goTo`, `submit`, `resolve`, `urlStepOf`, `flowStepOf`; `RoutesDeps` suma `replaceUrl` y `goBack` (`history.back()` para "Volver").
+- **D1**: archivos extra `booking-types.ts`, `booking-ui.ts`, `test-harness.ts` (solo tests, lo escanea `architecture.test.ts` como producción sin hallazgos), `booking-view-details.test.ts` y `booking-integration.test.ts` (integración de 8.2-8.4 en vez de `main.test.ts`).
+- **D8**: medidas locales `--layout-booking-day-width/height` (candidatas a token en la Revisión 2); borde del badge y `.check` con `--color-primary-muted`; literales permitidos: bordes 1px/2px, `.hp` de 1px y `64rem`.
+- `core/dom/form.ts` suma el ícono `warning`.
+- **TDD**: las tareas 8.2-8.4 no se observaron en RED; se hizo una comprobación por mutación. Desviación aceptada.
+- **D3 / verify W1 (resuelto)**: el retorno por 409 ahora hace `goBack()` (la entrada previa del paso 3 siempre es `?paso=2`) en vez de `replace`, evitando el historial `[1, 2, 2]`.
+- **Pendiente: prueba manual contra backend real (tarea 9.3), a realizar por un integrante con el entorno completo.**
+
 ## UI Mockups
 
 - Design system revision: 1
@@ -193,5 +206,5 @@ Sin migración de datos ni cambios de backend. Rollback: revertir el commit del 
 - Approval: approved (2026-11-23, by Lucas)
 - Preview: rendered (2026-11-23, revisión 1, `mockups/previews/<pantalla>-390.png` y `-1440.png`, 14 pantallas / 28 capturas; Chrome headless por CDP con `Emulation.setDeviceMetricsOverride` 390x844 (mobile) y 1440x900, página completa, servidor local `python -m http.server` en 127.0.0.1:8765; sin scroll horizontal de página a 390 px; inspeccionadas visualmente: se corrigió el corte del email en la confirmación y el día vacío fuera de vista en `step2-empty`)
 - Revisión menor 2026-11-23: email enmascarado en confirmación por decisión de Mayra; informado a Lucas. (Solo cambia el texto del email en `confirmation.html` y sus capturas `confirmation-390.png`/`-1440.png`.)
-- Visual verify: differences (2026-11-23, apply: Vite dev + Chrome headless por CDP con `Fetch.enable` simulando `/api/v1/public/*` (servicios, disponibilidad, 201, 409, 429, 422 `BOOKING_CONTACT_LIMIT`, 500, 200 `ACCEPTED`), 14 pantallas a 390x844 y 1440x900 en `mockups/verify/`, comparadas con `mockups/previews/`; sin scroll horizontal a 320 px; sin excepciones en consola. Diferencias menores: casilla del aviso y espaciados verticales unos pocos px distintos, "Ver el día siguiente" sin el chevron del mockup; no hay diferencias mayores ni bloqueantes. Verificación contra backend real pendiente: tarea 9.3.)
+- Visual verify: passed (2026-11-23; solo diferencias minor aceptadas, confirmadas por el verify independiente: espaciados de pocos px, `h1` y círculo de éxito de la confirmación más chicos, ícono de información en lugar de sobre; verificación contra backend real pendiente, tarea 9.3; apply: Vite dev + Chrome headless por CDP con `Fetch.enable` simulando `/api/v1/public/*` (servicios, disponibilidad, 201, 409, 429, 422 `BOOKING_CONTACT_LIMIT`, 500, 200 `ACCEPTED`), 14 pantallas a 390x844 y 1440x900 en `mockups/verify/`, comparadas con `mockups/previews/`; sin scroll horizontal a 320 px; sin excepciones en consola. Diferencias menores: casilla del aviso y espaciados verticales unos pocos px distintos, "Ver el día siguiente" sin el chevron del mockup; no hay diferencias mayores ni bloqueantes. Verificación contra backend real pendiente: tarea 9.3.)
 - Criterio de aceptación: los HTML de `mockups/` y sus capturas (ver `tasks.md` grupos 6 a 9).

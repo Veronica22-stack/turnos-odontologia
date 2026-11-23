@@ -74,7 +74,7 @@
 
 - [x] 9.1 Ejecutar `npm test`, `npm run typecheck` y `npm run build` desde `frontend/`; todo verde y `git diff frontend/package.json` vacío
 - [x] 9.2 Revisión de reglas duras sobre el diff: `grep -rnE "innerHTML|outerHTML|insertAdjacentHTML|: any|as any" frontend/src --include=*.ts` sin resultados en producción; sin `console.*` en `features/booking`; sin colores ni medidas literales en `src/styles/booking.css` salvo las documentadas en design D8
-- [ ] 9.3 Verificación manual con `npm run dev` (backend de C-14 corriendo con al menos una prestación pública y horarios): reservar de punta a punta; forzar 409 reservando dos veces el mismo slot en dos pestañas; backend apagado → aviso de conexión con "Reintentar" (registrar el resultado en el resumen del apply)
+- [ ] 9.3 (pendiente: prueba manual contra backend real, a realizar por un integrante con el entorno completo; guion en `verify-report.md` §1) Verificación manual con `npm run dev` (backend de C-14 corriendo con al menos una prestación pública y horarios): reservar de punta a punta; forzar 409 reservando dos veces el mismo slot en dos pestañas; backend apagado → aviso de conexión con "Reintentar" (registrar el resultado en el resumen del apply)
 
 ## Workflow follow-up
 
