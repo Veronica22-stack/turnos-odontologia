@@ -4,7 +4,14 @@ import type { AgendaGateway } from '../features/agenda/agenda-gateway';
 import type { SettingsGateway } from '../features/settings/settings-gateway';
 import { safeNext } from '../router/safe-next';
 import type { RouteContext, RouteDef } from '../router/router';
+import type { BookingGateway } from '../features/booking/booking-types';
 import { createRoutes, type RoutesDeps } from './routes';
+
+const BOOKING_GATEWAY: BookingGateway = {
+  listServices: async () => ({ kind: 'ok', services: [{ id: 's-1', name: 'Limpieza', description: null, durationMin: 30 }] }),
+  availability: async () => ({ kind: 'ok', slots: [] }),
+  book: async () => ({ kind: 'unknown-outcome' }),
+};
 
 const SETTINGS_GATEWAY = {
   getPractice: async () => ({
@@ -48,6 +55,9 @@ function deps(state: SessionState = { status: 'anonymous' }, settings: SettingsG
     gateway: { login: async () => ({ ok: false, failure: { kind: 'connection' } }), changePassword: async () => ({ ok: true }) },
     agenda: AGENDA_GATEWAY,
     settings,
+    booking: BOOKING_GATEWAY,
+    replaceUrl: () => {},
+    goBack: () => {},
     navigate: () => {},
     onLogout: () => {},
   };
@@ -94,8 +104,6 @@ describe('createRoutes', () => {
   });
 
   it.each([
-    ['/reservar', 'Reservá tu turno'],
-    ['/reservar/confirmado', 'Reserva confirmada'],
     ['/turno/:token', 'Gestionar turno'],
     ['/login', 'Ingresar'],
     ['/agenda', 'Agenda'],
@@ -105,6 +113,33 @@ describe('createRoutes', () => {
     const content = byPath(routes, path).view(ctx(path));
 
     expect(content.querySelector('h1')?.textContent).toBe(heading);
+  });
+
+  it('/reservar usa la vista real de reserva (no el placeholder) con titulo "Reservar turno"', async () => {
+    const getServices = vi.spyOn(BOOKING_GATEWAY, 'listServices');
+    const { routes: r } = createRoutes(deps());
+    const route = byPath(r, '/reservar');
+
+    const content = route.view(ctx('/reservar'));
+    await Promise.resolve();
+    await Promise.resolve();
+
+    expect(route.title).toBe('Reservar turno');
+    expect(route.layout).toBe('public');
+    expect(content.querySelector('.placeholder')).toBeNull();
+    expect(getServices).toHaveBeenCalledTimes(1);
+    expect(content.textContent).not.toContain('La reserva llega en los changes');
+  });
+
+  it('/reservar/confirmado usa la vista real: sin datos en memoria muestra la confirmacion generica', () => {
+    const route = byPath(routes, '/reservar/confirmado');
+
+    const content = route.view(ctx('/reservar/confirmado'));
+
+    expect(route.title).toBe('Reserva confirmada');
+    expect(content.querySelector('h1')?.textContent).toBe('Revisá tu email');
+    expect(content.querySelector('.placeholder')).toBeNull();
+    expect(content.querySelector('a[href="/reservar"]')).not.toBeNull();
   });
 
   it('la vista de gestion de turno no muestra el token', () => {

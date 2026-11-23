@@ -5,6 +5,10 @@ import { createAgendaView } from '../features/agenda/agenda-view';
 import type { AuthGateway } from '../features/auth/auth-gateway';
 import { createChangePasswordView } from '../features/auth/change-password-view';
 import { createLoginView } from '../features/auth/login-view';
+import type { BookingGateway } from '../features/booking/booking-types';
+import { createBookingView } from '../features/booking/booking-view';
+import { createConfirmationView } from '../features/booking/confirmation-view';
+import type { Clock } from '../shared/utils/dates';
 import type { SettingsGateway } from '../features/settings/settings-gateway';
 import { createSettingsView } from '../features/settings/settings-view';
 import { redirectIfAuthenticated, requireAuthenticated, requireSession, rootRedirect } from '../router/guards';
@@ -25,12 +29,26 @@ export interface RoutesDeps {
   readonly gateway: AuthGateway;
   readonly agenda: AgendaGateway;
   readonly settings: SettingsGateway;
+  readonly booking: BookingGateway;
+  /** Corrige la URL sin renderizar (normaliza `?paso=` de la reserva). */
+  readonly replaceUrl: (path: string) => void;
+  readonly goBack: () => void;
+  readonly clock?: Clock;
   readonly navigate: (path: string, options?: { replace?: boolean }) => void;
   readonly onLogout: () => void;
 }
 
 export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: ViewRoute } {
   const { session, gateway, agenda, settings, navigate, onLogout } = deps;
+  const { session, gateway, settings, navigate, onLogout } = deps;
+  const bookingView = createBookingView({
+    gateway: deps.booking,
+    clock: deps.clock ?? (() => new Date()),
+    navigate,
+    replaceUrl: deps.replaceUrl,
+    goBack: deps.goBack,
+  });
+  const confirmationView = createConfirmationView();
   const getRoutes = (): readonly RouteDef[] => routes;
   const privateGuard = requireSession(session, getRoutes);
   const loginView = createLoginView({ gateway, session, navigate, routes: getRoutes });
@@ -49,14 +67,14 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       path: '/reservar',
       layout: 'public',
       title: 'Reservar turno',
-      view: placeholderView('Reservá tu turno', 'La reserva llega en los changes de reserva publica.'),
+      view: bookingView,
     },
     {
       name: 'reserva-confirmada',
       path: '/reservar/confirmado',
       layout: 'public',
       title: 'Reserva confirmada',
-      view: placeholderView('Reserva confirmada', 'La confirmacion llega en los changes de reserva publica.'),
+      view: confirmationView,
     },
     {
       name: 'gestionar-turno',

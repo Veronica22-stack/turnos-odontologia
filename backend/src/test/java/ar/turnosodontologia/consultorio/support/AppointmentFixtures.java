@@ -101,6 +101,8 @@ public final class AppointmentFixtures {
         // evolution_entry referencia appointment y clinical_record con ON DELETE RESTRICT (V15).
         ClinicalFixtures.deleteEvolutions();
         execute("DELETE FROM notification");
+        // booking_token referencia appointment con ON DELETE RESTRICT (V16).
+        execute("DELETE FROM booking_token");
         execute("DELETE FROM appointment");
         execute("DELETE FROM schedule_block");
         execute("DELETE FROM working_hours");

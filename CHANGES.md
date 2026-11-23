@@ -411,7 +411,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-09, PA-14
 
 ### [C-14] `public-booking-api`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 40/40 tareas; `openspec/changes/archive/2026-11-23-c-14-public-booking-api/verify-report.md`; migración V16 (no V10; outOfOrder=false); 787 unit + 542 IT verdes (suite completa compartida con C-15); ver `docs/qa/matriz-de-tests.md`
 - **Scope**:
   - `POST /api/v1/public/bookings` (US-030): rate limit, honeypot, validaciones de formato, anticipación y horizonte, límite de turnos futuros activos por DNI/email/teléfono (RN-RS-08; definitivo en PA-05)
   - Migración V10: tabla `booking_token` (hash, `appointment_id`, expiración, revocación); token CSPRNG ≥128 bits Base64URL, solo se guarda el hash (RN-RS-04) (número a reasignar: debe ser mayor que la última versión aplicada, ≥ V14, al momento del apply; Flyway outOfOrder=false)
@@ -429,7 +429,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-05, PA-10
 
 ### [C-15] `booking-token-management`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 26/26 tareas; `openspec/changes/archive/2026-11-23-c-15-booking-token-management/verify-report.md`; sin rotación de token al reprogramar; arista `reservas → auditoria.api`; 787 unit + 542 IT verdes (suite completa compartida con C-14)
 - **Scope**:
   - `GET /api/v1/public/bookings/{token}`, `DELETE /api/v1/public/bookings/{token}` (cancelar), `POST /api/v1/public/bookings/{token}/reschedule` (US-031, US-032)
   - Búsqueda por hash con comparación en tiempo constante; token ligado a un turno, expira al pasar el turno y se revoca al cancelar; decidir rotación tras reprogramar (RN-RS-06)
@@ -584,7 +584,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 7 — Reserva pública (UI)
 
 ### [C-24] `public-booking-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — verify PASS WITH WARNINGS sin críticos, W1 (Volver tras 409) corregido con tests (`openspec/changes/archive/2026-11-23-c-24-public-booking-ui/verify-report.md`); mockups aprobados por Lucas; contrato verificado contra C-14/C-15; pendiente tarea 9.3 (prueba manual contra backend real) y PR a `master`
 - **Scope**:
   - `/reservar`: selección de prestación, fecha/hora (slots de `GET /public/availability`), formulario nombre/DNI/teléfono/email con honeypot oculto y aviso de privacidad (texto TBD, PA-10)
   - `/reservar/confirmado`; manejo de 409 (recarga disponibilidad y sugiere otros horarios), rate limit y "reservas no disponibles"

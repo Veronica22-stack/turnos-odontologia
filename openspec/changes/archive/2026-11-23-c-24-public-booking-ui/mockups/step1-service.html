@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Reservar turno · {{brand}} — mockup C-24</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="booking.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="public-shell">
+    <header class="app-header public-header" role="banner">
+      <a class="brand-link" href="/reservar" aria-label="La Muela — reservar turno" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <a class="pro-link" href="/login">Acceso profesionales</a>
+    </header>
+
+    <main id="main" class="public-main" tabindex="-1">
+      <section class="booking" aria-labelledby="step-title">
+        <div class="stepper"><span>Paso 1 de 3</span><ol aria-hidden="true"><li aria-current="step"></li><li></li><li></li></ol></div>
+        <div class="booking-head">
+          <h1 id="step-title" tabindex="-1">¿Qué turno necesitás?</h1>
+          <p class="lead">Reservá online sin crear una cuenta. Te confirmamos por email.</p>
+        </div>
+
+        <fieldset class="service-list">
+          <legend>Prestación</legend>
+          <label class="service-option"><input type="radio" name="service" value="svc-1"><span class="name">Consulta y diagnóstico</span><span class="dur num">30 min</span><span class="desc">Primera visita o control general.</span></label><label class="service-option"><input type="radio" name="service" value="svc-2" checked><span class="name">Limpieza</span><span class="dur num">45 min</span><span class="desc">Remoción de sarro y pulido.</span></label><label class="service-option"><input type="radio" name="service" value="svc-3"><span class="name">Arreglo de caries</span><span class="dur num">60 min</span></label><label class="service-option"><input type="radio" name="service" value="svc-4"><span class="name">Control de ortodoncia</span><span class="dur num">20 min</span><span class="desc">Solo para pacientes en tratamiento.</span></label>
+        </fieldset>
+        <div class="sticky-cta">
+          <div class="summary-line"><span class="muted">Elegiste</span><strong>Limpieza · 45 min</strong></div>
+          <button class="btn btn-primary btn-lg btn-block" type="button">Continuar</button>
+        </div>
+      </section>
+      <p class="mock-note">Mockup C-24 · paso 1 de <code>/reservar</code>: prestaciones de <code>GET /api/v1/public/services</code> (nombre, duración, descripción opcional); "Limpieza" elegida.</p>
+    </main>
+
+    <footer class="public-footer" role="contentinfo">
+      <div class="inner">
+        <p><span data-brand-name>La Muela</span> · Consultorio <span class="tbd">(TBD)</span> · Dirección y teléfono <span class="tbd">(TBD)</span></p>
+        <ul>
+          <li><a href="#">Política de privacidad</a> <span class="tbd">(TBD)</span></li>
+          <li><a href="#">Términos y condiciones</a> <span class="tbd">(TBD)</span></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

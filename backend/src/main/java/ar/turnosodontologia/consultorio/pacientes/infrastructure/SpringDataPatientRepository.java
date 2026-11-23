@@ -31,4 +31,15 @@ interface SpringDataPatientRepository extends JpaRepository<Patient, UUID>, Pati
             @Param("practiceId") UUID practiceId,
             @Param("term") String term,
             @Param("onlyActive") boolean onlyActive);
+
+    @Query("""
+            select p.id from Patient p
+            where p.practiceId = :practiceId
+              and (p.dni = :dni or lower(p.email) = :email or p.phone = :phone)
+            """)
+    List<UUID> findIdsByContact(
+            @Param("practiceId") UUID practiceId,
+            @Param("dni") String dni,
+            @Param("email") String email,
+            @Param("phone") String phone);
 }

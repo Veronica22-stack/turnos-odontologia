@@ -2,13 +2,17 @@ import { h, svg } from './h';
 
 /** Helpers de formulario accesible: campo con etiqueta, ayuda, error vinculado y boton "Mostrar". */
 
-export type FormIconName = 'error' | 'info' | 'lock' | 'eye' | 'check' | 'cross' | 'dot';
+export type FormIconName = 'error' | 'warning' | 'info' | 'lock' | 'eye' | 'check' | 'cross' | 'dot';
 
 // Trazos de los mockups aprobados de C-06 (viewBox 20x20, trazo 1.6).
 const ICON_SHAPES: Readonly<Record<FormIconName, ReadonlyArray<readonly [string, Readonly<Record<string, string>>]>>> = {
   error: [
     ['circle', { cx: '10', cy: '10', r: '8.25' }],
     ['path', { d: 'M10 5.8v5M10 13.8v.1', 'stroke-width': '1.9' }],
+  ],
+  warning: [
+    ['path', { d: 'M10 2.8l8 14H2z', 'stroke-linejoin': 'round' }],
+    ['path', { d: 'M10 8v4M10 14.6v.1', 'stroke-width': '1.9' }],
   ],
   info: [
     ['circle', { cx: '10', cy: '10', r: '8.25' }],

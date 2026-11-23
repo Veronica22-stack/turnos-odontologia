@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Reserva confirmada · {{brand}} — mockup C-24</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="booking.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="public-shell">
+    <header class="app-header public-header" role="banner">
+      <a class="brand-link" href="/reservar" aria-label="La Muela — reservar turno" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <a class="pro-link" href="/login">Acceso profesionales</a>
+    </header>
+
+    <main id="main" class="public-main" tabindex="-1">
+      <section class="booking" aria-labelledby="step-title">
+        <div class="confirm-hero">
+          <div class="confirm-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="2" fill="none" stroke="currentColor" stroke-width="1.7"/><path d="M3.5 7l8.5 6 8.5-6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/></svg></div>
+          <h1 id="step-title" tabindex="-1">Revisá tu email</h1>
+          <p class="muted">Si completaste una reserva, te enviamos la confirmación con el enlace para cancelarla o reprogramarla.</p>
+        </div>
+        <div class="actions">
+          <a class="btn btn-primary btn-lg" href="/reservar">Reservar un turno</a>
+        </div>
+      </section>
+      <p class="mock-note">Mockup C-24 · <code>/reservar/confirmado</code> sin datos en memoria (recarga, acceso directo) o tras el 200 <code>ACCEPTED</code> genérico del honeypot: no muestra datos de ningún turno.</p>
+    </main>
+
+    <footer class="public-footer" role="contentinfo">
+      <div class="inner">
+        <p><span data-brand-name>La Muela</span> · Consultorio <span class="tbd">(TBD)</span> · Dirección y teléfono <span class="tbd">(TBD)</span></p>
+        <ul>
+          <li><a href="#">Política de privacidad</a> <span class="tbd">(TBD)</span></li>
+          <li><a href="#">Términos y condiciones</a> <span class="tbd">(TBD)</span></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

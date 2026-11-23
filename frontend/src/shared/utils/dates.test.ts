@@ -1,7 +1,9 @@
 import { afterEach, describe, expect, it } from 'vitest';
 import {
   InvalidInstantError,
+  addLocalDays,
   dayBoundsUtc,
+  dayLabels,
   formatDate,
   formatDateTime,
   formatTime,
@@ -93,5 +95,63 @@ describe('localDateOf / today / dayBoundsUtc', () => {
   it('dayBoundsUtc rechaza fechas invalidas', () => {
     expect(() => dayBoundsUtc('2026-02-30')).toThrowError(/fecha/i);
     expect(() => dayBoundsUtc('2026-3-1')).toThrowError(/fecha/i);
+  });
+});
+
+describe('addLocalDays', () => {
+  it.each([
+    ['2026-11-30', 2, '2026-12-02'],
+    ['2026-12-31', 1, '2027-01-01'],
+    ['2026-02-27', 2, '2026-03-01'],
+    ['2028-02-28', 1, '2028-02-29'],
+    ['2026-11-23', 0, '2026-11-23'],
+  ])('%s + %i dias = %s', (date, days, expected) => {
+    expect(addLocalDays(date, days)).toBe(expected);
+  });
+
+  it('rechaza fechas invalidas', () => {
+    expect(() => addLocalDays('2026-02-30', 1)).toThrowError(/fecha invalida/i);
+  });
+});
+
+describe('dayLabels', () => {
+  it('arma las etiquetas del dia sin coma', () => {
+    expect(dayLabels('2026-11-24')).toEqual({
+      short: 'mar',
+      day: '24',
+      medium: 'mar 24/11',
+      long: 'martes 24 de noviembre',
+    });
+  });
+
+  it('cubre otro dia y mes (domingo 1 de marzo)', () => {
+    expect(dayLabels('2026-03-01')).toEqual({
+      short: 'dom',
+      day: '1',
+      medium: 'dom 1/03',
+      long: 'domingo 1 de marzo',
+    });
+  });
+
+  it('lanza ante una fecha inexistente', () => {
+    expect(() => dayLabels('2026-02-30')).toThrowError('Fecha invalida');
+  });
+
+  describe('con otra zona horaria del navegador', () => {
+    const original = process.env['TZ'];
+    afterEach(() => {
+      if (original === undefined) {
+        delete process.env['TZ'];
+      } else {
+        process.env['TZ'] = original;
+      }
+    });
+
+    it('da el mismo resultado con TZ=Asia/Tokyo', () => {
+      process.env['TZ'] = 'Asia/Tokyo';
+
+      expect(dayLabels('2026-11-24').long).toBe('martes 24 de noviembre');
+      expect(addLocalDays('2026-11-24', 1)).toBe('2026-11-25');
+    });
   });
 });

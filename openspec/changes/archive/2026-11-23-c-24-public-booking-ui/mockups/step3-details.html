@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Reservar turno · {{brand}} — mockup C-24</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="booking.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="public-shell">
+    <header class="app-header public-header" role="banner">
+      <a class="brand-link" href="/reservar" aria-label="La Muela — reservar turno" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <a class="pro-link" href="/login">Acceso profesionales</a>
+    </header>
+
+    <main id="main" class="public-main" tabindex="-1">
+      <section class="booking" aria-labelledby="step-title">
+        <div class="stepper"><span>Paso 3 de 3</span><ol aria-hidden="true"><li class="done"></li><li class="done"></li><li aria-current="step"></li></ol></div>
+        <button class="btn btn-ghost booking-back" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver</button>
+        <div class="booking-head">
+          <h1 id="step-title" tabindex="-1">Tus datos</h1>
+          <p class="lead">Todos los campos son obligatorios.</p>
+        </div>
+        <div class="choice-summary" aria-label="Turno elegido">
+          <span><span class="what">Limpieza</span> · 45 min</span>
+          <span class="num">martes 24 de noviembre · 10:30 – 11:15</span>
+        </div>
+
+        <form class="booking-form" action="/reservar" method="post" novalidate>
+          <div class="field-row">
+            <div class="field"><label for="firstName">Nombre</label><input class="input" id="firstName" name="firstName" type="text" autocomplete="given-name" required value=""></div>
+            <div class="field"><label for="lastName">Apellido</label><input class="input" id="lastName" name="lastName" type="text" autocomplete="family-name" required value=""></div>
+          </div>
+          <div class="field"><label for="dni">DNI</label><input class="input" id="dni" name="dni" type="text" autocomplete="off" inputmode="numeric" required value="" aria-describedby="dni-help"><p class="help" id="dni-help">Como figura en el documento; podés usar puntos.</p></div>
+          <div class="field"><label for="phone">Teléfono</label><input class="input" id="phone" name="phone" type="tel" autocomplete="tel" required value="" aria-describedby="phone-help"><p class="help" id="phone-help">Con código de área, por ejemplo 11 2345 6789.</p></div>
+          <div class="field"><label for="email">Email</label><input class="input" id="email" name="email" type="email" autocomplete="email" inputmode="email" autocapitalize="none" spellcheck="false" required value="" aria-describedby="email-help"><p class="help" id="email-help">Te enviamos ahí la confirmación y el enlace para cancelar o reprogramar.</p></div>
+          <div class="hp" aria-hidden="true"><label for="website">Sitio web</label><input id="website" name="website" type="text" tabindex="-1" autocomplete="off" value=""></div>
+          <div class="check-field">
+            <label class="check"><input type="checkbox" id="privacyAccepted" name="privacyAccepted" required><span>Leí y acepto el <a href="#" target="_blank" rel="noopener noreferrer">aviso de privacidad</a> <span class="tbd">(TBD · PA-10)</span>.</span></label>
+            
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" type="submit">Confirmar reserva</button>
+        </form>
+      </section>
+      <p class="mock-note">Mockup C-24 · paso 3: resumen del turno, datos del paciente y aceptación del aviso. El campo trampa <code>website</code> existe pero no se ve ni se puede enfocar.</p>
+    </main>
+
+    <footer class="public-footer" role="contentinfo">
+      <div class="inner">
+        <p><span data-brand-name>La Muela</span> · Consultorio <span class="tbd">(TBD)</span> · Dirección y teléfono <span class="tbd">(TBD)</span></p>
+        <ul>
+          <li><a href="#">Política de privacidad</a> <span class="tbd">(TBD)</span></li>
+          <li><a href="#">Términos y condiciones</a> <span class="tbd">(TBD)</span></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

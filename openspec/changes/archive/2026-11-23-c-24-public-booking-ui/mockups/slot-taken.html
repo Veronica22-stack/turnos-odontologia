@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Reservar turno · {{brand}} — mockup C-24</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="booking.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="public-shell">
+    <header class="app-header public-header" role="banner">
+      <a class="brand-link" href="/reservar" aria-label="La Muela — reservar turno" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <a class="pro-link" href="/login">Acceso profesionales</a>
+    </header>
+
+    <main id="main" class="public-main" tabindex="-1">
+      <section class="booking" aria-labelledby="step-title">
+        <div class="stepper"><span>Paso 2 de 3</span><ol aria-hidden="true"><li class="done"></li><li aria-current="step"></li><li></li></ol></div>
+        <button class="btn btn-ghost booking-back" type="button"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M10 3L5 8l5 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Volver</button>
+        <div class="booking-head">
+          <h1 id="step-title" tabindex="-1">Elegí día y horario</h1>
+          <p class="lead">Limpieza · 45 min · horarios de Buenos Aires</p>
+        </div>
+<div class="alert alert-warning" role="alert"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.8l8 14H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></svg><div><strong>Ese horario se acaba de ocupar.</strong> Elegí otro. Te mostramos los más cercanos; tus datos quedan guardados.</div></div>
+        <div role="group" aria-labelledby="days-label"><p class="month-label" id="days-label">Día · noviembre – diciembre</p><div class="day-strip"><button class="day" type="button" aria-pressed="false" aria-label="lunes 23 de noviembre"><span class="dow" aria-hidden="true">lun</span><span class="dnum" aria-hidden="true">23</span></button><button class="day" type="button" aria-pressed="true" aria-label="martes 24 de noviembre"><span class="dow" aria-hidden="true">mar</span><span class="dnum" aria-hidden="true">24</span></button><button class="day" type="button" aria-pressed="false" aria-label="miércoles 25 de noviembre"><span class="dow" aria-hidden="true">mié</span><span class="dnum" aria-hidden="true">25</span></button><button class="day" type="button" aria-pressed="false" aria-label="jueves 26 de noviembre"><span class="dow" aria-hidden="true">jue</span><span class="dnum" aria-hidden="true">26</span></button><button class="day" type="button" aria-pressed="false" aria-label="viernes 27 de noviembre"><span class="dow" aria-hidden="true">vie</span><span class="dnum" aria-hidden="true">27</span></button><button class="day" type="button" aria-pressed="false" aria-label="sábado 28 de noviembre"><span class="dow" aria-hidden="true">sáb</span><span class="dnum" aria-hidden="true">28</span></button><button class="day" type="button" aria-pressed="false" aria-label="domingo 29 de noviembre"><span class="dow" aria-hidden="true">dom</span><span class="dnum" aria-hidden="true">29</span></button><button class="day" type="button" aria-pressed="false" aria-label="lunes 30 de noviembre"><span class="dow" aria-hidden="true">lun</span><span class="dnum" aria-hidden="true">30</span></button><button class="day" type="button" aria-pressed="false" aria-label="martes 1 de diciembre"><span class="dow" aria-hidden="true">mar</span><span class="dnum" aria-hidden="true">1</span></button><button class="day" type="button" aria-pressed="false" aria-label="miércoles 2 de diciembre"><span class="dow" aria-hidden="true">mié</span><span class="dnum" aria-hidden="true">2</span></button><button class="day" type="button" aria-pressed="false" aria-label="jueves 3 de diciembre"><span class="dow" aria-hidden="true">jue</span><span class="dnum" aria-hidden="true">3</span></button><button class="day" type="button" aria-pressed="false" aria-label="viernes 4 de diciembre"><span class="dow" aria-hidden="true">vie</span><span class="dnum" aria-hidden="true">4</span></button><button class="day" type="button" aria-pressed="false" aria-label="sábado 5 de diciembre"><span class="dow" aria-hidden="true">sáb</span><span class="dnum" aria-hidden="true">5</span></button><button class="day" type="button" aria-pressed="false" aria-label="domingo 6 de diciembre"><span class="dow" aria-hidden="true">dom</span><span class="dnum" aria-hidden="true">6</span></button><button class="btn btn-secondary day-more" type="button">Más días</button></div></div>
+        <div class="slot-area" aria-live="polite">
+          <div class="suggested" role="group" aria-labelledby="sug-t"><h2 id="sug-t">Horarios cercanos</h2><div class="slots"><button class="slot" type="button" aria-pressed="false">09:00</button><button class="slot" type="button" aria-pressed="false">09:45</button><button class="slot" type="button" aria-pressed="false">11:15</button></div></div><div class="slot-group" role="group" aria-labelledby="sg-m"><h2 id="sg-m">Mañana</h2><div class="slots"><button class="slot" type="button" aria-pressed="false">09:00</button><button class="slot" type="button" aria-pressed="false">09:45</button><button class="slot" type="button" aria-pressed="false">11:15</button><button class="slot" type="button" aria-pressed="false">12:00</button></div></div><div class="slot-group" role="group" aria-labelledby="sg-t"><h2 id="sg-t">Tarde</h2><div class="slots"><button class="slot" type="button" aria-pressed="false">15:00</button><button class="slot" type="button" aria-pressed="false">15:45</button><button class="slot" type="button" aria-pressed="false">16:30</button><button class="slot" type="button" aria-pressed="false">17:15</button></div></div>
+        </div>
+        <div class="sticky-cta"><div class="summary-line"><span class="muted">Elegí un horario para continuar</span></div><button class="btn btn-primary btn-lg btn-block" type="button" aria-disabled="true">Continuar</button></div>
+      </section>
+      <p class="mock-note">Mockup C-24 · 409 <code>SLOT_TAKEN</code> (también 422 <code>BOOKING_TOO_SOON</code>/<code>BOOKING_BEYOND_HORIZON</code>): vuelve al paso 2 del mismo día, recarga la disponibilidad (10:30 ya no está) y sugiere los 3 horarios más cercanos.</p>
+    </main>
+
+    <footer class="public-footer" role="contentinfo">
+      <div class="inner">
+        <p><span data-brand-name>La Muela</span> · Consultorio <span class="tbd">(TBD)</span> · Dirección y teléfono <span class="tbd">(TBD)</span></p>
+        <ul>
+          <li><a href="#">Política de privacidad</a> <span class="tbd">(TBD)</span></li>
+          <li><a href="#">Términos y condiciones</a> <span class="tbd">(TBD)</span></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>
