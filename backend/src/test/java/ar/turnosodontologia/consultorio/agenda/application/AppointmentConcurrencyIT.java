@@ -7,6 +7,7 @@ import ar.turnosodontologia.consultorio.shared.domain.DomainException;
 import ar.turnosodontologia.consultorio.shared.domain.PracticeLock;
 import ar.turnosodontologia.consultorio.support.AbstractIntegrationTest;
 import ar.turnosodontologia.consultorio.support.AppointmentFixtures;
+import ar.turnosodontologia.consultorio.support.ClinicalFixtures;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.ZoneId;
@@ -175,6 +176,7 @@ class AppointmentConcurrencyIT extends AbstractIntegrationTest {
         int blockedFirst = 0;
         for (int i = 0; i < ITERATIONS; i++) {
             jdbc.update("DELETE FROM schedule_block");
+            ClinicalFixtures.deleteEvolutions();
             AppointmentFixtures.execute("DELETE FROM notification");
             AppointmentFixtures.execute("DELETE FROM appointment");
 

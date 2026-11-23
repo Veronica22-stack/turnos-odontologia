@@ -1,9 +1,10 @@
 package ar.turnosodontologia.consultorio.historiaclinica.domain;
 
-/** Tipos de entrada clinica; C-17 (odontograma) y C-18 (evoluciones) agregan sus constantes. */
+/** Tipos de entrada clinica; C-17 agrego el odontograma y C-18 las evoluciones. */
 public enum ClinicalEntryType {
     ANAMNESIS("anamnesis", "anamnesis_entry"),
-    ODONTOGRAM("odontogram", "odontogram_entry");
+    ODONTOGRAM("odontogram", "odontogram_entry"),
+    EVOLUTION("evolutions", "evolution_entry");
 
     private final String pathSegment;
     private final String auditEntityType;

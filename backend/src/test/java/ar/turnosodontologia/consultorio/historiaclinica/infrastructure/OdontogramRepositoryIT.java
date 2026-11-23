@@ -1,5 +1,6 @@
 package ar.turnosodontologia.consultorio.historiaclinica.infrastructure;
 
+import ar.turnosodontologia.consultorio.support.ClinicalFixtures;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import ar.turnosodontologia.consultorio.historiaclinica.domain.AnamnesisContent;
@@ -76,6 +77,7 @@ class OdontogramRepositoryIT extends AbstractIntegrationTest {
             statement.executeUpdate("DELETE FROM odontogram_entry");
             statement.executeUpdate("DELETE FROM anamnesis_entry WHERE corrects_entry_id IS NOT NULL");
             statement.executeUpdate("DELETE FROM anamnesis_entry");
+            ClinicalFixtures.deleteEvolutions();
             statement.executeUpdate("DELETE FROM clinical_record");
             statement.executeUpdate("DELETE FROM patient WHERE dni IN ('77000001', '77000002')");
         }

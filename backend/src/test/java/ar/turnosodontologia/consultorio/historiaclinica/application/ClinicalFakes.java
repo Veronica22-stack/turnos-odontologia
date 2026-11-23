@@ -6,6 +6,8 @@ import ar.turnosodontologia.consultorio.historiaclinica.domain.AnamnesisEntry;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.AnamnesisEntryRepository;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.ClinicalRecord;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.ClinicalRecordRepository;
+import ar.turnosodontologia.consultorio.historiaclinica.domain.EvolutionEntry;
+import ar.turnosodontologia.consultorio.historiaclinica.domain.EvolutionEntryRepository;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.OdontogramEntry;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.OdontogramEntryRepository;
 import ar.turnosodontologia.consultorio.pacientes.api.PatientLookup;
@@ -178,6 +180,47 @@ final class ClinicalFakes {
                     .filter(e -> e.position().equals(reference.position()))
                     .anyMatch(e -> e.createdAt().isAfter(reference.createdAt())
                             || (e.createdAt().equals(reference.createdAt()) && e.id().compareTo(reference.id()) > 0));
+        }
+    }
+
+    /** Evoluciones en memoria; los ids crecen con el orden de alta para desempatar entradas del mismo instante. */
+    static final class InMemoryEvolutions implements EvolutionEntryRepository {
+        final List<EvolutionEntry> entries = new ArrayList<>();
+        private long sequence;
+        private RuntimeException saveFailure;
+
+        void failSaveWith(String constraintName) {
+            this.saveFailure = new DataIntegrityViolationException("violates unique constraint \"" + constraintName + "\"");
+        }
+
+        @Override
+        public Optional<EvolutionEntry> findInRecord(UUID clinicalRecordId, UUID entryId) {
+            return entries.stream()
+                    .filter(e -> e.id().equals(entryId) && e.clinicalRecordId().equals(clinicalRecordId))
+                    .findFirst();
+        }
+
+        @Override
+        public boolean isCorrected(UUID entryId) {
+            return entries.stream().anyMatch(e -> entryId.equals(e.correctsEntryId()));
+        }
+
+        @Override
+        public EvolutionEntry save(EvolutionEntry entry) {
+            if (saveFailure != null) {
+                throw saveFailure;
+            }
+            ReflectionTestUtils.setField(entry, "id", new UUID(2L, ++sequence));
+            entries.add(entry);
+            return entry;
+        }
+
+        @Override
+        public List<EvolutionEntry> findNewestFirst(UUID clinicalRecordId) {
+            return entries.stream()
+                    .filter(e -> e.clinicalRecordId().equals(clinicalRecordId))
+                    .sorted(Comparator.comparing(EvolutionEntry::createdAt).thenComparing(EvolutionEntry::id).reversed())
+                    .toList();
         }
     }
 }

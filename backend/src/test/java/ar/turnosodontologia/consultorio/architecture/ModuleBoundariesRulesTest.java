@@ -442,4 +442,43 @@ class ModuleBoundariesRulesTest {
                 .hasMessageContaining("NotifUsaAuth")
                 .hasMessageContaining("AuthApi");
     }
+
+    // ---- historiaclinica -> agenda.api (C-18, D8) ----
+
+    @Test
+    void historiaClinicaPuedeUsarLaApiDeAgendaDesdeApplication() {
+        String root = root("ok_hc_agenda");
+        JavaClasses classes = classesOf("ok_hc_agenda");
+
+        assertThatCode(() -> {
+            ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes);
+            ModuleBoundaries.allowedDependencyGraph(root).check(classes);
+            ModuleBoundaries.noCycles(root).check(classes);
+        }).doesNotThrowAnyException();
+    }
+
+    @Test
+    void historiaClinicaNoPuedeUsarDomainNiInfrastructureDeAgenda() {
+        String root = root("viol_hc_agenda_internas");
+        JavaClasses classes = classesOf("viol_hc_agenda_internas");
+
+        assertThatThrownBy(() -> ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("HcUsaAgendaDominio")
+                .hasMessageContaining("AgendaDominio")
+                .hasMessageContaining("HcUsaAgendaInfra")
+                .hasMessageContaining("AgendaRepositorio");
+        // El grafo si permite historiaclinica -> agenda: solo falla la regla de acceso por api.
+        assertThatCode(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classes)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void agendaNoPuedeUsarLaApiDeHistoriaClinica() {
+        String root = root("viol_agenda_hc");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("viol_agenda_hc")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AgendaUsaHistoriaClinica")
+                .hasMessageContaining("HistoriaClinicaApi");
+    }
 }
