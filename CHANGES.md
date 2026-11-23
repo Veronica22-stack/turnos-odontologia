@@ -429,7 +429,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-05, PA-10
 
 ### [C-15] `booking-token-management`
-- **Estado**: `[x]` completado y archivado (2026-11-23) — 26/26 tareas; `openspec/changes/archive/2026-11-23-c-15-booking-token-management/verify-report.md`; sin rotación de token al reprogramar; arista `reservas → auditoria.api`; 787 unit + 542 IT verdes (suite completa compartida con C-14)
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 26/26 tareas; `openspec/changes/archive/2026-11-23-c-15-booking-token-management/verify-report.md`; sin rotación de token al reprogramar; arista `reservas → auditoria.api`; 787 unit + 542 IT verdes (suite completa compartida con C-14). Pedido P1 de C-25 resuelto y archivado aparte: `serviceId` en `BookingView` (`openspec/changes/archive/2026-11-23-c-15-service-id-in-booking-view/`)
 - **Scope**:
   - `GET /api/v1/public/bookings/{token}`, `DELETE /api/v1/public/bookings/{token}` (cancelar), `POST /api/v1/public/bookings/{token}/reschedule` (US-031, US-032)
   - Búsqueda por hash con comparación en tiempo constante; token ligado a un turno, expira al pasar el turno y se revoca al cancelar; decidir rotación tras reprogramar (RN-RS-06)

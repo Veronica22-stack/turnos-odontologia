@@ -166,6 +166,7 @@ public class BookingManagementUseCase {
                 && appointment.startsAt().isAfter(clock.instant());
         return new BookingDetails(
                 appointment.appointmentId(),
+                appointmentServices.findServiceId(appointment.appointmentId()).orElse(null),
                 appointment.serviceName(),
                 practices.findById(practice.id()).map(Practice::name).orElse(""),
                 appointment.startsAt(),

@@ -42,7 +42,7 @@ public class BookingManagementController {
     }
 
     private static BookingView toView(BookingDetails details) {
-        return new BookingView(details.bookingId(), details.serviceName(), details.practiceName(),
+        return new BookingView(details.bookingId(), details.serviceId(), details.serviceName(), details.practiceName(),
                 details.startsAt(), details.endsAt(), details.status(),
                 details.cancellable(), details.reschedulable());
     }

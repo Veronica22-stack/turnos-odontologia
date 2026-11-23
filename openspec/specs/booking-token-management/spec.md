@@ -6,12 +6,12 @@ Permite que el paciente que recibió el link por email consulte, cancele o repro
 ## Requirements
 
 ### Requirement: Token-based appointment lookup
-El sistema SHALL exponer `GET /api/v1/public/bookings/{token}` sin autenticación. La búsqueda SHALL realizarse por el hash del token con comparación en tiempo constante y SHALL devolver únicamente datos del turno del paciente: referencia, instantes UTC, nombre de la prestación, nombre del consultorio, estado y banderas de acción permitida.
+El sistema SHALL exponer `GET /api/v1/public/bookings/{token}` sin autenticación. La búsqueda SHALL realizarse por el hash del token con comparación en tiempo constante y SHALL devolver únicamente datos del turno del paciente: referencia, `serviceId` de la prestación (para consultar disponibilidad al reprogramar), instantes UTC, nombre de la prestación, nombre del consultorio, estado y banderas de acción permitida.
 
 #### Scenario: Consulta con token válido
 - **GIVEN** un token no expirado ni revocado ligado a un turno `CONFIRMED` futuro
 - **WHEN** se consulta `GET /api/v1/public/bookings/{token}`
-- **THEN** la respuesta es 200 con los datos acotados del turno y sin DNI, email, teléfono, notas ni datos clínicos
+- **THEN** la respuesta es 200 con los datos acotados del turno, incluido el `serviceId` de su prestación, y sin DNI, email, teléfono, notas ni datos clínicos
 
 #### Scenario: Comparación en tiempo constante
 - **GIVEN** un token almacenado y otro candidato de la misma longitud que difiere en un carácter
