@@ -102,12 +102,17 @@ describe('bootstrap', () => {
   });
 
   it('en /reservar con me 401 renderiza el layout publico con la vista de reserva', async () => {
-    const { ready } = start('/reservar', () => new Response(null, { status: 401 }));
+    const { ready } = start('/reservar', (url) =>
+      url.endsWith('/public/services')
+        ? json('[{"id":"s-1","name":"Limpieza","description":null,"durationMin":30}]')
+        : new Response(null, { status: 401 }),
+    );
 
     await ready;
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     expect(document.querySelector('.public-shell')).not.toBeNull();
-    expect(document.querySelector('h1')?.textContent).toBe('Reservá tu turno');
+    expect(document.querySelector('h1')?.textContent).toBe('¿Qué turno necesitás?');
     expect(document.querySelector('nav[aria-label="Principal"]')).toBeNull();
   });
 

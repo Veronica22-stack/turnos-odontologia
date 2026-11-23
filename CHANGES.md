@@ -584,7 +584,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 7 — Reserva pública (UI)
 
 ### [C-24] `public-booking-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — verify PASS WITH WARNINGS sin críticos, W1 (Volver tras 409) corregido con tests (`openspec/changes/archive/2026-11-23-c-24-public-booking-ui/verify-report.md`); mockups aprobados por Lucas; contrato verificado contra C-14/C-15; pendiente tarea 9.3 (prueba manual contra backend real) y PR a `master`
 - **Scope**:
   - `/reservar`: selección de prestación, fecha/hora (slots de `GET /public/availability`), formulario nombre/DNI/teléfono/email con honeypot oculto y aviso de privacidad (texto TBD, PA-10)
   - `/reservar/confirmado`; manejo de 409 (recarga disponibilidad y sugiere otros horarios), rate limit y "reservas no disponibles"

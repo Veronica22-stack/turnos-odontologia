@@ -1,4 +1,4 @@
-import { describeWait } from './retry-after';
+import { describeWait } from '../../shared/utils/retry-after';
 
 /** Unica fuente de copy de error de acceso: nunca se muestra `title`/`detail` del servidor. */
 

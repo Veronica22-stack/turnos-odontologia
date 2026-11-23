@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Gestionar turno · {{brand}} — mockup C-25</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="manage.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Saltar al contenido</a>
+
+  <div class="public-shell">
+    <header class="app-header public-header" role="banner">
+      <a class="brand-link" href="../../archive/2026-11-23-c-24-public-booking-ui/mockups/step1-service.html" aria-label="La Muela — reservar turno" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <a class="pro-link" href="/login">Acceso profesionales</a>
+    </header>
+
+    <main id="main" class="public-main" tabindex="-1">
+      <section class="booking" aria-labelledby="step-title">
+        <div class="booking-head">
+          <h1 id="step-title" tabindex="-1">Tu turno</h1>
+        </div>
+        <article class="confirm-card" aria-labelledby="turno-t">
+          <div class="confirm-card-head">
+            <h2 id="turno-t">Limpieza</h2>
+            <span class="badge badge-confirmado"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Confirmado</span>
+          </div>
+          <dl class="meta-list">
+            <dt>Día</dt><dd>martes 24 de noviembre</dd>
+            <dt>Horario</dt><dd class="num">10:30 – 11:15</dd>
+            <dt>Consultorio</dt><dd>Consultorio La Muela <span class="tbd">(TBD)</span></dd>
+          </dl>
+          <p class="zone-note">Horarios de Buenos Aires.</p>
+        </article>
+        <div class="manage-actions">
+          <button class="btn btn-primary btn-lg" type="button" aria-disabled="true">Reprogramar</button>
+          <a class="btn btn-danger-outline btn-lg" href="cancelled.html" aria-busy="true" aria-disabled="true"><span class="spinner" aria-hidden="true"></span>Cancelando…</a>
+        </div>
+        <p class="manage-note"><svg viewBox="0 0 16 16" aria-hidden="true"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" fill="none" stroke="currentColor" stroke-width="1.4"/></svg><span>Este enlace es personal: no lo compartas. Con él se puede cancelar o cambiar tu turno.</span></p>
+      </section>
+      <p class="mock-note">Mockup C-25 · <code>DELETE /api/v1/public/bookings/{token}</code> en curso (con <code>X-XSRF-TOKEN</code>): "Cancelando…" con <code>aria-busy</code>, "Reprogramar" deshabilitado, doble toque ignorado. <a href="cancelled.html">→ cancelado</a></p>
+      <nav class="mock-nav" aria-label="Pantallas del mockup">Pantallas: <a href="loading.html">Cargando</a> <a href="detail.html">Detalle</a> <a href="past.html">Pasado</a> <a href="cancelled-readonly.html">Cancelado (consultorio)</a> <a href="invalid-token.html">Enlace no válido</a> <a href="rate-limited.html">429</a> <a href="connection-error.html">Sin conexión</a> <a href="cancel-confirm.html">Confirmar cancelación</a> <a href="cancelling.html">Cancelando</a> <a href="cancelled.html">Cancelado</a> <a href="not-modifiable.html">422</a> <a href="cancel-unknown.html">Cancelación incierta</a> <a href="reschedule.html">Reprogramar</a> <a href="reschedule-submitting.html">Reprogramando</a> <a href="reschedule-conflict.html">409</a> <a href="rescheduled.html">Reprogramado</a> <a href="reschedule-unknown.html">Cambio incierto</a> <a href="reschedule-unavailable.html">No disponible</a></nav>
+    </main>
+
+    <footer class="public-footer" role="contentinfo">
+      <div class="inner">
+        <p><span data-brand-name>La Muela</span> · Consultorio <span class="tbd">(TBD)</span> · Dirección y teléfono <span class="tbd">(TBD)</span></p>
+        <ul>
+          <li><a href="#">Política de privacidad</a> <span class="tbd">(TBD)</span></li>
+          <li><a href="#">Términos y condiciones</a> <span class="tbd">(TBD)</span></li>
+        </ul>
+      </div>
+    </footer>
+  </div>
+</body>
+</html>

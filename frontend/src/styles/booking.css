@@ -1,0 +1,540 @@
+/*
+ * Reserva publica (C-24, design D8): stepper, prestaciones, dias y horarios, formulario de datos,
+ * accion fija al pie y confirmacion. Portado de los mockups aprobados (revision 1) y del patron
+ * "Reserva publica" de design-system/components.html, usando solo tokens de Revision 1.
+ *
+ * Reutiliza lo ya definido en base/layout/forms/settings (.btn, .alert, .field, .input, .spinner,
+ * .check, .badge, .empty, .loading). Aqui solo va lo propio del flujo.
+ *
+ * Medidas sin token en Revision 1 (custom properties locales, documentadas):
+ *  --layout-booking-day-width / --layout-booking-day-height: boton de dia de la tira (components.html .day).
+ */
+
+:root {
+  --layout-booking-day-width: 3.5rem; /* local: candidato a token en Revision 2 */
+  --layout-booking-day-height: 4rem; /* local: candidato a token en Revision 2 */
+}
+
+.booking {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-5);
+}
+
+.booking-root {
+  display: contents;
+}
+
+.booking-head {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.public-main .booking-head h1 {
+  margin-bottom: 0;
+}
+
+.booking-head .lead {
+  margin: 0;
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.booking-back {
+  justify-self: start;
+  color: var(--color-primary);
+}
+
+.public-main .booking-head h1,
+.public-main .confirm-hero h1 {
+  font-size: var(--text-2xl);
+}
+
+.booking .btn-primary[aria-disabled='true'] {
+  border-color: var(--color-border);
+  background: var(--color-bg-muted);
+  color: var(--color-text-disabled);
+  cursor: not-allowed;
+}
+
+.booking .loading {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: flex-start;
+  padding: 0;
+  font-size: var(--text-sm);
+}
+
+/* ---------- Indicador de pasos ---------- */
+.stepper {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.stepper ol {
+  display: flex;
+  gap: var(--space-1);
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.stepper li {
+  flex: 1;
+  height: var(--space-1);
+  border-radius: var(--radius-full);
+  background: var(--color-border);
+}
+
+.stepper li.done,
+.stepper li[aria-current='step'] {
+  background: var(--color-primary);
+}
+
+.choice-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-subtle);
+  font-size: var(--text-sm);
+}
+
+.choice-summary .what {
+  font-weight: var(--weight-semibold);
+}
+
+/* ---------- Paso 1: prestaciones ---------- */
+.service-list {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.service-list legend {
+  margin-bottom: var(--space-3);
+  padding: 0;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+}
+
+.service-option {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: var(--space-1) var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out);
+}
+
+.service-option:hover {
+  border-color: var(--color-primary);
+}
+
+.service-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.service-option:has(input:checked) {
+  padding: calc(var(--space-4) - var(--layout-hairline));
+  border-width: 2px;
+  border-color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+.service-option:has(input:focus-visible) {
+  box-shadow: var(--focus-ring);
+}
+
+.service-option .name {
+  font-weight: var(--weight-semibold);
+}
+
+.service-option .dur,
+.service-option .desc {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+}
+
+.service-option .desc {
+  grid-column: 1 / -1;
+}
+
+/* ---------- Paso 2: dias y horarios ---------- */
+.schedule-picker {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.month-label {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.day-strip {
+  display: flex;
+  gap: var(--space-2);
+  overflow-x: auto;
+  padding: var(--space-1);
+  margin: calc(var(--space-1) * -1);
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+}
+
+.day {
+  flex: none;
+  scroll-snap-align: start;
+  display: grid;
+  place-items: center;
+  gap: 0;
+  width: var(--layout-booking-day-width);
+  min-height: var(--layout-booking-day-height);
+  padding: var(--space-2) 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.day:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.day .dow {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  text-transform: uppercase;
+}
+
+.day .dnum {
+  font-size: var(--text-lg);
+  font-weight: var(--weight-bold);
+}
+
+.day[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.day[aria-pressed='true'] .dow {
+  color: var(--color-primary-muted);
+}
+
+.day-more {
+  flex: none;
+  align-self: stretch;
+}
+
+.slot-area {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+}
+
+.slot-group h2,
+.suggested h2 {
+  margin: 0 0 var(--space-2);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.slots {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-2);
+}
+
+.slot {
+  min-height: var(--touch-target);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-primary);
+  font: inherit;
+  font-size: var(--text-base);
+  font-weight: var(--weight-semibold);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-instant) var(--ease-out);
+}
+
+.slot:hover {
+  border-color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+.slot:focus-visible {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+.slot:active {
+  transform: scale(0.97);
+}
+
+.slot[aria-pressed='true'] {
+  border-color: var(--color-primary);
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+}
+
+.slot-skeleton {
+  min-height: var(--touch-target);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-bg-muted);
+}
+
+.suggested {
+  display: grid;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--color-primary-muted);
+  border-radius: var(--radius-md);
+  background: var(--color-primary-subtle);
+}
+
+.suggested h2 {
+  margin: 0;
+  color: var(--color-text);
+}
+
+.booking .empty h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.booking .empty .ico {
+  display: grid;
+  place-items: center;
+  width: var(--space-12);
+  height: var(--space-12);
+  border-radius: var(--radius-full);
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+}
+
+.booking .empty .ico svg {
+  width: var(--space-6);
+  height: var(--space-6);
+}
+
+.empty-compact {
+  padding: var(--space-6) var(--space-4);
+}
+
+/* ---------- Accion fija al pie ---------- */
+.sticky-cta {
+  position: sticky;
+  bottom: 0;
+  z-index: var(--z-header);
+  display: grid;
+  gap: var(--space-2);
+  margin: 0 calc(var(--gutter-mobile) * -1);
+  padding: var(--space-3) var(--gutter-mobile);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+
+.summary-line {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  font-size: var(--text-sm);
+}
+
+/* ---------- Paso 3: formulario ---------- */
+.booking-form {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.field-row {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.field-row .field {
+  min-width: 0;
+}
+
+.check-field label.check {
+  font-weight: var(--weight-regular);
+}
+
+.check-field input[aria-invalid='true'] {
+  outline: 2px solid var(--color-danger);
+  outline-offset: 1px;
+}
+
+/* Campo trampa: fuera de pantalla, sin display:none (design D5). */
+.hp {
+  position: absolute;
+  inline-size: 1px;
+  block-size: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.booking-alert:empty {
+  display: none;
+}
+
+/* ---------- Confirmacion ---------- */
+.confirm-hero {
+  display: grid;
+  justify-items: start;
+  gap: var(--space-3);
+}
+
+.confirm-icon {
+  display: grid;
+  place-items: center;
+  width: var(--space-12);
+  height: var(--space-12);
+  border-radius: var(--radius-full);
+  background: var(--color-success-bg);
+  color: var(--color-success);
+}
+
+.confirm-icon svg {
+  width: var(--space-6);
+  height: var(--space-6);
+}
+
+.confirm-hero .lead {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.confirm-card {
+  display: grid;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-xs);
+}
+
+.confirm-card-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--space-3);
+}
+
+.confirm-card-head h2 {
+  margin: 0;
+  font-size: var(--text-lg);
+}
+
+.meta-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-3);
+  margin: 0;
+  font-size: var(--text-sm);
+}
+
+.meta-list dt {
+  color: var(--color-text-secondary);
+}
+
+.meta-list dd {
+  margin: 0;
+  font-weight: var(--weight-medium);
+}
+
+.badge-confirmado {
+  border-color: var(--color-primary-muted);
+  background: var(--status-confirmado-bg);
+  color: var(--status-confirmado-fg);
+}
+
+.email-strong {
+  overflow-wrap: anywhere;
+}
+
+.actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot:active {
+    transform: none;
+  }
+}
+
+/* ---------- Escritorio ---------- */
+@media (min-width: 64rem) {
+  .public-shell {
+    background: var(--color-bg-subtle);
+  }
+
+  .booking {
+    padding: var(--space-8);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    background: var(--color-surface);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .slots {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .field-row {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .sticky-cta {
+    position: static;
+    grid-template-columns: 1fr auto;
+    align-items: center;
+    margin: 0;
+    padding: var(--space-4) 0 0;
+    background: transparent;
+  }
+
+  .sticky-cta .btn-block {
+    width: auto;
+  }
+
+  .actions {
+    grid-template-columns: auto auto;
+    justify-content: start;
+  }
+}
