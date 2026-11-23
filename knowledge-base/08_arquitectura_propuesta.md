@@ -25,7 +25,7 @@
 | `auth` / `auditoria` | Login, sesión, rate limit, log de auditoría |
 | `shared` | Tiempo/zona horaria, manejo de errores, configuración |
 
-Reglas de dependencia: `reservas` → `agenda`, `pacientes`, `notificaciones`; `notificaciones` → `agenda`, `pacientes` (solo por su `api`: eventos de turno y consultas de lectura); `historiaclinica` → `pacientes`, `auditoria`, `agenda` (solo por `agenda.api`, para validar el turno asociado a una evolución; C-18); `auth` y `auditoria` no dependen de módulos de negocio.
+Reglas de dependencia: `reservas` → `agenda`, `pacientes`, `notificaciones`, `auditoria` (solo `auditoria.api`, para `BOOKING_TOKEN_USE` en C-15); `notificaciones` → `agenda`, `pacientes` (solo por su `api`: eventos de turno y consultas de lectura); `historiaclinica` → `pacientes`, `auditoria`, `agenda` (solo por `agenda.api`, para validar el turno asociado a una evolución; C-18); `auth` y `auditoria` no dependen de módulos de negocio.
 
 ## Estructura de directorios
 

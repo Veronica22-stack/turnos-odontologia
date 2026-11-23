@@ -78,8 +78,9 @@ public class AppointmentService {
         requireWritablePatient(command.patientId());
         PracticeService catalogService = requireActiveService(command.serviceId(), practiceId);
         lock.lock(practiceId);
+        AppointmentOrigin origin = command.origin() != null ? command.origin() : AppointmentOrigin.INTERNAL;
         Appointment appointment = Appointment.create(practiceId, command.patientId(), command.serviceId(),
-                command.startsAt(), catalogService.durationMin(), AppointmentOrigin.INTERNAL, command.overbooking(),
+                command.startsAt(), catalogService.durationMin(), origin, command.overbooking(),
                 command.notes(), clock);
         ensureAvailable(practiceId, appointment.startsAt(), appointment.endsAt(), command.overbooking(), null);
         Appointment saved = saveAndTranslate(appointment);
@@ -92,8 +93,17 @@ public class AppointmentService {
 
     @Transactional
     public AppointmentResult cancel(UUID id) {
+        return cancel(id, CancelledBy.DENTIST);
+    }
+
+    /** Cancelación expuesta a otros módulos (C-15): el consumidor decide {@code by}, normalmente {@code PATIENT}. */
+    @Transactional
+    public AppointmentResult cancel(UUID id, CancelledBy by) {
+        if (by == null) {
+            throw new ValidationException("cancelledBy", "REQUIRED");
+        }
         Appointment appointment = lockAndLoad(id);
-        appointment.cancel(CancelledBy.DENTIST, clock);
+        appointment.cancel(by, clock);
         appointments.save(appointment);
         events.cancelled(appointment);
         LOG.info("Turno cancelado appointmentId={} practiceId={}", appointment.id(), appointment.practiceId());

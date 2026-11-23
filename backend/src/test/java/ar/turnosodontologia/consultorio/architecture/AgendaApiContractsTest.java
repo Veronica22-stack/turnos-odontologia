@@ -106,10 +106,11 @@ class AgendaApiContractsTest {
     // ---- contratos de turnos (C-11, D11, D16) ----
 
     @Test
-    void appointmentOperationsDeclaraUnicamenteLaReprogramacion() {
+    void appointmentOperationsDeclaraAltaPublicaReprogramacionYCancelacionDelPaciente() {
+        // C-11 exponía solo reschedule; C-14 agrega book y C-15 agrega cancel (ambos delegan en AppointmentService).
         assertThat(AppointmentOperations.class.getDeclaredMethods())
                 .extracting(Method::getName)
-                .containsExactly("reschedule");
+                .containsExactlyInAnyOrder("book", "reschedule", "cancel");
         assertThat(java.util.Arrays.stream(AppointmentOperations.class.getDeclaredMethods())
                 .flatMap(method -> parameterTypes(method).stream()))
                 .allSatisfy(AgendaApiContractsTest::assertPublicType);

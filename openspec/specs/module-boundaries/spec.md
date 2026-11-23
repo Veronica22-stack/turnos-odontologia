@@ -263,3 +263,39 @@ El módulo `reservas` SHALL publicar en su capa `api` un contrato de consulta de
 - **GIVEN** un contrato de `reservas.api` de disponibilidad que exponga nombres, DNI, email, teléfono, entidades JPA o tipos de `reservas.infrastructure`
 - **WHEN** se ejecuta la verificación de contratos y de arquitectura
 - **THEN** la verificación falla nombrando el tipo prohibido
+
+### Requirement: Public booking module access
+El módulo `reservas` SHALL acceder a `agenda.api`, `pacientes.api` y `notificaciones.api` para crear turnos, resolver pacientes y proveer el enlace de gestión. El acceso SHALL limitarse a esas capas `api`; NO SHALL acceder a `domain`, `application` ni `infrastructure` de otros módulos.
+
+#### Scenario: Reserva usa contratos públicos
+- **GIVEN** una clase de `reservas.application` o `reservas.infrastructure` que crea un turno y resuelve un paciente
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación pasa porque solo depende de `agenda.api` y `pacientes.api`
+
+#### Scenario: Sin acceso a capas internas
+- **GIVEN** una clase de `reservas` que referencia `agenda.domain`, `agenda.infrastructure`, `pacientes.domain` o `pacientes.infrastructure`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla nombrando la clase de origen y la de destino
+
+#### Scenario: Proveedor de enlaces implementado en reservas
+- **GIVEN** la implementación de `notificaciones.api.ManagementLinkProvider` en `reservas.infrastructure`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación pasa y no aparece ninguna dependencia de `notificaciones` fuera de su capa `api`
+
+### Requirement: Reservations module can write audit events
+Se habilita la arista `reservas → auditoria`, exclusivamente hacia `auditoria.api`, para que el módulo de reservas registre `BOOKING_TOKEN_USE` al usar un token. La arista es de ida: `auditoria` NO SHALL depender de `reservas`, directa ni transitivamente. El resto del grafo y las reglas de acceso por capa `api` se mantienen.
+
+#### Scenario: Reserva pública registra auditoría
+- **GIVEN** una clase de `reservas.application` que usa `auditoria.api.AuditLogger`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación pasa
+
+#### Scenario: Solo la api de auditoría
+- **GIVEN** una clase de `reservas` que referencia `auditoria.domain`, `auditoria.application` o `auditoria.infrastructure`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla nombrando la clase de origen y la de destino
+
+#### Scenario: Auditoría sigue aislada
+- **GIVEN** una clase de `auditoria` que usa un tipo de `reservas.api`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla y no se introduce ningún ciclo

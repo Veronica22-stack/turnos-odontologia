@@ -50,6 +50,7 @@ class NotificationManagementLinkIT extends AbstractIntegrationTest {
     @TestConfiguration
     static class ProviderConfig {
         @Bean
+        @org.springframework.context.annotation.Primary
         RecordingProvider recordingProvider() {
             return new RecordingProvider();
         }
