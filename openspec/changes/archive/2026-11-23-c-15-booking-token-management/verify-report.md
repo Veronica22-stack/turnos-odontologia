@@ -37,6 +37,15 @@ Ambos changes validan con `openspec validate <change> --strict`.
 4. **Correcciones tras verificación independiente**: `reason_code` agregado a `audit_log.details`; agregados IT de token expirado, reprogramación sin CSRF y 429 por enumeración; el test antes llamado «expirado» realmente ejercitaba revocación, ahora hay un caso de vencimiento real.
 5. **Trazabilidad de `tasks.md`**: se corrigieron las tareas que nombraban `BookingTokenResolverTest`, `BookingAuditTest`, `TokenLookupRateLimiterTest`, fixtures y otros archivos inexistentes; los comportamientos se atribuyen a los tests reales. La matriz completa está en `docs/qa/matriz-de-tests.md`.
 
+## Pedido posterior: P1 de C-25 (`serviceId` en `BookingView`)
+
+Tras el archive, C-25 pidió exponer el `serviceId` de la prestación en la vista del turno para consultar disponibilidad al reprogramar, en lugar de resolver la prestación por nombre exacto (workaround frágil). Cambio aditivo aplicado:
+
+- `reservas.api.BookingView` y `reservas.application.BookingDetails` incorporan `UUID serviceId`.
+- `BookingManagementUseCase.toDetails` lo resuelve con `AppointmentServiceLookup.findServiceId(appointmentId)` (puerto ya existente); `BookingManagementController.toView` lo propaga.
+- Spec principal `openspec/specs/booking-token-management/spec.md` actualizada; tests unitarios e IT verifican el campo en `GET`, `DELETE` y `POST .../reschedule`.
+- Sin cambios en C-25: su gateway ya decodifica `serviceId` como opcional y sigue funcionando igual.
+
 ## Verificación manual pendiente
 
 Ninguna para este change (backend puro, sin UI). El flujo completo se cubre con IT sobre PostgreSQL embebido.

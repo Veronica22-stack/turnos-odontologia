@@ -79,6 +79,7 @@ class BookingManagementEndpointsIT extends AbstractIntegrationTest {
         mockMvc.perform(get(PATH + "/" + RAW_TOKEN).with(ipOnly()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.bookingId").value(appointmentId.toString()))
+                .andExpect(jsonPath("$.serviceId").value(serviceId.toString()))
                 .andExpect(jsonPath("$.serviceName").exists())
                 .andExpect(jsonPath("$.status").value("CONFIRMED"))
                 .andExpect(jsonPath("$.cancellable").value(true))
@@ -183,6 +184,8 @@ class BookingManagementEndpointsIT extends AbstractIntegrationTest {
     void cancelarConTokenRegistraPatientYRevocaElToken() throws Exception {
         mockMvc.perform(delete(PATH + "/" + RAW_TOKEN).with(csrfAndIp()))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.bookingId").value(appointmentId.toString()))
+                .andExpect(jsonPath("$.serviceId").value(serviceId.toString()))
                 .andExpect(jsonPath("$.status").value("CANCELLED"));
 
         assertThat(AppointmentFixtures.statusOf(appointmentId)).isEqualTo("CANCELLED");
@@ -208,7 +211,8 @@ class BookingManagementEndpointsIT extends AbstractIntegrationTest {
     void reprogramarMueveElMismoTurnoYConservaElToken() throws Exception {
         mockMvc.perform(reschedule(NEW_START).with(csrfAndIp()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.bookingId").value(appointmentId.toString()));
+                .andExpect(jsonPath("$.bookingId").value(appointmentId.toString()))
+                .andExpect(jsonPath("$.serviceId").value(serviceId.toString()));
 
         try (var connection = DATABASE.migratorConnection();
                 var statement = connection.createStatement();

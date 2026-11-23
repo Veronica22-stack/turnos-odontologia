@@ -46,6 +46,7 @@ class BookingManagementUseCaseTest {
         BookingDetails details = fixture.useCase().view(RAW_TOKEN, "127.0.0.1");
 
         assertThat(details.bookingId()).isEqualTo(fixture.appointmentId);
+        assertThat(details.serviceId()).isEqualTo(fixture.serviceId);
         assertThat(details.serviceName()).isEqualTo("Limpieza");
         assertThat(details.practiceName()).isEqualTo("Consultorio");
         assertThat(details.cancellable()).isTrue();
