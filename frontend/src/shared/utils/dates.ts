@@ -109,8 +109,13 @@ function localMidnightUtc(year: number, month: number, day: number): Date {
   return new Date(result);
 }
 
-/** Limites UTC [start, end) del dia calendario `YYYY-MM-DD` en la zona del consultorio. */
-export function dayBoundsUtc(date: string): { start: Date; end: Date } {
+interface CalendarDate {
+  readonly year: number;
+  readonly month: number;
+  readonly day: number;
+}
+
+function parseLocalDate(date: string): CalendarDate {
   const match = LOCAL_DATE_PATTERN.exec(date);
   const year = Number(match?.[1]);
   const month = Number(match?.[2]);
@@ -124,6 +129,50 @@ export function dayBoundsUtc(date: string): { start: Date; end: Date } {
   ) {
     throw new Error('Fecha invalida: se espera YYYY-MM-DD');
   }
+  return { year, month, day };
+}
+
+function formatCalendarDate(value: Date): string {
+  return `${pad(value.getUTCFullYear(), 4)}-${pad(value.getUTCMonth() + 1)}-${pad(value.getUTCDate())}`;
+}
+
+/** Suma `days` a una fecha calendario local (aritmetica sobre el calendario, sin zonas ni DST). */
+export function addLocalDays(date: string, days: number): string {
+  const { year, month, day } = parseLocalDate(date);
+  return formatCalendarDate(new Date(Date.UTC(year, month - 1, day + days)));
+}
+
+export interface DayLabels {
+  /** `mar` */
+  readonly short: string;
+  /** `24` */
+  readonly day: string;
+  /** `mar 24/11` */
+  readonly medium: string;
+  /** `martes 24 de noviembre` (sin coma) */
+  readonly long: string;
+}
+
+const weekdayFormatter = new Intl.DateTimeFormat('es-AR', { timeZone: 'UTC', weekday: 'long' });
+const monthFormatter = new Intl.DateTimeFormat('es-AR', { timeZone: 'UTC', month: 'long' });
+
+/** Etiquetas de un dia calendario local; independiente de la zona del navegador. */
+export function dayLabels(date: string): DayLabels {
+  const { year, month, day } = parseLocalDate(date);
+  const calendar = new Date(Date.UTC(year, month - 1, day));
+  const weekday = weekdayFormatter.format(calendar);
+  const short = weekday.slice(0, 3);
+  return {
+    short,
+    day: String(day),
+    medium: `${short} ${day}/${pad(month)}`,
+    long: `${weekday} ${day} de ${monthFormatter.format(calendar)}`,
+  };
+}
+
+/** Limites UTC [start, end) del dia calendario `YYYY-MM-DD` en la zona del consultorio. */
+export function dayBoundsUtc(date: string): { start: Date; end: Date } {
+  const { year, month, day } = parseLocalDate(date);
   const next = new Date(Date.UTC(year, month - 1, day + 1));
   return {
     start: localMidnightUtc(year, month, day),

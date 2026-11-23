@@ -35,8 +35,10 @@ frontend/src/features/booking/
 ├── booking-messages.ts     # resultado/código → copy en español (única fuente de textos de error)
 ├── validation.ts           # validateBookingForm(), normalizeDni() — puras, mismas reglas que el servidor
 ├── slots.ts                # groupSlots() (Mañana/Tarde), suggestNearest() — puras
+├── mask-email.ts           # maskEmail() — pura: `ma•••@gmail.com` (D6)
 ├── booking-flow.ts         # máquina de estados del flujo (paso, elección, datos) — pura, sin DOM
-├── confirmation-store.ts   # confirmación en memoria, se consume una vez (D6)
+├── booking-step-url.ts     # parseStep()/stepPath(): `/reservar`, `?paso=2|3` — puras (D3)
+├── confirmation-store.ts   # confirmación en memoria (con email ya enmascarado), se consume una vez (D6)
 ├── booking-view.ts         # /reservar: monta los pasos según el estado
 ├── service-step.ts         # paso 1
 ├── schedule-step.ts        # paso 2 (exporta createSchedulePicker para C-25)
@@ -76,7 +78,10 @@ Clasificación en el gateway (las vistas solo ven estos tipos):
 
 ### D3 — Estado del flujo (`booking-flow.ts`)
 - Estado puro: `{ step: 'service' | 'schedule' | 'details' | 'submitting', service?, date, slot?, form: BookingFormValues, notice?: 'slot-taken' }` con transiciones `chooseService`, `chooseDate`, `chooseSlot`, `back`, `submit`, `resolve(result)`. Las vistas renderizan el estado; los efectos (llamadas al gateway, navegación, foco) viven en `booking-view.ts`.
-- **Pasos en memoria, sin URL por paso**: `/reservar` es una sola entrada de historial; "Volver" interno mueve entre pasos. Atrás del navegador sale de `/reservar` (comportamiento estándar de la ruta). Alternativa descartada: `?paso=` en la URL — el router de C-05 resuelve por `pathname` y re-renderiza la vista entera, lo que obliga a persistir el estado entre renders (y no hay dónde guardarlo sin `sessionStorage`, que la spec prohíbe para datos personales). Queda como pregunta abierta para mobile (OQ-3).
+- **Un paso por entrada de historial (decisión de Mayra, 2026-11-23, resuelve OQ-3)**: la URL refleja el paso: `/reservar` (paso 1), `/reservar?paso=2`, `/reservar?paso=3`. Avanzar de paso usa `navigate(path)` del router (`history.pushState`), así el "atrás" del celular vuelve al paso anterior sin perder las elecciones en memoria, y "adelante" también funciona. La URL **no** lleva prestación, horario ni datos personales: solo el número de paso (`booking-step-url.ts`: `parseStep(query)` → 1|2|3, cualquier otro valor → 1).
+- **Estado entre renders**: el router de C-05 vuelve a invocar `view(context)` en cada navegación o `popstate` (también dentro de `/reservar`). `createBookingView` guarda el estado del flujo en su *closure* (memoria, nunca storage) y lo conserva si el elemento raíz de la invocación anterior sigue conectado al documento (re-render dentro de `/reservar`); si ya no lo está (se pasó por otra ruta) o es la primera invocación, arranca vacío. Así los datos se descartan al abandonar `/reservar`.
+- **Normalización**: el paso pedido por la URL se valida contra el estado en memoria (2 exige prestación elegida; 3 exige además horario). Si no alcanza —recarga o enlace directo a `?paso=2|3` sin estado— se hace `history.replaceState` a `/reservar` y se muestra el paso 1 (si hay estado parcial, al paso más alto válido). Nunca se restauran datos desde la URL.
+- **Navegación interna**: "Continuar" = `navigate('/reservar?paso=N')` (push); "Volver" = `history.back()` (no apila entradas repetidas); el retorno por conflicto 409 (paso 3 → 2) y por `service-gone` (→ 1) usan `replace`, para no dejar entradas con estado inválido. La confirmación sigue en `/reservar/confirmado` con `replace` (D6).
 - Al cambiar de prestación se descartan día y slot; al cambiar de día se descarta el slot. Los datos del formulario se conservan en memoria mientras la vista `/reservar` esté montada.
 
 ### D4 — Paso 2: días y horarios
@@ -97,7 +102,7 @@ Clasificación en el gateway (las vistas solo ven estos tipos):
 ### D6 — Confirmación y relación con C-25
 - `confirmation-store.ts`: variable de módulo `{ serviceName, startsAt, endsAt, practiceName, email } | 'generic' | null`; `book()` exitoso la escribe y `navigate('/reservar/confirmado', { replace: true })`; la vista la **consume** (lee y borra) al montarse. Recargar, abrir directo o volver a entrar → confirmación genérica. Nunca `sessionStorage`/`localStorage` ni query string (spec `public-booking-ui` "Datos personales sin rastros").
 - **Por qué `replace`**: atrás desde la confirmación no vuelve al formulario enviado (no hay reenvío posible); vuelve a la página anterior a `/reservar` o, si `/reservar` fue la primera, sale del sitio. Aceptado (la confirmación tiene "Reservar otro turno").
-- **Contenido**: ícono de éxito, `h1` "¡Turno reservado!", `.meta-list` (Prestación, Día "martes 24 de noviembre", Horario "10:30 – 11:15", Consultorio si `practiceName` no está vacío), badge "Confirmado", y un aviso `alert-info`: "Te enviamos la confirmación a **{email}**. Ahí está el enlace para cancelar o reprogramar el turno; guardalo." + "Si no llega en unos minutos, revisá la carpeta de spam." El email se muestra porque la reserva no verifica la dirección (RN-RS-02) y es la única vía para recibir el enlace: verla ayuda a detectar un error de tipeo (OQ-1: si el email está mal, hoy no hay forma de corregirlo desde la SPA).
+- **Contenido**: ícono de éxito, `h1` "¡Turno reservado!", `.meta-list` (Prestación, Día "martes 24 de noviembre", Horario "10:30 – 11:15", Consultorio si `practiceName` no está vacío), badge "Confirmado", y un aviso `alert-info`: "Te enviamos la confirmación a **{email enmascarado}**. Ahí está el enlace para cancelar o reprogramar el turno; guardalo." + "Si no llega en unos minutos, revisá la carpeta de spam." El email se muestra **enmascarado** (decisión de Mayra, 2026-11-23, resuelve OQ-1) por privacidad —la pantalla puede quedar a la vista de terceros— pero suficiente para detectar un error de tipeo en el dominio. `maskEmail(email)` (`mask-email.ts`, pura): parte local de ≥ 3 caracteres → primeros 2 + `•••` + `@dominio` completo (`maria@gmail.com` → `ma•••@gmail.com`; `ana@ejemplo.com` → `an•••@ejemplo.com`); parte local de 1 o 2 caracteres → primer carácter + `•••` (`a@x.com` → `a•••@x.com`, `jo@x.com` → `j•••@x.com`). El enmascarado se aplica al escribir en `confirmation-store`: el email completo no se conserva tras el envío. Si el email estuviera mal, hoy no hay forma de corregirlo desde la SPA.
 - **Genérica** (recarga u honeypot 200 `ACCEPTED`): `h1` "Revisá tu email", texto "Si completaste una reserva, te enviamos la confirmación con el enlace para gestionarla." + enlace "Reservar un turno" → `/reservar`. Para un bot, indistinguible de un éxito.
 - **Token**: la respuesta 201 no trae token (C-14 lo manda solo por email, `APP_BASE_URL/turno/{token}`). La confirmación nunca lo conoce, no enlaza a `/turno/...` y el título es fijo "Reserva confirmada". Datos de C-15 relevantes para C-25 (no usados aquí): `GET/DELETE /api/v1/public/bookings/{token}` → `BookingView{ bookingId, serviceName, practiceName, startsAt, endsAt, status, cancellable, reschedulable }`; `POST …/{token}/reschedule` `{ startsAt }` → 409 `SLOT_TAKEN` conserva el original; token inválido/expirado/revocado → 404 `INVALID_OR_EXPIRED_TOKEN` genérico; turno no modificable → 422 `BOOKING_MODIFICATION_NOT_ALLOWED`; mutaciones con CSRF; el token vence `BOOKING_TOKEN_TTL_DAYS` (1 día) después del fin del turno y no rota al reprogramar. C-25 reutiliza `createSchedulePicker` (D4) y `booking-messages.ts` para `SLOT_TAKEN`/`RATE_LIMITED`.
 
@@ -129,22 +134,24 @@ Clasificación en el gateway (las vistas solo ven estos tipos):
 |---------|--------------|
 | `shared/utils/dates.test.ts` (+casos) | local-time-display (días consecutivos, etiquetas, otra zona del navegador vía `TZ`) |
 | `features/booking/validation.test.ts` | Validación local (vacíos, DNI con puntos/corto/largo, teléfono, email, aviso, longitudes UTF-16) |
+| `features/booking/mask-email.test.ts` | Enmascarado del email (≥ 3, 2, 1 caracteres locales; dominio completo) |
+| `features/booking/booking-step-url.test.ts` | `parseStep` (`paso=2`, `3`, ausente, `0`, `9`, `abc`) y `stepPath` |
 | `features/booking/slots.test.ts` | Horarios agrupados (borde 13:00 local), sugerencias (empates, menos de 3, excluye el rechazado) |
 | `features/booking/booking-flow.test.ts` | Pasos, volver conserva, cambio de prestación/día descarta, resolución de resultados |
 | `features/booking/booking-gateway.test.ts` | Contrato D2 completo: rutas y query exactas, cuerpo exacto (`startsAt` sin reformatear, `website`, `privacyAccepted`), cabecera CSRF en POST, 201/200 `ACCEPTED`, cada código de error, `Retry-After`, decodificación inválida |
 | `features/booking/booking-messages.test.ts` | Copy por resultado, nunca `title`/`detail` |
-| `features/booking/booking-view.test.ts` | Flujo completo con `fetch` simulado; estados de carga/vacío/error; 409 con sugerencias y datos conservados; 429; sin prestaciones; doble envío; foco por paso |
+| `features/booking/booking-view.test.ts` | Flujo completo con `fetch` simulado; estados de carga/vacío/error; 409 con sugerencias y datos conservados; 429; sin prestaciones; doble envío; foco por paso; URL por paso (`pushState`), atrás/adelante conservan elecciones, recarga de `?paso=2|3` normaliza a `/reservar`, salir de `/reservar` y volver descarta el estado |
 | `features/booking/details-step.test.ts` | Honeypot no perceptible (`aria-hidden`, `tabindex=-1`, `autocomplete=off`, clase `.hp`), teclados, errores por campo |
-| `features/booking/confirmation-view.test.ts` | Confirmación con datos, genérica, consumo único, `replace` |
+| `features/booking/confirmation-view.test.ts` | Confirmación con datos y email enmascarado (nunca completo), genérica, consumo único, `replace` |
 | `app/routes.test.ts`, `main.test.ts` (+casos) | Rutas reales, título, flujo integrado; sin rastros (consola, URL, título, storages) |
 - Datos ficticios únicamente (`Ana Pérez`, DNI `30456789`, `ana@ejemplo.com`, `11 2345 6789`); reloj fijo (`2026-11-23T13:00:00Z`).
 - Apariencia y responsive: verify visual contra los mockups aprobados a 390x844 y 1440x900.
 
 ## Risks / Trade-offs
 
-- [Pasos sin URL] Atrás del navegador sale del flujo y pierde lo cargado → mitigación: "Volver" visible en cada paso; revisable (OQ-3).
+- [Pasos en la URL] Recargar `?paso=2|3` pierde la memoria y vuelve al paso 1 (por diseño: no hay datos en la URL ni storage); atrás/adelante conservan las elecciones mientras la pestaña no se recargue ni se salga de `/reservar`.
 - [Timeout ambiguo] El POST pudo crear la reserva aunque la respuesta no llegó; reintentar daría `SLOT_TAKEN` sobre el propio turno o un segundo turno en otro horario → el mensaje `unknown-outcome` pide revisar el email antes de reintentar. No hay forma de consultarlo sin token (P5).
-- [Email mal escrito] Sin verificación (RN-RS-02) la persona no recibe el enlace y no puede gestionar el turno → se muestra el email en la confirmación (D6); la corrección queda en el consultorio (OQ-1).
+- [Email mal escrito] Sin verificación (RN-RS-02) la persona no recibe el enlace y no puede gestionar el turno → la confirmación muestra el email enmascarado (D6, decisión de Mayra), que permite detectar un dominio mal tipeado pero no un error dentro del nombre; la corrección queda en el consultorio.
 - [Días sin horarios no marcados] La tira no anticipa qué días están completos; la persona puede tocar varios días vacíos → "Ver el día siguiente"; pedido P2.
 - [Horizonte desconocido] El cliente no conoce `maxAdvanceDays` (default 30): la tira ofrece hasta 98 días y los posteriores al horizonte salen vacíos → pedido P1.
 - [Rate limit compartido de lectura] 120 GET/min por IP compartidos entre catálogo y disponibilidad (y con cualquier otra persona detrás de la misma IP pública, p. ej. el wifi del consultorio) → aviso `rate-limited` sin reintento automático.
@@ -170,9 +177,9 @@ Sin migración de datos ni cambios de backend. Rollback: revertir el commit del 
 
 ## Open Questions
 
-- OQ-1 (Mayra/Lucas): ¿mostrar el email completo en la confirmación (decisión actual) o enmascarado (`an•••@ejemplo.com`)? ¿Qué hace el paciente si lo escribió mal?
+- ~~OQ-1~~ **Resuelta (Mayra, 2026-11-23)**: la confirmación muestra el email **enmascarado** (`ma•••@gmail.com`, D6). Qué hace el paciente si lo escribió mal sigue sin camino en la SPA (contactar al consultorio).
 - OQ-2 (PA-10, legal): texto y enlace del aviso de privacidad; hoy `(TBD)` con versión `PRIVACY_NOTICE_V1` en el servidor.
-- OQ-3 (equipo): ¿reflejar el paso en la URL para que "atrás" del celular vuelva al paso anterior? Implica persistir estado entre renders del router.
+- ~~OQ-3~~ **Resuelta (Mayra, 2026-11-23)**: el paso se refleja en la URL (`/reservar`, `?paso=2`, `?paso=3`) con `pushState`; el estado vive en memoria dentro de la vista (D3).
 - OQ-4 (PA-05): texto definitivo de `BOOKING_CONTACT_LIMIT` y si se muestra el límite (3).
 - OQ-5 (PA-21): nivel WCAG objetivo; hoy se aplica la línea base del design system (contraste AA de tokens, foco visible, objetivos de 44 px, errores con ícono + texto).
 - OQ-6: los datos de contacto del consultorio para "Reservas no disponibles" y el pie siguen `(TBD)` (design system TBD 8).
@@ -185,5 +192,6 @@ Sin migración de datos ni cambios de backend. Rollback: revertir el commit del 
 - Mockup revision: 1
 - Approval: approved (2026-11-23, by Lucas)
 - Preview: rendered (2026-11-23, revisión 1, `mockups/previews/<pantalla>-390.png` y `-1440.png`, 14 pantallas / 28 capturas; Chrome headless por CDP con `Emulation.setDeviceMetricsOverride` 390x844 (mobile) y 1440x900, página completa, servidor local `python -m http.server` en 127.0.0.1:8765; sin scroll horizontal de página a 390 px; inspeccionadas visualmente: se corrigió el corte del email en la confirmación y el día vacío fuera de vista en `step2-empty`)
-- Visual verify: —
+- Revisión menor 2026-11-23: email enmascarado en confirmación por decisión de Mayra; informado a Lucas. (Solo cambia el texto del email en `confirmation.html` y sus capturas `confirmation-390.png`/`-1440.png`.)
+- Visual verify: differences (2026-11-23, apply: Vite dev + Chrome headless por CDP con `Fetch.enable` simulando `/api/v1/public/*` (servicios, disponibilidad, 201, 409, 429, 422 `BOOKING_CONTACT_LIMIT`, 500, 200 `ACCEPTED`), 14 pantallas a 390x844 y 1440x900 en `mockups/verify/`, comparadas con `mockups/previews/`; sin scroll horizontal a 320 px; sin excepciones en consola. Diferencias menores: casilla del aviso y espaciados verticales unos pocos px distintos, "Ver el día siguiente" sin el chevron del mockup; no hay diferencias mayores ni bloqueantes. Verificación contra backend real pendiente: tarea 9.3.)
 - Criterio de aceptación: los HTML de `mockups/` y sus capturas (ver `tasks.md` grupos 6 a 9).

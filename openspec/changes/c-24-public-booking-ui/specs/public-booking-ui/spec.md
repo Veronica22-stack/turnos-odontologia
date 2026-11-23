@@ -7,7 +7,7 @@ Permite que una persona sin cuenta reserve un turno desde la SPA pública (`/res
 ## ADDED Requirements
 
 ### Requirement: Flujo de reserva en tres pasos
-La vista `/reservar` SHALL guiar la reserva en tres pasos dentro del layout público —prestación, día y horario, datos— con un indicador "Paso N de 3" y un encabezado `h1` por paso que recibe el foco al cambiar de paso. Cada paso posterior al primero SHALL ofrecer "Volver" al paso anterior conservando lo elegido.
+La vista `/reservar` SHALL guiar la reserva en tres pasos dentro del layout público —prestación, día y horario, datos— con un indicador "Paso N de 3" y un encabezado `h1` por paso que recibe el foco al cambiar de paso. Cada paso posterior al primero SHALL ofrecer "Volver" al paso anterior conservando lo elegido. El paso SHALL reflejarse en la URL (`/reservar`, `/reservar?paso=2`, `/reservar?paso=3`) con una entrada de historial por paso (ver `spa-routing`).
 
 #### Scenario: Inicio del flujo
 - **GIVEN** un catálogo público con dos prestaciones
@@ -173,12 +173,22 @@ La SPA SHALL traducir los demás rechazos a mensajes propios, nunca al `title` o
 - **THEN** se muestra un aviso que no afirma que la reserva falló y pide revisar el email antes de intentar de nuevo, y el formulario conserva los datos
 
 ### Requirement: Página de confirmación
-Ante `201`, la SPA SHALL navegar a `/reservar/confirmado` reemplazando la entrada del historial y mostrar "¡Turno reservado!", prestación, fecha y rango horario de Buenos Aires, nombre del consultorio y el email ingresado, explicando que el enlace para cancelar o reprogramar llega solo por email. Los datos se toman de la memoria del flujo.
+Ante `201`, la SPA SHALL navegar a `/reservar/confirmado` reemplazando la entrada del historial y mostrar "¡Turno reservado!", prestación, fecha y rango horario de Buenos Aires, consultorio y el email ingresado enmascarado, explicando que el enlace para cancelar o reprogramar llega solo por email. El email completo MUST NOT mostrarse ni conservarse tras el envío. El enmascarado conserva los 2 primeros caracteres de la parte local (el primero si tiene 1 o 2), `•••` y el dominio completo.
 
 #### Scenario: Reserva confirmada
 - **GIVEN** una respuesta `201` con `serviceName = "Limpieza"`, `startsAt = 2026-11-24T13:30:00Z`, `endsAt = 2026-11-24T14:15:00Z`
 - **WHEN** se procesa la respuesta
 - **THEN** la URL es `/reservar/confirmado` y se ve "Limpieza", "martes 24 de noviembre" y "10:30 – 11:15"
+
+#### Scenario: Email enmascarado
+- **GIVEN** la persona ingresó `maria@gmail.com`
+- **WHEN** se muestra la confirmación
+- **THEN** se ve `ma•••@gmail.com` y el texto `maria@gmail.com` no aparece en la página
+
+#### Scenario: Email con parte local corta
+- **GIVEN** la persona ingresó `jo@ejemplo.com`
+- **WHEN** se muestra la confirmación
+- **THEN** se ve `j•••@ejemplo.com`
 
 #### Scenario: Atrás desde la confirmación
 - **GIVEN** la confirmación visible

@@ -23,7 +23,7 @@ Todas las pantallas usan el app shell público aprobado en C-05 (header con logo
 | `contact-limit.html` | `/reservar` | 422 `BOOKING_CONTACT_LIMIT` (≥ 3 turnos futuros activos por DNI/email/teléfono; texto `(TBD · PA-05)`) |
 | `step3-unknown.html` | `/reservar` | Red/timeout/5xx al reservar: aviso que no afirma ni niega la reserva y pide revisar el email |
 | `unavailable.html` | `/reservar` | Sin prestaciones públicas (`[]` o `NO_ACTIVE_SERVICES`): "Reservas online no disponibles", sin pasos |
-| `confirmation.html` | `/reservar/confirmado` | Tras 201: "¡Turno reservado!", prestación, día, horario, consultorio, badge "Confirmado" y aviso de que el enlace de gestión llega solo por email (muestra el email ingresado) |
+| `confirmation.html` | `/reservar/confirmado` | Tras 201: "¡Turno reservado!", prestación, día, horario, consultorio, badge "Confirmado" y aviso de que el enlace de gestión llega solo por email (muestra el email ingresado **enmascarado**, `ma•••@gmail.com`) |
 | `confirmation-generic.html` | `/reservar/confirmado` | Sin datos en memoria (recarga/acceso directo) o 200 `ACCEPTED` del honeypot: "Revisá tu email", sin datos de turno |
 | `booking.css` | — | Solo variables de `design-system/tokens.css`; shell público de C-05, campos/botones/alertas/spinner de C-06 y patrón de reserva de `components.html`; medidas locales `--booking-*` (design D8) |
 
@@ -71,5 +71,6 @@ python -m http.server 8765 --bind 127.0.0.1
 - **Diferencias con `components.html`**: el stepper dice "Paso N de **3**" (no 4: el resumen está dentro del paso 3) y los días **no** se muestran deshabilitados "sin horarios" por adelantado — saberlo exige una consulta por día (design D4, pedido P2 a C-14).
 - El horario siempre se muestra en hora de Buenos Aires; el `endsAt` del resumen viene del servidor.
 - Conflicto (409) en tono de advertencia y con salida inmediata: sugerencias + grilla completa del mismo día, sin preselección.
-- La confirmación nunca muestra ni enlaza el token de gestión: la respuesta de C-14 no lo trae y el enlace `/turno/{token}` (C-25) llega solo por email. Se muestra el email ingresado para que la persona detecte un error de tipeo (design OQ-1).
+- La confirmación nunca muestra ni enlaza el token de gestión: la respuesta de C-14 no lo trae y el enlace `/turno/{token}` (C-25) llega solo por email. Se muestra el email ingresado **enmascarado** (`ma•••@gmail.com`: 2 primeros caracteres de la parte local, `•••` y dominio completo) para que la persona detecte un error de tipeo en el dominio sin exponer la dirección (design OQ-1, resuelta por Mayra).
+- **Revisión menor 2026-11-23**: email enmascarado en confirmación por decisión de Mayra; informado a Lucas. Solo cambió el texto del email en `confirmation.html` y se volvieron a renderizar `previews/confirmation-390.png` y `previews/confirmation-1440.png`.
 - Errores con ícono + texto + borde de 2 px (no dependen solo del color); errores de servidor como alerta arriba del formulario (`role="alert"`).
