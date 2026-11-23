@@ -54,7 +54,7 @@ public final class ModuleBoundaries {
             AGENDA, Set.of(PACIENTES),
             NOTIFICACIONES, Set.of(AGENDA, PACIENTES),
             PACIENTES, Set.of(AUDITORIA),
-            HISTORIA_CLINICA, Set.of(PACIENTES, AUDITORIA),
+            HISTORIA_CLINICA, Set.of(PACIENTES, AUDITORIA, AGENDA),
             AUTH, Set.of(AUDITORIA));
 
     private static final List<String> FORBIDDEN_DOMAIN_PACKAGES =

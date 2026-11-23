@@ -1,5 +1,6 @@
 package ar.turnosodontologia.consultorio.historiaclinica.application;
 
+import ar.turnosodontologia.consultorio.support.ClinicalFixtures;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -92,6 +93,7 @@ class ClinicalAuditFailureIT extends AbstractIntegrationTest {
         try (Connection connection = DATABASE.migratorConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate("DELETE FROM anamnesis_entry WHERE corrects_entry_id IS NOT NULL");
             statement.executeUpdate("DELETE FROM anamnesis_entry");
+            ClinicalFixtures.deleteEvolutions();
             statement.executeUpdate("DELETE FROM clinical_record");
             statement.executeUpdate("DELETE FROM audit_log WHERE entity_type IN ('anamnesis_entry', 'clinical_record')");
             statement.executeUpdate("DELETE FROM patient WHERE dni = '73000001'");

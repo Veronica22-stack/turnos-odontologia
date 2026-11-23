@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import ar.turnosodontologia.consultorio.support.AbstractIntegrationTest;
+import ar.turnosodontologia.consultorio.support.ClinicalFixtures;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -41,6 +42,7 @@ class AppointmentPrivilegesIT extends AbstractIntegrationTest {
     @AfterEach
     void cleanRows() throws SQLException {
         try (Connection connection = DATABASE.migratorConnection(); Statement statement = connection.createStatement()) {
+            ClinicalFixtures.deleteEvolutions();
             statement.executeUpdate("DELETE FROM appointment WHERE patient_id IN "
                     + "(SELECT id FROM patient WHERE dni = '" + PATIENT_DNI + "')");
             statement.executeUpdate("DELETE FROM patient WHERE dni = '" + PATIENT_DNI + "'");

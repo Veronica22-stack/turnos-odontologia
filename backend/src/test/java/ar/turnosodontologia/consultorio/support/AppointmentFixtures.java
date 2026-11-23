@@ -98,6 +98,8 @@ public final class AppointmentFixtures {
     /** Borra todo lo que crean estos fixtures (notificaciones, turnos, bloqueos, horarios, pacientes y prestaciones de prueba). */
     public static void cleanAll() {
         // notification referencia appointment con ON DELETE RESTRICT (V14): se vacia antes que los turnos.
+        // evolution_entry referencia appointment y clinical_record con ON DELETE RESTRICT (V15).
+        ClinicalFixtures.deleteEvolutions();
         execute("DELETE FROM notification");
         execute("DELETE FROM appointment");
         execute("DELETE FROM schedule_block");

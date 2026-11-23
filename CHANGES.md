@@ -484,10 +484,10 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-17
 
 ### [C-18] `evolutions`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 21/21 tareas; unit 711/711 e integración 482/482 verdes, jacocoTestReport OK; specs sincronizadas (`openspec/changes/archive/2026-11-23-c-18-evolutions/`)
 - **Scope**:
-  - Migración V13: tabla `evolution_entry` (texto, `appointment_id` opcional, `corrects_entry_id`, autor, `created_at` servidor) (número a reasignar: debe ser mayor que la última versión aplicada, ≥ V14, al momento del apply; Flyway outOfOrder=false)
-  - Endpoints `.../evolutions` (US-062): orden cronológico, asociación opcional a un turno; corrección vía C-16
+  - Migración V15: tabla `evolution_entry` (descripción ≤ 5000, `appointment_id` opcional, `corrects_entry_id`, autor, `created_at` servidor; sin `performed_at`) (V13 y V14 ya están ocupadas por `appointment` y `notification`; Flyway outOfOrder=false)
+  - Endpoints `.../evolutions` (US-062): historial de la más reciente a la más antigua, asociación opcional a un turno (del mismo paciente, no cancelado ni ausente, ya comenzado); corrección vía C-16
   - Tests: alta, asociación a turno, orden, corrección, auditoría
 - **Dependencias**: `C-11, C-16`
 - **Governance**: CRITICO

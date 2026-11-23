@@ -1,5 +1,6 @@
 package ar.turnosodontologia.consultorio.historiaclinica.infrastructure;
 
+import ar.turnosodontologia.consultorio.support.ClinicalFixtures;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -84,6 +85,7 @@ class OdontogramDataLeakageIT extends AbstractIntegrationTest {
         try (Connection connection = DATABASE.migratorConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate("DELETE FROM odontogram_entry WHERE corrects_entry_id IS NOT NULL");
             statement.executeUpdate("DELETE FROM odontogram_entry");
+            ClinicalFixtures.deleteEvolutions();
             statement.executeUpdate("DELETE FROM clinical_record");
             statement.executeUpdate("DELETE FROM audit_log WHERE action IN ('HC_READ', 'HC_CREATE', 'HC_CORRECT')");
             statement.executeUpdate("DELETE FROM patient WHERE dni = '80000001'");
