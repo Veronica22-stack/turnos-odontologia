@@ -1,5 +1,7 @@
 import type { Session } from '../core/auth/session';
 import { h } from '../core/dom/h';
+import type { AgendaGateway } from '../features/agenda/agenda-gateway';
+import { createAgendaView } from '../features/agenda/agenda-view';
 import type { AuthGateway } from '../features/auth/auth-gateway';
 import { createChangePasswordView } from '../features/auth/change-password-view';
 import { createLoginView } from '../features/auth/login-view';
@@ -21,13 +23,14 @@ function placeholderView(heading: string, description: string): () => HTMLElemen
 export interface RoutesDeps {
   readonly session: Pick<Session, 'get' | 'ensureLoaded' | 'signIn' | 'endAfterPasswordChange'>;
   readonly gateway: AuthGateway;
+  readonly agenda: AgendaGateway;
   readonly settings: SettingsGateway;
   readonly navigate: (path: string, options?: { replace?: boolean }) => void;
   readonly onLogout: () => void;
 }
 
 export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: ViewRoute } {
-  const { session, gateway, settings, navigate, onLogout } = deps;
+  const { session, gateway, agenda, settings, navigate, onLogout } = deps;
   const getRoutes = (): readonly RouteDef[] => routes;
   const privateGuard = requireSession(session, getRoutes);
   const loginView = createLoginView({ gateway, session, navigate, routes: getRoutes });
@@ -84,7 +87,7 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       layout: 'private',
       title: 'Agenda',
       guard: privateGuard,
-      view: placeholderView('Agenda', 'La agenda llega en su propio change.'),
+      view: () => createAgendaView({ gateway: agenda }),
     },
     {
       name: 'pacientes',

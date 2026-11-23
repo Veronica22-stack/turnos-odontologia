@@ -1,0 +1,547 @@
+/*
+ * Agenda (C-20): estilos de la vista diaria/semanal, el formulario de alta y el flujo de detalle.
+ * Solo variables de design-system/tokens.css (Revision 1). Estilo portado de los mockups aprobados
+ * de C-20; reusa `.badge`, `.card`, `.field`, `.select`, `.check`, `.empty`, `.muted` y `.num`.
+ */
+
+:root {
+  --layout-agenda-row: 2.25rem;
+  --layout-agenda-col-min-width: 13rem;
+  --layout-agenda-dialog-width: 28rem;
+}
+
+.agenda-page {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.agenda-content {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.agenda-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-3);
+}
+
+.toolbar-left {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+}
+
+.toolbar-right {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.seg {
+  display: inline-flex;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+}
+
+.seg-button {
+  border: 0;
+  background: var(--color-surface);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-medium);
+  padding: 0 var(--space-3);
+  min-height: 2.25rem;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+}
+
+.seg-button + .seg-button {
+  border-left: 1px solid var(--color-border-strong);
+}
+
+.seg-button[aria-pressed="true"] {
+  background: var(--color-primary-subtle);
+  color: var(--color-primary);
+  font-weight: var(--weight-semibold);
+}
+
+.btn-icon {
+  padding: 0;
+  width: var(--control-height);
+}
+
+/* ----- Agenda diaria ----- */
+
+.agenda {
+  position: relative;
+  display: grid;
+  grid-template-columns: 3.25rem 1fr;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  overflow: hidden;
+  /* Cada fila representa 15 min (franjas del design system); las etiquetas van cada 30 min. */
+  --layout-agenda-row: 2.25rem;
+}
+
+@media (max-width: 639px) {
+  .agenda {
+    --layout-agenda-row: 1.75rem;
+  }
+}
+
+.agenda-times {
+  display: grid;
+  grid-auto-rows: var(--layout-agenda-row);
+  border-right: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+}
+
+.agenda-times span {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  padding: var(--space-1) var(--space-2) 0 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  border-top: 1px solid var(--color-border);
+}
+
+.agenda-times span:first-child {
+  border-top: 0;
+}
+
+.agenda-col {
+  position: relative;
+  display: grid;
+  grid-auto-rows: var(--layout-agenda-row);
+}
+
+.agenda-col .line {
+  border-top: 1px solid var(--color-border);
+}
+
+.agenda-col .line:nth-child(even) {
+  border-top-style: dashed;
+  border-top-color: var(--color-bg-muted);
+}
+
+.agenda-col .line:first-child {
+  border-top: 0;
+}
+
+.appt {
+  position: absolute;
+  left: var(--space-1);
+  right: var(--space-1);
+  top: calc(var(--start) * var(--layout-agenda-row) + var(--space-1));
+  height: calc(var(--span) * var(--layout-agenda-row) - var(--space-1));
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding: var(--space-1) var(--space-2);
+  border-radius: var(--radius-sm);
+  border-left: 4px solid;
+  font-size: var(--text-xs);
+  line-height: 1.35;
+  overflow: hidden;
+  text-align: left;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border-top: 0;
+  border-right: 0;
+  border-bottom: 0;
+}
+
+.appt:hover {
+  filter: brightness(0.98);
+  box-shadow: var(--shadow-sm);
+}
+
+.appt .who {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appt .what {
+  color: var(--color-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.appt .row1 {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+  align-items: center;
+  min-width: 0;
+}
+
+.appt.s-confirmado {
+  background: var(--status-confirmado-bg);
+  border-left-color: var(--status-confirmado-fg);
+}
+
+.appt.s-atendido {
+  background: var(--status-atendido-bg);
+  border-left-color: var(--status-atendido-fg);
+}
+
+.appt.s-ausente {
+  background: var(--status-ausente-bg);
+  border-left-color: var(--status-ausente-fg);
+}
+
+.appt.s-cancelado {
+  background: var(--status-cancelado-bg);
+  border-left-color: var(--color-border-strong);
+}
+
+.appt.s-cancelado .who {
+  text-decoration: line-through;
+  color: var(--color-text-secondary);
+}
+
+.badge-confirmado {
+  color: var(--status-confirmado-fg);
+  background: var(--status-confirmado-bg);
+  border-color: var(--color-primary-muted);
+}
+
+.badge-atendido {
+  color: var(--status-atendido-fg);
+  background: var(--status-atendido-bg);
+  border-color: var(--color-success-border);
+}
+
+.badge-ausente {
+  color: var(--status-ausente-fg);
+  background: var(--status-ausente-bg);
+  border-color: var(--color-warning-border);
+}
+
+.badge-cancelado {
+  color: var(--status-cancelado-fg);
+  background: var(--status-cancelado-bg);
+  border-color: var(--color-border);
+}
+
+.badge-cancelado span {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.badge-sobreturno {
+  color: var(--color-warning);
+  background: var(--color-warning-bg);
+  border-color: var(--color-warning-border);
+}
+
+.block {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--start) * var(--layout-agenda-row));
+  height: calc(var(--span) * var(--layout-agenda-row));
+  background: repeating-linear-gradient(135deg, var(--status-bloqueado-bg) 0 8px, var(--color-surface) 8px 16px);
+  border-top: 1px solid var(--status-bloqueado-line);
+  border-bottom: 1px solid var(--status-bloqueado-line);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text-secondary);
+}
+
+.block svg {
+  width: var(--space-3);
+  height: var(--space-3);
+}
+
+.now-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--at) * var(--layout-agenda-row));
+  height: 0;
+  border-top: 2px solid var(--color-danger);
+  z-index: 1;
+}
+
+.now-line::before {
+  content: "";
+  position: absolute;
+  left: calc(var(--space-1) * -1);
+  top: calc(var(--space-2) * -1);
+  width: var(--space-3);
+  height: var(--space-3);
+  border-radius: 50%;
+  background: var(--color-danger);
+}
+
+.free-slot {
+  position: absolute;
+  left: var(--space-1);
+  right: var(--space-1);
+  top: calc(var(--start) * var(--layout-agenda-row) + var(--space-1));
+  height: calc(var(--layout-agenda-row) - var(--space-1));
+  display: flex;
+  align-items: center;
+  padding: 0 var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  cursor: pointer;
+  font-family: var(--font-sans);
+}
+
+.free-slot:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: var(--color-primary-subtle);
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-4);
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-3);
+}
+
+.legend b {
+  font-weight: var(--weight-semibold);
+}
+
+/* ----- Semana ----- */
+
+.week-grid {
+  display: flex;
+  gap: var(--space-4);
+  overflow-x: auto;
+  padding-bottom: var(--space-2);
+}
+
+.week-grid .week-col {
+  min-width: var(--layout-agenda-col-min-width);
+  flex: none;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.week-col h4 {
+  font-size: var(--text-xs);
+  font-weight: var(--weight-semibold);
+  letter-spacing: var(--tracking-caps);
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+@media (min-width: 768px) {
+  .week-grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    overflow-x: visible;
+    padding-bottom: 0;
+  }
+  .week-grid .week-col {
+    min-width: 0;
+  }
+}
+
+.week-col .empty {
+  padding: var(--space-5) var(--space-3);
+}
+
+.week-col .empty h3 {
+  font-size: var(--text-sm);
+}
+
+.week-col .empty p {
+  font-size: var(--text-xs);
+  max-width: none;
+}
+
+/* ----- Formulario de alta (D5/D7; estilos base de forms.css/settings.css) ----- */
+
+.patient-results {
+  display: grid;
+  gap: var(--space-1);
+  max-height: var(--space-8);
+  overflow-y: auto;
+  margin-top: var(--space-1);
+}
+
+.patient-result {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-0);
+  width: 100%;
+  min-width: 0;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.patient-result:hover {
+  background: var(--color-bg-muted);
+}
+
+.patient-result-name {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.patient-result-meta {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.new-patient-fields {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.new-patient-note {
+  font-size: var(--text-xs);
+  color: var(--color-text-secondary);
+}
+
+.new-patient-holder:empty {
+  display: none;
+}
+
+.dialog,
+dialog.dialog {
+  width: min(100%, var(--layout-agenda-dialog-width));
+  background: var(--color-surface);
+  border: 0;
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: 0;
+  color: var(--color-text);
+}
+
+dialog.dialog::backdrop {
+  background: var(--color-text);
+  opacity: 0.48;
+}
+
+.dialog-head {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-5) var(--space-5) var(--space-2);
+}
+
+.dialog-head h3 {
+  font-size: var(--text-xl);
+}
+
+.dialog-body {
+  padding: 0 var(--space-5) var(--space-4);
+  font-size: var(--text-sm);
+  display: grid;
+  gap: var(--space-3);
+}
+
+.dialog-foot {
+  display: flex;
+  flex-wrap: wrap-reverse;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--color-border);
+  background: var(--color-bg-subtle);
+  border-radius: 0 0 var(--radius-xl) var(--radius-xl);
+}
+
+@media (max-width: 479px) {
+  .dialog-foot .btn {
+    flex: 1 1 100%;
+  }
+}
+
+.meta-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-1) var(--space-3);
+  font-size: var(--text-sm);
+  margin: 0;
+}
+
+.meta-list dt {
+  color: var(--color-text-secondary);
+}
+
+.meta-list dd {
+  margin: 0;
+  font-weight: var(--weight-medium);
+}
+
+.action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-top: var(--space-4);
+}
+
+.slot-group {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.slot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  min-height: var(--control-height);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  font: inherit;
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semibold);
+  color: var(--color-primary);
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+  padding: 0 var(--space-3);
+  font-family: var(--font-sans);
+}
+
+.slot[aria-pressed="true"] {
+  background: var(--color-primary);
+  color: var(--color-on-primary);
+  border-color: var(--color-primary);
+}
+
+.alerts {
+  margin-top: var(--space-3);
+}

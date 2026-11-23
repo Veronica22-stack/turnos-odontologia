@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { SessionState } from '../core/auth/session';
+import type { AgendaGateway } from '../features/agenda/agenda-gateway';
 import type { SettingsGateway } from '../features/settings/settings-gateway';
 import { safeNext } from '../router/safe-next';
 import type { RouteContext, RouteDef } from '../router/router';
@@ -26,10 +27,26 @@ const SETTINGS_GATEWAY = {
   getBlocks: async () => ({ ok: true, data: [] }),
 } as unknown as SettingsGateway;
 
+const AGENDA_GATEWAY = {
+  listAppointments: async () => ({ ok: true, data: [] }),
+  createAppointment: async () => ({ ok: true, data: [] }),
+  cancelAppointment: async () => ({ ok: true, data: [] }),
+  rescheduleAppointment: async () => ({ ok: true, data: [] }),
+  completeAppointment: async () => ({ ok: true, data: [] }),
+  noShowAppointment: async () => ({ ok: true, data: [] }),
+  listServices: async () => ({ ok: true, data: [] }),
+  searchPatients: async () => ({ ok: true, data: [] }),
+  createPatient: async () => ({ ok: true, data: [] }),
+  getWorkingHours: async () => ({ ok: true, data: [] }),
+  listAvailability: async () => ({ ok: true, data: [] }),
+  listBlocks: async () => ({ ok: true, data: [] }),
+} as unknown as AgendaGateway;
+
 function deps(state: SessionState = { status: 'anonymous' }, settings: SettingsGateway = SETTINGS_GATEWAY): RoutesDeps {
   return {
     session: { get: () => state, ensureLoaded: async () => {}, signIn: () => {}, endAfterPasswordChange: () => {} },
     gateway: { login: async () => ({ ok: false, failure: { kind: 'connection' } }), changePassword: async () => ({ ok: true }) },
+    agenda: AGENDA_GATEWAY,
     settings,
     navigate: () => {},
     onLogout: () => {},
