@@ -1,5 +1,6 @@
 package ar.turnosodontologia.consultorio.database;
 
+import ar.turnosodontologia.consultorio.support.ClinicalFixtures;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -53,6 +54,7 @@ class OdontogramPrivilegesIT extends AbstractIntegrationTest {
     void cleanRows() throws SQLException {
         try (Connection connection = DATABASE.migratorConnection(); Statement statement = connection.createStatement()) {
             statement.executeUpdate("DELETE FROM odontogram_entry");
+            ClinicalFixtures.deleteEvolutions();
             statement.executeUpdate("DELETE FROM clinical_record");
             statement.executeUpdate("DELETE FROM patient WHERE dni = '76000003'");
         }

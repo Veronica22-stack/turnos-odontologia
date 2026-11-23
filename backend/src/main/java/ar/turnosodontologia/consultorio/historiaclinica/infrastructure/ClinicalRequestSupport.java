@@ -2,8 +2,10 @@ package ar.turnosodontologia.consultorio.historiaclinica.infrastructure;
 
 import ar.turnosodontologia.consultorio.historiaclinica.api.AnamnesisContentResponse;
 import ar.turnosodontologia.consultorio.historiaclinica.api.AnamnesisEntryResponse;
+import ar.turnosodontologia.consultorio.historiaclinica.api.EvolutionEntryResponse;
 import ar.turnosodontologia.consultorio.historiaclinica.api.OdontogramEntryResponse;
 import ar.turnosodontologia.consultorio.historiaclinica.application.AnamnesisEntryData;
+import ar.turnosodontologia.consultorio.historiaclinica.application.EvolutionEntryData;
 import ar.turnosodontologia.consultorio.historiaclinica.application.OdontogramEntryData;
 import ar.turnosodontologia.consultorio.historiaclinica.application.RequestContext;
 import ar.turnosodontologia.consultorio.historiaclinica.domain.AnamnesisContent;
@@ -66,5 +68,11 @@ final class ClinicalRequestSupport {
                 data.id(), data.toothCode(), data.surface() == null ? null : data.surface().name(),
                 data.condition().name(), data.notes(), data.authorId(), data.createdAt(), data.correctsEntryId(),
                 data.correctionReason(), data.correctedByEntryId());
+    }
+
+    static EvolutionEntryResponse toResponse(EvolutionEntryData data) {
+        return new EvolutionEntryResponse(
+                data.id(), data.description(), data.appointmentId(), data.authorId(), data.createdAt(),
+                data.correctsEntryId(), data.correctionReason(), data.correctedByEntryId());
     }
 }

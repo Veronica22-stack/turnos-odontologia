@@ -109,7 +109,8 @@ erDiagram
 - El estado actual del odontograma se **deriva** de la última entrada vigente por diente/superficie, preservando el historial.
 
 ### evolution_entry (evolución)
-- `id` UUID PK; `clinical_record_id` FK; `appointment_id` FK null; `performed_at` timestamptz; `description` text; `corrects_entry_id` FK propia null; `correction_reason`; `author_id`; `created_at`.
+- `id` UUID PK; `clinical_record_id` FK; `appointment_id` FK null; `description` text (no vacía, ≤ 5000); `corrects_entry_id` FK propia null; `correction_reason` (≤ 500); `author_id`; `created_at`.
+- **Desvío respecto de la versión original (S-EV-01, C-18)**: no existe `performed_at`; la única fecha es `created_at`, fijada por el servidor. Si una atención se carga después, el turno asociado da la fecha de atención. Agregar `performed_at` más adelante es una migración aditiva (nullable). Pendiente de confirmar con el profesional (S-EV-01..03).
 
 ### audit_log
 - `id` bigint PK; `practice_id`; `user_id` FK null (null = anónimo/sistema); `action` enum (`HC_READ`, `HC_CREATE`, `HC_CORRECT`, `PATIENT_READ`, `PATIENT_UPDATE`, `LOGIN_OK`, `LOGIN_FAIL`, `BOOKING_TOKEN_USE`, ...); `entity_type`, `entity_id`; `patient_id` null; `ip` inet; `user_agent` text; `occurred_at` timestamptz; `details` jsonb (sin datos clínicos en claro).
