@@ -7,6 +7,8 @@ export interface ConfirmOptions {
   readonly text: string;
   readonly confirmLabel?: string;
   readonly cancelLabel?: string;
+  /** Boton con el foco inicial; por defecto `accept` (C-19). C-25 usa `cancel` para la cancelacion de turnos. */
+  readonly initialFocus?: 'accept' | 'cancel';
 }
 
 let sequence = 0;
@@ -55,6 +57,6 @@ export function confirmAction(options: ConfirmOptions): Promise<boolean> {
     } else {
       dialog.setAttribute('open', '');
     }
-    accept.focus();
+    (options.initialFocus === 'cancel' ? cancel : accept).focus();
   });
 }

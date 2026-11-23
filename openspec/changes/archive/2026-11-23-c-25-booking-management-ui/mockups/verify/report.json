@@ -1,0 +1,158 @@
+{
+  "report": [
+    {
+      "name": "detail",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "past",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "cancelled-readonly",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "invalid-token",
+      "h1": "Este enlace no es válido",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "rate-limited",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "connection-error",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "cancel-confirm",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "cancelled",
+      "h1": "Turno cancelado",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "not-modifiable",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "cancel-unknown",
+      "h1": "Tu turno",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "reschedule",
+      "h1": "Elegí el nuevo horario",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "reschedule-conflict",
+      "h1": "Elegí el nuevo horario",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "rescheduled",
+      "h1": "¡Turno reprogramado!",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "reschedule-unknown",
+      "h1": "Elegí el nuevo horario",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "reschedule-unavailable",
+      "h1": "Elegí el nuevo horario",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    },
+    {
+      "name": "invalid-shape",
+      "h1": "Este enlace no es válido",
+      "title": "Gestionar turno · La Muela",
+      "horizontalScrollAt1440": false
+    }
+  ],
+  "consoleMsgs": [
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "log-error: Failed to load resource: the server responded with a status of 404 (Not Found) http://127.0.0.1:5199/api/v1/public/bookings/tok_Abc-123_xyz456789012345",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "log-error: Failed to load resource: the server responded with a status of 429 (Too Many Requests) http://127.0.0.1:5199/api/v1/public/bookings/tok_Abc-123_xyz456789012345",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "log-error: Failed to load resource: the server responded with a status of 500 (Internal Server Error) http://127.0.0.1:5199/api/v1/public/bookings/tok_Abc-123_xyz456789012345",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "log-error: Failed to load resource: the server responded with a status of 422 (Unprocessable Content) http://127.0.0.1:5199/api/v1/public/bookings/tok_Abc-123_xyz456789012345",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "log-error: Failed to load resource: the server responded with a status of 500 (Internal Server Error) http://127.0.0.1:5199/api/v1/public/bookings/tok_Abc-123_xyz456789012345",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "log-error: Failed to load resource: the server responded with a status of 409 (Conflict) http://127.0.0.1:5199/api/v1/public/bookings/tok_Abc-123_xyz456789012345/reschedule",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "log-error: Failed to load resource: the server responded with a status of 500 (Internal Server Error) http://127.0.0.1:5199/api/v1/public/bookings/tok_Abc-123_xyz456789012345/reschedule",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me",
+    "debug: [vite] connecting...",
+    "debug: [vite] connected.",
+    "log-error: Failed to load resource: the server responded with a status of 401 (Unauthorized) http://127.0.0.1:5199/api/v1/auth/me"
+  ],
+  "tokenInConsole": true
+}

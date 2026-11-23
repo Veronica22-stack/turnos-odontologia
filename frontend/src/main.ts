@@ -14,6 +14,7 @@ import { renderPrivateLayout, type PrivateSection } from './layouts/private-layo
 import { createAgendaGateway } from './features/agenda/agenda-gateway';
 import { createAuthGateway } from './features/auth/auth-gateway';
 import { createBookingGateway } from './features/booking/booking-gateway';
+import { createManageGateway } from './features/manage-booking/manage-gateway';
 import { createSettingsGateway } from './features/settings/settings-gateway';
 import { markProLink, renderPublicLayout } from './layouts/public-layout';
 import { brandName } from './layouts/brand';
@@ -93,6 +94,7 @@ export function bootstrap(options: BootstrapOptions = {}): App {
   const agendaGateway = createAgendaGateway({ client });
   const settingsGateway = createSettingsGateway({ client });
   const bookingGateway = createBookingGateway({ client });
+  const manageGateway = createManageGateway({ client });
 
   const { routes, notFound } = createRoutes({
     session: sessionRef,
@@ -100,6 +102,7 @@ export function bootstrap(options: BootstrapOptions = {}): App {
     agenda: agendaGateway,
     settings: settingsGateway,
     booking: bookingGateway,
+    manage: manageGateway,
     replaceUrl: (path) => win.history.replaceState(null, '', path),
     goBack: () => win.history.back(),
     navigate: (path, options) => {

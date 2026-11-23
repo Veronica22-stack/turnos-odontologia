@@ -601,7 +601,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-10, PA-21
 
 ### [C-25] `booking-management-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — verify PASS WITH WARNINGS sin críticos (`openspec/changes/archive/2026-11-23-c-25-booking-management-ui/verify-report.md`); mockups aprobados por Lucas; contrato verificado contra C-15; pendiente tarea 8.3 (prueba manual contra backend real), pedido `serviceId` en `BookingView` a C-15 y PR a `master`
 - **Scope**:
   - `/turno/{token}`: ver turno, cancelar con confirmación previa, reprogramar eligiendo nuevo slot (US-031, US-032)
   - Mensaje genérico ante token inválido/expirado; turno pasado en solo lectura
