@@ -61,4 +61,14 @@ interface SpringDataAppointmentRepository extends JpaRepository<Appointment, UUI
             """)
     List<Appointment> findInRange(@Param("practiceId") UUID practiceId,
             @Param("from") Instant from, @Param("to") Instant to);
+
+    @Query("""
+            select count(a) from Appointment a
+            where a.practiceId = :practiceId
+              and a.status = ar.turnosodontologia.consultorio.agenda.domain.AppointmentStatus.CONFIRMED
+              and a.startsAt >= :from
+              and a.patientId in :patientIds
+            """)
+    long countActiveFuture(@Param("practiceId") UUID practiceId,
+            @Param("patientIds") List<UUID> patientIds, @Param("from") Instant from);
 }

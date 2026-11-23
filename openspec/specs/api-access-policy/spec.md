@@ -223,3 +223,39 @@ Todos los endpoints bajo `/api/v1/appointments/**` SHALL exigir sesión autentic
 - **GIVEN** una sesión `DENTIST`
 - **WHEN** solicita `GET /api/v1/availability` sin cabecera `X-XSRF-TOKEN`
 - **THEN** responde `200` con los slots correspondientes
+
+### Requirement: Public booking endpoint policy
+`POST /api/v1/public/bookings` SHALL ser accesible sin sesión por formar parte de `/api/v1/public/**`. La petición SHALL exigir el token CSRF de doble envío (cabecera `X-XSRF-TOKEN` y cookie `XSRF-TOKEN`) y la respuesta SHALL incluir `Referrer-Policy: no-referrer`.
+
+#### Scenario: Reserva anónima permitida
+- **GIVEN** un cliente sin sesión de odontólogo
+- **WHEN** envía `POST /api/v1/public/bookings` con CSRF válido
+- **THEN** la petición alcanza el controlador y no devuelve 401 ni 403
+
+#### Scenario: Mutación sin CSRF rechazada
+- **GIVEN** un cliente sin sesión que omite la cabecera `X-XSRF-TOKEN`
+- **WHEN** envía la reserva
+- **THEN** la respuesta es 403 con el código `CSRF_REQUIRED` y no se crea ningún turno
+
+#### Scenario: Sin exención de CSRF
+- **GIVEN** la cadena de seguridad de la aplicación
+- **WHEN** se inspeccionan las exenciones de CSRF
+- **THEN** solo `POST /api/v1/auth/login` está exento; la reserva pública no lo está
+
+### Requirement: Token management endpoints policy
+Los endpoints `GET /api/v1/public/bookings/{token}`, `DELETE /api/v1/public/bookings/{token}` y `POST /api/v1/public/bookings/{token}/reschedule` SHALL ser públicos por `/api/v1/public/**`, sin sesión de odontólogo. Las mutaciones SHALL exigir token CSRF de doble envío, sin exenciones nuevas, y todas las respuestas SHALL conservar `Referrer-Policy: no-referrer`.
+
+#### Scenario: Consulta anónima con token
+- **GIVEN** un cliente sin sesión y un token vigente
+- **WHEN** consulta `GET /api/v1/public/bookings/{token}`
+- **THEN** recibe 200 con los datos acotados del turno y la cabecera `Referrer-Policy: no-referrer`
+
+#### Scenario: Mutación anónima con CSRF
+- **GIVEN** un cliente sin sesión que reenvía la cabecera `X-XSRF-TOKEN` y la cookie obtenidas de una respuesta GET pública
+- **WHEN** cancela o reprograma con un token vigente
+- **THEN** la petición alcanza el controlador y no devuelve 401 ni 403
+
+#### Scenario: Sin exención de CSRF
+- **GIVEN** la cadena de seguridad
+- **WHEN** se inspeccionan las exenciones
+- **THEN** solo `POST /api/v1/auth/login` está exento; los tres endpoints de gestión no lo están

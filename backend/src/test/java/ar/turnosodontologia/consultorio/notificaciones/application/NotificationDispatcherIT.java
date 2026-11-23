@@ -437,7 +437,8 @@ class NotificationDispatcherIT extends AbstractIntegrationTest {
                 .doesNotContain((String) person.get("phone"))
                 .doesNotContain(PATIENT_EMAIL);
         assertThat(output.getAll()).doesNotContain(PATIENT_EMAIL).doesNotContain(email.body());
-        assertThat(email.body()).contains("Para cancelar o reprogramar, comunicate con el consultorio al 351-5551234")
-                .doesNotContain("/turno/");
+        // Con C-14 el proveedor real de tokens está presente: el email incluye el link de gestión,
+        // armado al enviar con un token nuevo guardado solo hasheado (C-13 D11).
+        assertThat(email.body()).contains("/turno/").doesNotContain(PATIENT_EMAIL);
     }
 }
