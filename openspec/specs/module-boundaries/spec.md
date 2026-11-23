@@ -26,7 +26,7 @@ Una clase de un módulo SHALL depender de otro módulo únicamente a través de 
 - **THEN** la verificación falla nombrando la clase de origen y la de destino
 
 ### Requirement: Grafo de dependencias permitido
-Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `agenda`, `pacientes`, `notificaciones`; `agenda` → `pacientes`; `historiaclinica` → `pacientes`, `auditoria`; `pacientes` → `auditoria`; `auth` → `auditoria`. `auth` y `auditoria` MUST NOT depender de módulos de negocio (`agenda`, `reservas`, `pacientes`, `historiaclinica`, `notificaciones`), directa ni transitivamente. No se permiten ciclos.
+Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `agenda`, `pacientes`, `notificaciones`; `agenda` → `pacientes`; `notificaciones` → `agenda`, `pacientes`; `historiaclinica` → `pacientes`, `auditoria`; `pacientes` → `auditoria`; `auth` → `auditoria`. `auth` y `auditoria` MUST NOT depender de módulos de negocio (`agenda`, `reservas`, `pacientes`, `historiaclinica`, `notificaciones`), directa ni transitivamente. No se permiten ciclos.
 
 #### Scenario: Dependencia no declarada
 - **GIVEN** una clase de `agenda` que usa un tipo de `reservas.api`
@@ -45,6 +45,26 @@ Las dependencias entre módulos de negocio SHALL limitarse a: `reservas` → `ag
 
 #### Scenario: Ciclo agenda pacientes prohibido
 - **GIVEN** una clase de `pacientes` que usa un tipo de `agenda.api`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla
+
+#### Scenario: notificaciones consume eventos y consultas por api
+- **GIVEN** una clase de `notificaciones.application` o `notificaciones.infrastructure` que usa los eventos o la consulta de turnos de `agenda.api` y la consulta de contacto de `pacientes.api`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación pasa
+
+#### Scenario: notificaciones no accede a capas internas
+- **GIVEN** una clase de `notificaciones` que usa un tipo de `agenda.domain`, `agenda.infrastructure`, `pacientes.domain` o `pacientes.infrastructure`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla nombrando la clase de origen y la de destino
+
+#### Scenario: Ciclo con notificaciones prohibido
+- **GIVEN** una clase de `agenda` o de `pacientes` que usa un tipo de `notificaciones.api`
+- **WHEN** se ejecuta la verificación de arquitectura
+- **THEN** la verificación falla
+
+#### Scenario: notificaciones sin dependencia de auth
+- **GIVEN** una clase de `notificaciones` que usa un tipo de `auth.api`
 - **WHEN** se ejecuta la verificación de arquitectura
 - **THEN** la verificación falla
 
