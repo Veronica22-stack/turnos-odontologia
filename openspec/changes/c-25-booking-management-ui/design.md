@@ -185,7 +185,7 @@ Sin migración de datos ni cambios de backend. Rollback: revertir el commit del 
 - Decision: yes (2026-11-23)
 - Mockups: openspec/changes/c-25-booking-management-ui/mockups/
 - Mockup revision: 1
-- Approval: pending (aprobador: Lucas)
+- Approval: approved (2026-11-23, by Lucas)
 - Preview: rendered (2026-11-23, revisión 1, `mockups/previews/<pantalla>-390.png` y `-1440.png`, 18 pantallas / 36 capturas; Chrome headless por CDP (script Node sin dependencias) con `Emulation.setDeviceMetricsOverride` 390x844 (mobile) y 1440x900, página completa salvo `cancel-confirm` (viewport, diálogo fijo); servidor local `python -m http.server` en 127.0.0.1:8765, detenido al terminar; sin scroll horizontal de página a 390 px ni errores de consola; inspeccionadas visualmente: se agregó el anillo de foco en "No, mantener turno" del diálogo para mostrar el foco inicial)
 - Visual verify: pendiente (tras el apply)
 - Criterio de aceptación: los HTML de `mockups/` y sus capturas (ver `tasks.md` grupos 4 a 7).
