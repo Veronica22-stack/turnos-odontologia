@@ -183,7 +183,7 @@ Sin migración de datos ni cambios de backend. Rollback: revertir el commit del 
 - Decision: yes (2026-11-23)
 - Mockups: openspec/changes/c-24-public-booking-ui/mockups/
 - Mockup revision: 1
-- Approval: pending (aprobador: Lucas)
+- Approval: approved (2026-11-23, by Lucas)
 - Preview: rendered (2026-11-23, revisión 1, `mockups/previews/<pantalla>-390.png` y `-1440.png`, 14 pantallas / 28 capturas; Chrome headless por CDP con `Emulation.setDeviceMetricsOverride` 390x844 (mobile) y 1440x900, página completa, servidor local `python -m http.server` en 127.0.0.1:8765; sin scroll horizontal de página a 390 px; inspeccionadas visualmente: se corrigió el corte del email en la confirmación y el día vacío fuera de vista en `step2-empty`)
 - Visual verify: —
 - Criterio de aceptación: los HTML de `mockups/` y sus capturas (ver `tasks.md` grupos 6 a 9).

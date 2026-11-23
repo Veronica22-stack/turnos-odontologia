@@ -1,7 +1,7 @@
 # Mockups — C-24 `public-booking-ui`
 
 Design system: Revision 1 (aprobada 2026-11-16) · Política: `system-and-mockups`
-Approval: pending (aprobador: Lucas)
+Approval: approved (2026-11-23, by Lucas)
 Mockup revision: 1
 Preview: rendered (2026-11-23, `previews/`)
 
