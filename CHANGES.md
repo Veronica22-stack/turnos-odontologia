@@ -392,7 +392,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 > C-13 corre en paralelo con C-12 (ambos solo requieren C-11).
 
 ### [C-13] `email-notifications-outbox`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-22) — 60/60 tareas; unit 650/650 e integración 441/441 verdes, jacocoTestReport OK; specs sincronizadas (`openspec/changes/archive/2026-11-22-c-13-email-notifications-outbox/`)
 - **Scope**:
   - Migración V9: tabla `notification` (tipo `CONFIRMATION/REMINDER/CANCELLATION`, estado `PENDING/SENT/FAILED`, `scheduled_for`, `attempts`, `UNIQUE (appointment_id, type)`) (número a reasignar: debe ser mayor que la última versión aplicada, ≥ V14, al momento del apply; Flyway outOfOrder=false)
   - Outbox simple + scheduler (cada 5-15 min) con `FOR UPDATE SKIP LOCKED`, reintentos con backoff, idempotencia

@@ -48,6 +48,14 @@
       "sessions": 0,
       "memories": 14,
       "prompts": 0
+    },
+    {
+      "id": "a43a4bfe",
+      "created_by": "HP",
+      "created_at": "2026-11-23T00:58:42Z",
+      "sessions": 0,
+      "memories": 3,
+      "prompts": 0
     }
   ]
 }

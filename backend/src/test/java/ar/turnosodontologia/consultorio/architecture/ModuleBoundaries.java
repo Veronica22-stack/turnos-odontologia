@@ -49,9 +49,10 @@ public final class ModuleBoundaries {
     private static final String BOOT_CLASS = "ConsultorioApplication";
 
     /** Dependencias permitidas entre modulos de negocio (KB 08). Los modulos ausentes no dependen de ninguno. */
- private static final Map<String, Set<String>> ALLOWED_DEPENDENCIES = Map.of(
+    private static final Map<String, Set<String>> ALLOWED_DEPENDENCIES = Map.of(
             RESERVAS, Set.of(AGENDA, PACIENTES, NOTIFICACIONES),
             AGENDA, Set.of(PACIENTES),
+            NOTIFICACIONES, Set.of(AGENDA, PACIENTES),
             PACIENTES, Set.of(AUDITORIA),
             HISTORIA_CLINICA, Set.of(PACIENTES, AUDITORIA),
             AUTH, Set.of(AUDITORIA));

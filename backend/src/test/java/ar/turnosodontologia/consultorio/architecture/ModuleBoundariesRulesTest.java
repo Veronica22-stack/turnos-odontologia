@@ -379,4 +379,67 @@ class ModuleBoundariesRulesTest {
                 .hasMessageContaining("ReservasCreaTurno")
                 .hasMessageContaining("AppointmentService");
     }
+
+    // ---- notificaciones -> agenda.api, pacientes.api (C-13, D2) ----
+
+    @Test
+    void notificacionesPuedeUsarLaApiDeAgendaYPacientes() {
+        String root = root("ok_notif");
+        JavaClasses classes = classesOf("ok_notif");
+
+        assertThatCode(() -> {
+            ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes);
+            ModuleBoundaries.allowedDependencyGraph(root).check(classes);
+            ModuleBoundaries.noCycles(root).check(classes);
+        }).doesNotThrowAnyException();
+    }
+
+    @Test
+    void notificacionesNoPuedeUsarDomainNiInfrastructureDeAgendaNiPacientes() {
+        String root = root("viol_notif_internas");
+        JavaClasses classes = classesOf("viol_notif_internas");
+
+        assertThatThrownBy(() -> ModuleBoundaries.crossModuleAccessOnlyThroughApi(root).check(classes))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("NotifUsaAgendaDominio")
+                .hasMessageContaining("AgendaDominio")
+                .hasMessageContaining("NotifUsaAgendaInfra")
+                .hasMessageContaining("AgendaRepositorio")
+                .hasMessageContaining("NotifUsaPacienteDominio")
+                .hasMessageContaining("PacienteDominio")
+                .hasMessageContaining("NotifUsaPacienteInfra")
+                .hasMessageContaining("PacienteRepositorio");
+        // El grafo si permite notificaciones -> agenda/pacientes: solo falla la regla de acceso por api.
+        assertThatCode(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classes)).doesNotThrowAnyException();
+    }
+
+    @Test
+    void agendaNoPuedeUsarLaApiDeNotificaciones() {
+        String root = root("viol_agenda_notif");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("viol_agenda_notif")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("AgendaUsaNotificaciones")
+                .hasMessageContaining("NotificacionesApi");
+    }
+
+    @Test
+    void pacientesNoPuedeUsarLaApiDeNotificaciones() {
+        String root = root("viol_pac_notif");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("viol_pac_notif")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("PacientesUsaNotificaciones")
+                .hasMessageContaining("NotificacionesApi");
+    }
+
+    @Test
+    void notificacionesNoPuedeDependerDeAuth() {
+        String root = root("viol_notif_auth");
+
+        assertThatThrownBy(() -> ModuleBoundaries.allowedDependencyGraph(root).check(classesOf("viol_notif_auth")))
+                .isInstanceOf(AssertionError.class)
+                .hasMessageContaining("NotifUsaAuth")
+                .hasMessageContaining("AuthApi");
+    }
 }

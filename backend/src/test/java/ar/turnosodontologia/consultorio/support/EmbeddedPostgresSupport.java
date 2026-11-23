@@ -153,6 +153,11 @@ public final class EmbeddedPostgresSupport {
             properties.put("AUTH_SESSION_COOKIE_NAME", "SESSIONID");
             properties.put("AUTH_SESSION_COOKIE_SECURE", "false");
             properties.put("CORS_ALLOWED_ORIGINS", "http://localhost:5173");
+            // Notificaciones (C-13): los ITs no usan el perfil dev, asi que declaran el proveedor "log" y sin despacho
+            // automatico (los ITs de despacho llaman a dispatchDue() con un reloj controlado).
+            properties.put("MAIL_PROVIDER", "log");
+            properties.put("APP_BASE_URL", "https://turnos.ejemplo.com");
+            properties.put("NOTIFICATION_DISPATCH_ENABLED", "false");
             return properties;
         }
 

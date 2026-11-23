@@ -25,7 +25,7 @@
 | `auth` / `auditoria` | Login, sesión, rate limit, log de auditoría |
 | `shared` | Tiempo/zona horaria, manejo de errores, configuración |
 
-Reglas de dependencia: `reservas` → `agenda`, `pacientes`, `notificaciones`; `historiaclinica` → `pacientes`, `auditoria`; `auth` y `auditoria` no dependen de módulos de negocio.
+Reglas de dependencia: `reservas` → `agenda`, `pacientes`, `notificaciones`; `notificaciones` → `agenda`, `pacientes` (solo por su `api`: eventos de turno y consultas de lectura); `historiaclinica` → `pacientes`, `auditoria`; `auth` y `auditoria` no dependen de módulos de negocio.
 
 ## Estructura de directorios
 
@@ -119,10 +119,12 @@ La carpeta `design-system/` en la raíz (si la política de diseño lo habilita)
 | `APP_TIMEZONE` | Zona horaria del consultorio | `America/Argentina/Buenos_Aires` | N |
 | `BOOTSTRAP_ADMIN_EMAIL` / `BOOTSTRAP_ADMIN_PASSWORD` | Alta inicial del odontólogo | `dr@ejemplo.com` / `***` | Y |
 | `AUTH_SESSION_TIMEOUT_MIN` | Expiración por inactividad | `30` | N |
-| `MAIL_PROVIDER` | Proveedor de email (TBD); en dev los emails se escriben en el log, sin envío (DD-10) | `smtp` | N |
+| `MAIL_PROVIDER` | Proveedor de email: `log` o `smtp` (obligatoria; el perfil `dev` aporta `log`). Con `log` los emails no se envían y el log solo registra identificadores, tipo y plantilla (DD-10, C-13) | `smtp` | N |
 | `MAIL_HOST` / `MAIL_PORT` / `MAIL_USER` / `MAIL_PASSWORD` | SMTP | `smtp.ejemplo.com` / `587` | Y (password) |
 | `MAIL_FROM` | Remitente | `turnos@ejemplo.com` | N |
-| `REMINDER_HOURS_BEFORE` | Anticipación del recordatorio | `24` | N |
+| `NOTIFICATION_POLL_INTERVAL` | Intervalo del despacho periódico de notificaciones (ISO-8601, > 0; C-13). La anticipación del recordatorio sale de `practice.reminder_hours_before` (editable desde la configuración del consultorio), ya no de una variable de entorno | `PT5M` | N |
+| `NOTIFICATION_MAX_ATTEMPTS` | Máximo de intentos de envío antes de dejar la notificación `FAILED` (≥ 1; C-13) | `5` | N |
+| `NOTIFICATION_DISPATCH_ENABLED` | Activa el despacho (poll periódico y envío inmediato); con `false` las notificaciones se encolan pero no se envían (C-13) | `true` | N |
 | `RATE_LIMIT_PUBLIC_PER_MIN` | Límite por IP en endpoints públicos | `30` | N |
 | `BOOKING_TOKEN_TTL_DAYS` | Vigencia posterior al turno | `1` | N |
 | `CORS_ALLOWED_ORIGINS` | Orígenes permitidos | `https://turnos.ejemplo.com` | N |

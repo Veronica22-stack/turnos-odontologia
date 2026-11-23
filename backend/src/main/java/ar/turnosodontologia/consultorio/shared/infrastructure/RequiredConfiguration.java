@@ -3,8 +3,11 @@ package ar.turnosodontologia.consultorio.shared.infrastructure;
 import ar.turnosodontologia.consultorio.shared.api.ConfigurationNames;
 import java.util.List;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.Ordered;
+import org.springframework.core.PriorityOrdered;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
 
@@ -29,11 +32,32 @@ class RequiredConfiguration {
 
     @Bean
     static BeanFactoryPostProcessor requiredConfigurationValidator(Environment environment) {
-        return beanFactory -> {
+        return new FirstValidator(environment);
+    }
+
+    /**
+     * Corre antes que los demas validadores de configuracion (p. ej. el de email de notificaciones): asi la base y la
+     * sesion se validan primero y el primer error informado es siempre el mismo.
+     */
+    private static final class FirstValidator implements BeanFactoryPostProcessor, PriorityOrdered {
+
+        private final Environment environment;
+
+        private FirstValidator(Environment environment) {
+            this.environment = environment;
+        }
+
+        @Override
+        public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
             REQUIRED_PROPERTIES.forEach(property -> resolve(environment, property));
             validateTimeout(environment);
             validateCors(environment);
-        };
+        }
+
+        @Override
+        public int getOrder() {
+            return Ordered.HIGHEST_PRECEDENCE;
+        }
     }
 
     private static void resolve(Environment environment, String property) {

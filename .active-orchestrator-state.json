@@ -238,7 +238,8 @@
   "registry": {
     "created_by": "skill-registry",
     "file": ".atl/skill-registry.md",
-    "skills_count": 13
+    "skills_count": 21,
+    "refreshed_at": "2026-11-22"
   },
   "agents": {
     "created_by": "agent-instruction",
