@@ -268,6 +268,48 @@ describe('409: horario tomado mientras se reservaba', () => {
     expect(text(requireElement(h.root, '.choice-summary'))).toContain('11:00 – 11:45');
   });
 
+  async function suggestion(h: Harness, label: string): Promise<HTMLButtonElement> {
+    const found = [...h.root.querySelectorAll<HTMLButtonElement>('.suggested button.slot')].find(
+      (b) => b.textContent === label,
+    );
+    if (found === undefined) {
+      throw new Error(`falta la sugerencia ${label}`);
+    }
+    return found;
+  }
+
+  it('Volver en el paso 2 tras un 409 lleva al paso 1 con una sola pulsacion', async () => {
+    const h = await conflict(AFTER_CONFLICT);
+    expect(window.location.search).toBe('?paso=2');
+
+    await click(button(h.root, 'Volver'));
+
+    expect(window.location.pathname + window.location.search).toBe('/reservar');
+    expect(text(requireElement(h.root, '.stepper'))).toContain('Paso 1 de 3');
+  });
+
+  it('tras un 409 y elegir una sugerencia, Volver va al paso 2 y otro Volver al paso 1', async () => {
+    const h = await conflict(AFTER_CONFLICT);
+    await click(await suggestion(h, '11:00'));
+    await click(button(h.root, 'Continuar'));
+    expect(window.location.search).toBe('?paso=3');
+
+    await click(button(h.root, 'Volver'));
+    expect(window.location.search).toBe('?paso=2');
+    expect(text(requireElement(h.root, '.stepper'))).toContain('Paso 2 de 3');
+
+    await click(button(h.root, 'Volver'));
+    expect(window.location.pathname + window.location.search).toBe('/reservar');
+    expect(text(requireElement(h.root, '.stepper'))).toContain('Paso 1 de 3');
+  });
+
+  it('tras un 409 el paso 2 conserva el aviso y las sugerencias', async () => {
+    const h = await conflict(AFTER_CONFLICT);
+
+    expect(text(requireElement(h.root, '[role="alert"]'))).toContain('Ese horario se acaba de ocupar');
+    expect(slotButtons(h.root, '.suggested')).toEqual(['10:00', '11:00', '11:30']);
+  });
+
   it('con el dia vacio muestra el aviso junto al estado vacio y "Ver el dia siguiente"', async () => {
     const h = await conflict([]);
 

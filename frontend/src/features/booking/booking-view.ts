@@ -275,7 +275,9 @@ export function createBookingView(deps: BookingViewDeps): (context: RouteContext
           deps.navigate(CONFIRMATION_PATH, { replace: true });
           return;
         case 'slot-unavailable':
-          deps.navigate(stepPath(2), { replace: true });
+          // El paso 3 solo se alcanza desde el 2 (push): volver a esa entrada evita duplicar `?paso=2`
+          // en el historial, asi "Volver" y el boton atras del navegador llegan al paso 1 de a un paso.
+          deps.goBack();
           return;
         case 'service-gone':
           services = undefined;
