@@ -2,6 +2,7 @@ import './styles/base.css';
 import './styles/layout.css';
 import './styles/forms.css';
 import './styles/settings.css';
+import './styles/agenda.css';
 import './styles/booking.css';
 import { createRoutes } from './app/routes';
 import { createSession, type Session } from './core/auth/session';
@@ -10,6 +11,7 @@ import { h } from './core/dom/h';
 import { createHttpClient, type FetchFn, type HttpClient } from './core/http/client';
 import { cookieCsrfTransport } from './core/http/transport';
 import { renderPrivateLayout, type PrivateSection } from './layouts/private-layout';
+import { createAgendaGateway } from './features/agenda/agenda-gateway';
 import { createAuthGateway } from './features/auth/auth-gateway';
 import { createBookingGateway } from './features/booking/booking-gateway';
 import { createSettingsGateway } from './features/settings/settings-gateway';
@@ -88,12 +90,14 @@ export function bootstrap(options: BootstrapOptions = {}): App {
   const sessionRef = createSession(httpSessionGateway(client));
 
   const authGateway = createAuthGateway({ client, onSessionExpired: () => sessionRef.expire() });
+  const agendaGateway = createAgendaGateway({ client });
   const settingsGateway = createSettingsGateway({ client });
   const bookingGateway = createBookingGateway({ client });
 
   const { routes, notFound } = createRoutes({
     session: sessionRef,
     gateway: authGateway,
+    agenda: agendaGateway,
     settings: settingsGateway,
     booking: bookingGateway,
     replaceUrl: (path) => win.history.replaceState(null, '', path),
