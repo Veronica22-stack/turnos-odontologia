@@ -20,6 +20,7 @@ Cada regla tiene un código único `RN-{DOMINIO}-{NN}`. Las reglas marcadas **(d
 - **RN-AG-07** (Suposición): Todas las fechas se guardan en UTC y se presentan en `America/Argentina/Buenos_Aires`; los cálculos de horarios usan la zona del consultorio.
 - **RN-AG-08** (Suposición): Un bloqueo creado sobre turnos ya confirmados no los cancela automáticamente: el sistema avisa al profesional de los turnos afectados y este decide.
 - **RN-AG-09** (Suposición): Desactivar una prestación no afecta turnos existentes; solo impide nuevas reservas.
+- **RN-AG-10** (decidida): En v1 el consultorio tiene **un único profesional y un único sillón/box**: la agenda del profesional es la agenda del sillón, por lo que la prevención de solapamientos de RN-AG-01 rige a la vez por profesional y por sillón. Agenda multi-profesional y multi-sillón (con un recurso `chair` y la restricción de exclusión por sillón) es de etapas posteriores (ver `06_funcionalidades.md` §Funcionalidades posteriores (no MVP) y NE-02 en `10_preguntas_abiertas.md`).
 
 ## Dominio: Reservas públicas (RN-RS)
 

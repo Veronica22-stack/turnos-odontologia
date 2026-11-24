@@ -371,7 +371,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/08_arquitectura_propuesta.md` §Patrones (restricción en BD)
 
 ### [C-12] `availability-engine`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 36/36 tareas; implementado por Elian (PR #18 mergeado en `master`) (`openspec/changes/archive/2026-11-23-c-12-availability-engine/`)
 - **Scope**:
   - Algoritmo puro de slots: horarios de atención − bloqueos − turnos `CONFIRMED`, con duración suficiente, granularidad, `min_notice_min` y `max_advance_days` (RN-AG-03/05/06, RN-RS-10)
   - `GET /api/v1/availability` (interno) y `GET /api/v1/public/availability?serviceId=&date=` (rate limit por IP)
@@ -504,7 +504,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 > Todos los changes de esta fase son **[UI]**: cada uno exige mockup HTML aprobado (design system Revision 1) antes del apply. Se ejecutan en paralelo entre sí en cuanto cumplan sus dependencias.
 
 ### [C-19] `settings-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 40/40 tareas; implementado por Tomas (PR #24 mergeado en `master`); mockups en `openspec/changes/archive/2026-11-23-c-19-settings-ui/mockups/`
 - **Scope**:
   - `/configuracion`: datos del consultorio, horarios de atención, prestaciones (CRUD con baja lógica), bloqueos, parámetros de reserva; botón "copiar link público de reserva"
   - Validación de tramos superpuestos en formulario; avisos de turnos afectados por bloqueos/horarios
@@ -519,7 +519,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/08_arquitectura_propuesta.md` §Estructura de directorios (frontend `settings/`)
 
 ### [C-20] `agenda-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 19/19 tareas; implementado por Tomas (PR #21 mergeado en `master`); mockups en `openspec/changes/archive/2026-11-23-c-20-agenda-ui/mockups/`
 - **Scope**:
   - Vistas diaria y semanal mobile-first con turnos, bloqueos, horarios de atención y estado (US-020)
   - Alta manual de turno (paciente existente o nuevo, prestación, slot desde disponibilidad interna), cancelar, reprogramar, marcar `COMPLETED/NO_SHOW` (US-021, US-022)
@@ -535,7 +535,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/08_arquitectura_propuesta.md` §Estructura de directorios (frontend `agenda/`)
 
 ### [C-21] `patients-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 36/36 tareas; implementado por Tomas (PR #24 mergeado en `master`); mockups en `openspec/changes/archive/2026-11-23-c-21-patients-ui/mockups/`
 - **Scope**:
   - `/pacientes`: búsqueda (nombre/DNI/teléfono), ficha, edición, baja lógica (US-050); indicación de datos marcados para revisión (RN-PA-03)
   - Mockup requerido: listado, ficha, edición, estados vacíos
@@ -548,7 +548,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/05_reglas_de_negocio.md` §RN-PA
 
 ### [C-22] `clinical-record-ui` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[x]` completado y archivado (2026-11-23) — 31/31 tareas; implementado por Tomas (PR #24 mergeado en `master`); mockups en `openspec/changes/archive/2026-11-23-c-22-clinical-record-ui/mockups/`
 - **Scope**:
   - `/historia-clinica` por paciente: anamnesis, odontograma FDI interactivo, evoluciones (US-060..063)
   - Corrección con motivo obligatorio; historial con entradas corregidas marcadas; sin controles de edición ni borrado
@@ -565,7 +565,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-17, PA-18
 
 ### [C-23] `audit-log-viewer` **[UI]**
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[ ]` fuera del alcance del TP (ver §División de tareas del equipo: no forma parte del MVP imprescindible de la sección D)
 - **Scope**:
   - `GET /api/v1/audit-log` (solo lectura, filtros por paciente y rango de fechas, paginado) (US-064)
   - Pantalla de consulta del registro de accesos; sin contenido clínico en claro
@@ -584,7 +584,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 7 — Reserva pública (UI)
 
 ### [C-24] `public-booking-ui` **[UI]**
-- **Estado**: `[x]` completado y archivado (2026-11-23) — verify PASS WITH WARNINGS sin críticos, W1 (Volver tras 409) corregido con tests (`openspec/changes/archive/2026-11-23-c-24-public-booking-ui/verify-report.md`); mockups aprobados por Lucas; contrato verificado contra C-14/C-15; pendiente tarea 9.3 (prueba manual contra backend real) y PR a `master`
+- **Estado**: `[x]` completado y archivado (2026-11-23) — verify PASS WITH WARNINGS sin críticos, W1 (Volver tras 409) corregido con tests (`openspec/changes/archive/2026-11-23-c-24-public-booking-ui/verify-report.md`); mockups aprobados por Lucas; contrato verificado contra C-14/C-15; PR #20 mergeado en `master`; pendiente tarea 9.3 (prueba manual contra backend real)
 - **Scope**:
   - `/reservar`: selección de prestación, fecha/hora (slots de `GET /public/availability`), formulario nombre/DNI/teléfono/email con honeypot oculto y aviso de privacidad (texto TBD, PA-10)
   - `/reservar/confirmado`; manejo de 409 (recarga disponibilidad y sugiere otros horarios), rate limit y "reservas no disponibles"
@@ -601,7 +601,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/10_preguntas_abiertas.md` §PA-10, PA-21
 
 ### [C-25] `booking-management-ui` **[UI]**
-- **Estado**: `[x]` completado y archivado (2026-11-23) — verify PASS WITH WARNINGS sin críticos (`openspec/changes/archive/2026-11-23-c-25-booking-management-ui/verify-report.md`); mockups aprobados por Lucas; contrato verificado contra C-15; pendiente tarea 8.3 (prueba manual contra backend real), pedido `serviceId` en `BookingView` a C-15 y PR a `master`
+- **Estado**: `[x]` completado y archivado (2026-11-23) — verify PASS WITH WARNINGS sin críticos (`openspec/changes/archive/2026-11-23-c-25-booking-management-ui/verify-report.md`); mockups aprobados por Lucas; contrato verificado contra C-15; PR #23 mergeado en `master`; pedido `serviceId` en `BookingView` resuelto en C-15 (P1); pendiente tarea 8.3 (prueba manual contra backend real)
 - **Scope**:
   - `/turno/{token}`: ver turno, cancelar con confirmación previa, reprogramar eligiendo nuevo slot (US-031, US-032)
   - Mensaje genérico ante token inválido/expirado; turno pasado en solo lectura
@@ -620,7 +620,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 ## FASE 8 — Producción y cumplimiento
 
 ### [C-26] `security-hardening`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[ ]` fuera del alcance del TP (ver §División de tareas del equipo: no forma parte del MVP imprescindible de la sección D)
 - **Scope**:
   - CSP estricta, HSTS, X-Content-Type-Options, frame-ancestors, CORS restringido a mismo origen, `Referrer-Policy`
   - Test de integración permanente de roles de BD (app sin UPDATE/DELETE en `audit_log` y tablas de HC)
@@ -637,7 +637,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `design-system/README.md` (referencia visual para la verificación)
 
 ### [C-27] `deployment-backups-ops`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[ ]` fuera del alcance del TP (ver §División de tareas del equipo: no forma parte del MVP imprescindible de la sección D)
 - **Scope**:
   - Estrategia de despliegue a definir (PA-03), sin Dockerfile, compose ni imagen (DD-10); artefacto único (backend sirviendo la SPA compilada), HTTPS/HSTS, variables de entorno de producción
   - Script de despliegue reproducible (un cliente = un despliegue, DD-02); health checks y logs
@@ -652,7 +652,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
   - `knowledge-base/11_cumplimiento_normativo.md`
 
 ### [C-28] `compliance-launch-readiness`
-- **Estado**: `[ ]` pendiente
+- **Estado**: `[ ]` fuera del alcance del TP (ver §División de tareas del equipo: no forma parte del MVP imprescindible de la sección D)
 - **Scope**:
   - Checklist de lanzamiento cerrado: validación legal de Ley 27.706 (PA-01), plazo de conservación de HC (PA-11), registro de la base ante AAIP (PA-10), aviso de privacidad y consentimiento final en la reserva pública
   - Ajustes derivados de la validación legal (backlog de changes correctivos si surgen requisitos de firma/conservación/registro de accesos)

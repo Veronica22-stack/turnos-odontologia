@@ -192,7 +192,7 @@ Organizadas por épica e historia de usuario (US-NNN). Etiqueta de etapa: **[MVP
 
 **Reglas relacionadas**: RN-HC-01, RN-HC-02, RN-HC-07
 
-### US-064 — Consultar el registro de accesos [MVP]
+### US-064 — Consultar el registro de accesos [Posterior: C-23 fuera del alcance del TP; el registro en sí lo cubre C-03]
 **Como** odontólogo **quiero** ver quién y cuándo accedió a datos clínicos **para** cumplir con trazabilidad.
 
 **Criterios de aceptación**:

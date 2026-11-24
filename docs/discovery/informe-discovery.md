@@ -4,7 +4,7 @@
 
 <p class="subtitle">Sistemas de gestión de turnos y agenda para consultorios odontológicos en Argentina</p>
 
-**Materia**: Metodología I — Tecnicatura Universitaria en Programación
+**Materia**: Desarrollo de Software — UTN Facultad Regional Mendoza
 
 **Trabajo**: Trabajo de Integración — del Discovery al primer Change, con SDD y Active Stack
 
@@ -46,10 +46,12 @@ ayuda y directorios), todas consultadas el 2026-11-16. Lo que no tiene respaldo 
 **MVP recomendado.** Una herramienta integral para el **odontólogo independiente**:
 
 - **Imprescindible**: agenda con duración variable por prestación, bloqueos y prevención de solapamientos;
-  reserva online por link con cancelación y reprogramación autogestionadas; recordatorios; ficha con
-  anamnesis, odontograma y evoluciones; auditoría y exportación de datos.
-- **Diferenciador**: lista de espera, recall y seguimiento de ausentes, obras sociales y precios publicados en ARS.
-- **Etapas posteriores**: facturación ARCA, periodontograma, presupuestos e imágenes, multi sucursal y API pública.
+  reserva online por link con cancelación y reprogramación autogestionadas; recordatorios por email; ficha con
+  anamnesis, odontograma y evoluciones; registro de auditoría de accesos a la historia clínica.
+- **Diferenciador**: WhatsApp, seña con Mercado Pago, lista de espera, recall y seguimiento de ausentes, obras sociales y
+  precios publicados en ARS.
+- **Etapas posteriores**: multi-profesional y multi-sillón, facturación ARCA, periodontograma,
+  presupuestos e imágenes, exportación de datos, multi sucursal y API pública.
 
 El Discovery confirmado con el equipo acotó la v1 a recordatorios **solo por email**, con WhatsApp y Mercado
 Pago para la v2 (ver Anexo, puntos 5 y 6).
@@ -797,21 +799,34 @@ Los totales altos reflejan evidencia publicada, no calidad del producto: sistema
 (La valoración de UX es una hipótesis basada en descripciones públicas; requiere demo.)
 
 ### MVP sugerido
-**Imprescindibles**
-- Agenda multi-profesional y por sillón/box, vistas diaria y semanal, duración variable por prestación, bloqueos y prevención de solapamientos.
-- Reserva online con link y confirmación/cancelación/reprogramación por el paciente.
-- Recordatorios y confirmación por WhatsApp (Business API) y email.
-- Ficha del paciente con anamnesis y odontograma básico; roles y permisos; registro de auditoría; exportación de datos.
-- Seña con Mercado Pago.
+
+**Imprescindible** (lo que implementa el roadmap, `CHANGES.md` C-01 a C-22, C-24 y C-25)
+- Agenda de un profesional con un único sillón/box: vistas diaria y semanal, duración variable por prestación,
+  horarios de atención, bloqueos, sobreturno explícito y prevención de solapamientos.
+- Reserva online 24/7 por link, sin cuenta, con cancelación y reprogramación autogestionadas por el paciente.
+- Confirmación y recordatorio de turno por email.
+- Ficha clínica: datos del paciente, anamnesis, odontograma básico y evoluciones, con correcciones sin borrado.
+- Acceso del odontólogo con sesión segura y registro de auditoría de los accesos a la historia clínica.
 
 **Diferenciadores**
+- Recordatorios y confirmación por WhatsApp (Business API oficial).
+- Seña con Mercado Pago al reservar.
 - Lista de espera automática y cola de cancelaciones.
 - Seguimiento de ausentes y recall periódico.
 - Obras sociales/prepagas en la ficha y cobros.
 - Precios publicados en ARS.
 
 **Etapas posteriores**
-- Facturación ARCA, periodontograma, presupuestos y planes de tratamiento, imágenes, firma de consentimientos, multi sucursal, campañas, API pública, adecuación documentada a Ley 27.706.
+- Agenda multi-profesional y multi-sillón, roles y permisos (secretaria), multi sucursal.
+- Facturación ARCA, periodontograma, presupuestos y planes de tratamiento, imágenes, firma de consentimientos.
+- Visor del registro de auditoría, exportación de datos, campañas, API pública, adecuación documentada a Ley 27.706.
+
+> **Ajuste respecto de la primera versión del agente (protocolo de inspección: Ajustar).** La primera versión
+> de esta sección ponía como imprescindibles la agenda multi-profesional y por sillón/box, WhatsApp, la seña
+> con Mercado Pago, roles y permisos y la exportación de datos. Al revisarla contra el Discovery confirmado con
+> el equipo (Anexo, puntos 5 y 6) se los movió a diferenciadores o etapas posteriores: el usuario objetivo es
+> el odontólogo independiente (un profesional, un sillón), la v1 usa solo email y no cobra seña. Así el MVP
+> queda alineado con el roadmap.
 
 ## Verificación de fuentes
 

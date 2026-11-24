@@ -1,5 +1,6 @@
-# Skill registry (local, no versionado — ver CLAUDE.md)
-.atl/
+# Skill registry: se versiona .atl/skill-registry.md (lo exige la consigna); el resto de .atl/ es local
+.atl/*
+!.atl/skill-registry.md
 
 # Secretos y entorno
 .env
