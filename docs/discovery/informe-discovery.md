@@ -10,13 +10,22 @@
 
 **Proyecto**: turnos-odontologia
 
-**Integrantes**: Lucas (líder) · Elian · Gabriel · Veronica · Mayra · Tomas
+**Integrantes**:
 
-**Responsable del informe y de la verificación de fuentes**: Veronica
+<ul class="integrantes">
+<li>Lucas Orsingher (líder)</li>
+<li>Elian Navarrio</li>
+<li>Gabriel Sánchez</li>
+<li>Verónica Silva</li>
+<li>Mayra Muñoz</li>
+<li>Tomas Donoso</li>
+</ul>
+
+**Responsable del informe y de la verificación de fuentes**: Verónica Silva
 
 **Fecha de consulta de las fuentes**: 2026-11-16
 
-**Fecha del informe**: 2026-11-22
+**Fecha del informe**: 2026-11-24 (verificación de fuentes incluida)
 
 </div>
 

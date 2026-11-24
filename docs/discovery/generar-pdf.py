@@ -29,5 +29,7 @@ blockquote{border-left:3px solid #0b4f6c;margin:8px 0;padding:4px 10px;backgroun
 .cover .subtitle{font-size:13pt;color:#0b4f6c;margin-bottom:28px}
 .cover p{margin:4px 0;font-size:10pt}
 a{color:#0b4f6c}
+.cover ul.integrantes{list-style:none;padding-left:0;margin:2px 0 6px 0}
+.cover ul.integrantes li{margin:2px 0;font-size:10pt}
 '''
 open(sys.argv[2],'w',encoding='utf-8').write(f'<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><title>Informe de Discovery</title><style>{css}</style></head><body>{body}</body></html>')
