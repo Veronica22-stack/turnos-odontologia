@@ -167,8 +167,8 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 | **Lucas (líder)** | Fundación (Discovery, knowledge-base, design system, roadmap, reglas del agente). **C-01, C-02 y C-11 completos** (C-11: explore, propose, apply, verify y archive). Decide gates y paralelismo, controla `master` y aprueba todos los PR. Evidencia de Engram. | C-01 ✓ · C-02 ✓ · C-11 ✓ |
 | **Elian** | Backend núcleo sobre el camino crítico. | C-03 · C-04 · C-09 · C-12 |
 | **Gabriel** | Dueño de la matriz de tests (cada escenario de cada spec: feliz, error de negocio y borde). README para clonar y correr los tests. API de reserva pública. | C-08 · C-10 · C-14 · C-15 |
-| **Veronica** | Informe de Discovery en PDF (resumen ejecutivo, A, B, C y D). Backend de historia clínica y notificaciones. | C-13 · C-16 · C-17 · C-18 |
-| **Mayra** | Verificación manual de ≥5 fuentes del informe (no armó la tabla) y hallazgos en la sección F. Revisión de la knowledge-base contra el informe. Frontend base y reserva pública (con mockups). | C-05 · C-06 · C-24 · C-25 |
+| **Veronica** | Informe de Discovery en PDF (resumen ejecutivo, A, B, C y D) y verificación manual de las fuentes. Backend de historia clínica y notificaciones. | C-13 · C-16 · C-17 · C-18 |
+| **Mayra** | Revisión de la knowledge-base contra el informe. Frontend base y reserva pública (con mockups). | C-05 · C-06 · C-24 · C-25 |
 | **Tomas** | Revisión del roadmap contra el MVP. Frontend del profesional (con mockups). | C-07 · C-19 · C-20 · C-21 · C-22 |
 
 **Reglas de trabajo**
@@ -176,7 +176,7 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 - Cada integrante trabaja en su rama `dev-<nombre>` (`dev-lucas`, `dev-elian`, …) con commits propios; a `master` solo se entra por Pull Request aprobado por la líder.
 - El paralelismo respeta los gates de este documento; nadie tiene dos changes en el mismo gate (gate 4: Tomas C-07, Gabriel C-08, Mayra C-06 · gate 6: Lucas C-11, Veronica C-16, Tomas C-19 · gate 8: Gabriel C-14, Veronica C-17 → C-18, Tomas C-20).
 - Tests automatizados por cada escenario de los specs (feliz, error de negocio y borde) en todos los changes, en modo Strict TDD.
-- **Video de defensa**: Lucas (fundación, C-01, C-02 y C-11 completo con OPSX), Elian (backend núcleo), Gabriel (matriz de tests y API pública), Veronica (Discovery), Mayra (verificación de fuentes y UI pública), Tomas (roadmap y UI del profesional). **Reflexión escrita**: cada uno su parte.
+- **Video de defensa**: Lucas (fundación, C-01, C-02 y C-11 completo con OPSX), Elian (backend núcleo), Gabriel (matriz de tests y API pública), Veronica (Discovery y verificación de fuentes), Mayra (UI pública), Tomas (roadmap y UI del profesional). **Reflexión escrita**: cada uno su parte.
 
 ---
 

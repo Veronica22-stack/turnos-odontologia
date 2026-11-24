@@ -12,7 +12,7 @@
 
 **Integrantes**: Lucas (líder) · Elian · Gabriel · Veronica · Mayra · Tomas
 
-**Responsable del informe**: Veronica · **Verificación de fuentes**: Mayra
+**Responsable del informe y de la verificación de fuentes**: Veronica
 
 **Fecha de consulta de las fuentes**: 2026-11-16
 
@@ -119,7 +119,7 @@ seguridad, modelo comercial, fortalezas y adopción) está en A.2.
 
 **Clínica.** Odontograma digital (estado por pieza, sesión por sesión); anamnesis, evoluciones, alergias, medicamentos, radiografías en la ficha; firmas electrónicas; presupuestos; tratamientos en cuotas con control de saldos. Periodontograma: No evidenciado. Plan de tratamiento clínico explícito: No evidenciado. Visor/almacenamiento de imágenes: No evidenciado.
 
-**Administración.** Caja y cobros; Mercado Pago, link de pago, QR, efectivo; seña al reservar; comisiones e inventario (plan Full); reportes. Obras sociales/prepagas: No evidenciado (solo etiqueta 'Prepaga' en una captura). Facturación AFIP/ARCA: 'próximamente' según página de planes.
+**Administración.** Caja y cobros; Mercado Pago, link de pago, QR, efectivo; seña al reservar; comisiones e inventario; reportes. Obras sociales/prepagas: No evidenciado (solo etiqueta 'Prepaga' en una captura). Facturación AFIP/ARCA: 'próximamente' según página de planes.
 
 **Integraciones.** WhatsApp (Meta; el comercio paga los mensajes con su número), Google Calendar y Maps, Mercado Pago, Instagram/Facebook, API pública (US$200/mes), sitio propio de reservas. AFIP/ARCA: próximamente. Radiología: No evidenciado. Firma electrónica en ficha.
 
@@ -127,9 +127,9 @@ seguridad, modelo comercial, fortalezas y adopción) está en A.2.
 
 **Seguridad y cumplimiento.** La página dental declara servidores AWS, cifrado, respaldos automáticos y cita las leyes 25.326 y 26.529 (afirmación comercial, sin documentación técnica verificada). Menciona una certificación CENS que corresponde a Chile. Ley 27.706: No evidenciado. Trazabilidad/auditoría: No evidenciado.
 
-**Modelo comercial.** Prueba gratis: 14 días según la home. Plan gratis permanente: no. Precios publicados en ARS con IVA; cobro mensual (anual con 15% de ahorro); precio congelado 12 meses; extras visibles listados arriba.
+**Modelo comercial.** Prueba gratis: 14 días según la home. Plan gratis permanente: no. Precios publicados en ARS con IVA (verificados el 2026-11-24): Individual $9.900 (primeros 3 meses a $990), Básico $19.900, Premium para Salud y Estética $39.900 y Pro IA $129.900 por mes; cobro mensual (anual con 15% de ahorro); precio congelado 12 meses; extras visibles listados arriba.
 
-**Fortalezas, limitaciones y diferenciales.** - **Fortalezas**: Precios públicos en ARS; Mercado Pago y seña; reservas desde Google/Instagram; sillón como eje de agenda; WhatsApp. - **Limitaciones**: Sin facturación ARCA (próximamente); periodontograma y obras sociales No evidenciados; producto horizontal; precios de Salud no listados. - **Diferenciales evidentes**: Dice diferenciarse por reservas desde Google/Instagram, agentes de IA por WhatsApp y cobro de seña con Mercado Pago (afirmación comercial). Evidencia visible: precios públicos en ARS.
+**Fortalezas, limitaciones y diferenciales.** - **Fortalezas**: Precios públicos en ARS; Mercado Pago y seña; reservas desde Google/Instagram; sillón como eje de agenda; WhatsApp. - **Limitaciones**: Sin facturación ARCA (próximamente); periodontograma y obras sociales No evidenciados; producto horizontal. - **Diferenciales evidentes**: Dice diferenciarse por reservas desde Google/Instagram, agentes de IA por WhatsApp y cobro de seña con Mercado Pago (afirmación comercial). Evidencia visible: precios públicos en ARS.
 
 **Evidencia de adopción.** Afirma más de 30.000 negocios, más de 6.000 en marketplace, 190 M de turnos (unidad poco clara), 4,8 con más de 1.200 reseñas (afirmaciones comerciales no verificadas). Reseñas verificables: revisar Capterra.
 
@@ -833,7 +833,7 @@ Los totales altos reflejan evidencia publicada, no calidad del producto: sistema
 
 ## Verificación de fuentes
 
-Sección a cargo de **Mayra** (según la división de tareas de `CHANGES.md`). La consigna exige abrir y
+Sección a cargo de **Veronica**, que abrió y comprobó personalmente cada fuente el 2026-11-24. La consigna exige abrir y
 comprobar personalmente al menos 5 fuentes citadas, una de cada tipo. Para cada una se registra qué
 afirmaba el informe, si eso está realmente en la URL (**Sí / No / Parcial**), qué se encontró y qué se
 corrigió. Las afirmaciones falsas o no respaldadas se corrigen en el informe (Ajustar) y se registran
@@ -843,22 +843,22 @@ como hallazgo.
 
 | # | Tipo | URL | Afirmación del informe | ¿Está en la URL? | Observación |
 |---|---|---|---|---|---|
-| 1 | Sitio oficial | https://agendapro.com/ar | AgendaPro permite reserva 24/7 desde Google, Instagram, Facebook y link, y cobra seña con Mercado Pago; declara más de 30.000 negocios. | _(completar)_ | _(completar)_ |
-| 2 | Página de precios | https://agendapro.com/ar/planes | Planes Individual $7.900, Full $15.900 y PRO IA $69.900 (ARS, IVA incluido, rubro Belleza); API US$200/mes; facturación electrónica "próximamente". | _(completar)_ | _(completar)_ |
-| 3 | Centro de ayuda | https://ayuda.softwaredentalink.com/es/collections/19196578-modulo-exclusivo-para-argentina | Dentalink tiene módulo para Argentina con 4 artículos: crear obra social, cobrar con obra social, conciliaciones y receta electrónica; no menciona AFIP/ARCA. | _(completar)_ | _(completar)_ |
-| 4 | Página de planes del proveedor | https://web-es.softwaredentalink.com/en/planes | Dentalink ofrece Esencial, Pro y Titanium sin precios publicados, sin permanencia. | _(completar)_ | _(completar)_ |
-| 5 | Página de producto dental | https://agendapro.com/ar/dental/software-odontologico | AgendaPro: odontograma digital, agenda por sillón, recordatorios por WhatsApp; periodontograma y obras sociales no se muestran; cita Leyes 25.326 y 26.529. | _(completar)_ | _(completar)_ |
-| 6 | Marketplace / reseña verificada | https://www.comparasoftware.com/la-historia-clinica-digital | La Historia Clínica Digital: primer usuario ARS 50.000/mes, prueba 15 días, ARCA y Leyes 26.529/25.326 declaradas; 0 reseñas. | _(completar)_ | _(completar)_ |
-| 7 | Directorio (reseñas) a completar | https://www.capterra.com/p/196361/Dentalink/ | Pendiente: no cargó (HTTP 403); verificar manualmente calificación y reseñas de Dentalink. | _(completar)_ | _(completar)_ |
-| 8 | Video oficial | No evidenciado | No se revisó ningún video oficial; ninguna afirmación del informe depende de video. Se sugiere buscar demos en los canales de AgendaPro y Dentalink. | _(completar)_ | _(completar)_ |
+| 1 | Sitio oficial | https://agendapro.com/ar | AgendaPro permite reserva 24/7 desde Google, Instagram, Facebook y link, y cobra seña con Mercado Pago; declara más de 30.000 negocios. | **Sí** | Coincide: reserva 24/7 desde Google, Instagram, Facebook y link, seña con Mercado Pago y "más de 30.000 negocios". Sin corrección. |
+| 2 | Página de precios | https://agendapro.com/ar/planes | Planes Individual $7.900, Full $15.900 y PRO IA $69.900 (ARS, IVA incluido, rubro Belleza); API US$200/mes; facturación electrónica "próximamente". | **Parcial** | Los precios y los planes cambiaron: Individual $9.900 (primeros 3 meses a $990), Básico $19.900 (Belleza y Bienestar), Premium $39.900 (Salud y Estética) y Pro IA $129.900, IVA incluido; el plan Full ya no figura. API US$200/mes y facturación electrónica "próximamente" coinciden. **Corregido** en A.2.1 y en el hallazgo 1. |
+| 3 | Centro de ayuda | https://ayuda.softwaredentalink.com/es/collections/19196578-modulo-exclusivo-para-argentina | Dentalink tiene módulo para Argentina con 4 artículos: crear obra social, cobrar con obra social, conciliaciones y receta electrónica; no menciona AFIP/ARCA. | **Sí** | Coincide: colección "Módulo exclusivo para Argentina" con 4 artículos (crear obra social, recaudar pago con obras sociales, conciliaciones, receta electrónica Argentina); no menciona AFIP/ARCA. Sin corrección. |
+| 4 | Página de planes del proveedor | https://web-es.softwaredentalink.com/en/planes | Dentalink ofrece Esencial, Pro y Titanium sin precios publicados, sin permanencia. | **Sí** | Coincide: planes Esencial, Pro y Titanium sin precios publicados y sin permanencia. Sin corrección. |
+| 5 | Página de producto dental | https://agendapro.com/ar/dental/software-odontologico | AgendaPro: odontograma digital, agenda por sillón, recordatorios por WhatsApp; periodontograma y obras sociales no se muestran; cita Leyes 25.326 y 26.529. | **Sí** | Coincide: odontograma digital, agenda por sillón y recordatorios por WhatsApp; no muestra periodontograma ni obras sociales; cita las Leyes 25.326 y 26.529. Sin corrección. |
+| 6 | Marketplace / reseña verificada | https://www.comparasoftware.com/la-historia-clinica-digital | La Historia Clínica Digital: primer usuario ARS 50.000/mes, prueba 15 días, ARCA y Leyes 26.529/25.326 declaradas; 0 reseñas. | **Sí** | Coincide: primer usuario ARS 50.000/mes, prueba gratuita de 15 días, facturación AFIP/ARCA y Leyes 26.529 y 25.326 declaradas. Son afirmaciones del proveedor publicadas en un directorio de terceros, no funcionalidad comprobada. La cantidad de reseñas no se revisó. Sin corrección. |
+| 7 | Directorio (reseñas) | https://www.capterra.com/p/196361/Dentalink/ | Pendiente: no cargó (HTTP 403); verificar manualmente calificación y reseñas de Dentalink. | **No verificada** | Fuente opcional; no se revisó en esta verificación. La adopción de Dentalink sigue como "No evidenciado". |
+| 8 | Video oficial | No evidenciado | No se revisó ningún video oficial; ninguna afirmación del informe depende de video. Se sugiere buscar demos en los canales de AgendaPro y Dentalink. | **No verificada** | No se revisó ningún video oficial; ninguna afirmación del informe depende de un video. |
 
-Fecha de la verificación manual: _(completar)_
+Fecha de la verificación manual: 2026-11-24 · Verificó: Veronica
 
 ### Hallazgos del análisis
 
 Discrepancias y hallazgos del analista (el usuario puede ampliarlos):
 
-1. **AgendaPro, precio inconsistente**: la home indica "desde $13.900 por mes" mientras que /ar/planes muestra Individual $7.900 y Full $15.900 (promo de 3 meses a $990). Los planes de Salud, que serían los aplicables a odontología, no listan precios. Un resumen de Capterra indica desde US$19 (no verificado).
+1. **AgendaPro, precio inconsistente**: la home indica "desde $13.900 por mes" mientras que /ar/planes mostraba Individual $7.900 y Full $15.900 (promo de 3 meses a $990). **Corregido en la verificación manual (2026-11-24)**: /ar/planes muestra ahora Individual $9.900, Básico $19.900, Premium (Salud y Estética) $39.900 y Pro IA $129.900; el plan Full ya no figura. Un resumen de Capterra indica desde US$19 (no verificado).
 2. **AgendaPro, seguridad**: la página dental cita Leyes 25.326 y 26.529 y una certificación CENS que es chilena; es afirmación comercial sin documentación.
 3. **AgendaPro, facturación**: la página de planes dice facturación electrónica "próximamente"; no hay evidencia de AFIP/ARCA operativa.
 4. **Dentalink, origen no claro**: razón social Engenis SpA, teléfono de contacto de España, ayuda con módulo para Argentina; su facturación es "VeriFactu" (España) y no menciona ARCA. dentalink.global/ar no resolvió.
@@ -875,7 +875,9 @@ Discrepancias y hallazgos del analista (el usuario puede ampliarlos):
 
 ### Hallazgos de la verificación manual
 
-_(Completar con lo encontrado al abrir las fuentes: afirmaciones confirmadas, corregidas o no respaldadas.)_
+- **Confirmadas sin cambios**: AgendaPro sitio oficial (1), centro de ayuda de Dentalink para Argentina (3), planes de Dentalink (4) y página dental de AgendaPro (5).
+- **Corregida** (1): los precios de AgendaPro (2) cambiaron entre la consulta del agente (2026-11-16) y la verificación (2026-11-24). Además el plan "Full" ya no existe y ahora hay un plan **Premium para Salud y Estética** ($39.900), que antes el informe daba como "precios de Salud no listados". Se corrigieron la ficha A.2.1 y el hallazgo 1. Conclusión: los precios del mercado cambian en días, por eso la fecha de consulta es obligatoria.
+- **Confirmada sin cambios** también la ficha de La Historia Clínica Digital en ComparaSoftware (6). Se mantiene la aclaración del informe: es un directorio de terceros, así que esas funciones siguen siendo **afirmación comercial**, no funcionalidad comprobada.
 
 ### Limitaciones de la investigación
 
