@@ -4,6 +4,14 @@ Aplicación web para un odontólogo independiente en Argentina: agenda, reserva 
 Monolito modular: `backend/` (Spring Boot + Gradle), `frontend/` (SPA en TypeScript vanilla con Vite) e `infra/` (scripts de base de datos).
 La documentación de dominio vive en `knowledge-base/`; el plan de trabajo en `CHANGES.md`.
 
+## Clonar el repositorio
+
+```bash
+git clone -c core.longpaths=true https://github.com/Veronica22-stack/turnos-odontologia
+```
+
+En **Windows** la opción `-c core.longpaths=true` es necesaria: algunos tests tienen rutas largas y, sin ella, el clone termina con "Filename too long". Si ya clonaste sin la opción, entrá a la carpeta y corré `git config core.longpaths true` y `git restore --source=HEAD :/`.
+
 ## Desarrollo local
 
 Ninguna etapa requiere contenedores ni herramientas de virtualización: la aplicación se ejecuta con un PostgreSQL instalado en tu máquina y los tests
