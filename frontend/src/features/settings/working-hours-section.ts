@@ -50,16 +50,12 @@ function groupByWeekday(models: readonly RowModel[]): ReadonlyMap<number, number
 export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLElement {
   let rows: Row[] = [];
   let saving = false;
+  let nextRowId = 0;
 
   const section = h(
     'section',
     { class: 'settings-card', attrs: { id: 'hours', 'aria-labelledby': 'h-hours' }, aria: { busy: 'true' } },
-    h(
-      'div',
-      { class: 'section-head' },
-      h('div', {}, h('h2', { attrs: { id: 'h-hours' } }, 'Horarios de atención')),
-      h('button', { class: 'btn btn-sm btn-secondary', attrs: { type: 'button' } }, 'Agregar tramo'),
-    ),
+    h('div', { class: 'section-head' }, h('div', {}, h('h2', { attrs: { id: 'h-hours' } }, 'Horarios de atención'))),
     h('p', { class: 'section-desc' }, 'Varios tramos por día, en hora del consultorio (Buenos Aires).'),
     alertBox({
       variant: 'warning',
@@ -74,8 +70,9 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
   const form = h('form', { class: 'form-grid', attrs: { novalidate: '' } }, grid, h('div', { class: 'form-actions' }, saveButton));
   section.append(noticeSlot, form);
 
-  function makeRow(model: RowModel, index: number): Row {
-    const id = `hours-${model.weekday}-${index}`;
+  function makeRow(model: RowModel): Row {
+    // Id único y estable (no depende de la posición en `rows`, que cambia al agregar/quitar).
+    const id = `hours-${model.weekday}-${nextRowId++}`;
     const start = field({ id: `${id}-start`, label: 'Inicio', type: 'time', autocomplete: 'off', value: model.startTime });
     const end = field({ id: `${id}-end`, label: 'Fin', type: 'time', autocomplete: 'off', value: model.endTime });
     const remove = h('button', { class: 'btn btn-sm btn-ghost', attrs: { type: 'button' } }, 'Quitar');
@@ -98,18 +95,14 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
   function renderGrid(): void {
     grid.replaceChildren();
     if (rows.length === 0) {
-      const emptyAdd = h('button', { class: 'btn btn-secondary', attrs: { type: 'button' } }, 'Agregar tramo');
-      emptyAdd.addEventListener('click', () => addRow(1));
       grid.append(
         h(
           'div',
           { class: 'empty' },
           h('h3', {}, 'Todavía no hay horarios de atención'),
           h('p', {}, 'Agregá tramos por día para habilitar los turnos en la reserva online.'),
-          emptyAdd,
         ),
       );
-      return;
     }
 
     const counts = groupByWeekday(
@@ -117,6 +110,12 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
     );
     for (const [index, label] of WEEKDAYS.entries()) {
       const weekday = index + 1;
+      const addButton = h(
+        'button',
+        { class: 'btn btn-sm btn-secondary', attrs: { type: 'button', 'aria-label': `Agregar tramo el ${label.toLowerCase()}` } },
+        'Agregar tramo',
+      );
+      addButton.addEventListener('click', () => addRow(weekday));
       const block = h(
         'div',
         { class: 'day-block', dataset: { weekday: String(weekday) } },
@@ -130,12 +129,15 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
       for (const row of rows.filter((item) => item.weekday === weekday)) {
         block.append(row.element);
       }
+      block.append(h('div', { class: 'range-actions' }, addButton));
       grid.append(block);
     }
   }
 
   function addRow(weekday: number): void {
-    rows.push(makeRow({ weekday, startTime: '09:00', endTime: '13:00' }, rows.length));
+    rows.push(makeRow({ weekday, startTime: '09:00', endTime: '13:00' }));
+    // Orden estable por día: `collect()` y el mapeo de errores por índice usan este mismo orden.
+    rows.sort((a, b) => a.weekday - b.weekday);
     clearFieldErrors(form);
     renderGrid();
   }
@@ -149,7 +151,7 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
   }
 
   function apply(hours: readonly WorkingHour[]): void {
-    rows = toRowModels(hours).map((model, index) => makeRow(model, index));
+    rows = toRowModels(hours).map((model) => makeRow(model));
     clearFieldErrors(form);
     noticeSlot.replaceChildren();
     renderGrid();
@@ -215,7 +217,6 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
     return alertBox({ variant: 'success', role: 'status', icon: 'check', title: MESSAGES.savedHours.title, text: MESSAGES.savedHours.text });
   }
 
-  section.querySelector<HTMLButtonElement>('.section-head button')?.addEventListener('click', () => addRow(1));
   saveButton.addEventListener('click', () => {
     void save();
   });

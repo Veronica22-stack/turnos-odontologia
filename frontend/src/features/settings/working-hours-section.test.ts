@@ -40,6 +40,14 @@ function button(root: HTMLElement, text: string): HTMLButtonElement {
   return found;
 }
 
+function addButton(root: HTMLElement, day: string): HTMLButtonElement {
+  const found = root.querySelector<HTMLButtonElement>(`button[aria-label="Agregar tramo el ${day}"]`);
+  if (found === null) {
+    throw new Error(`falta botón de agregar tramo el ${day}`);
+  }
+  return found;
+}
+
 async function loaded(root: HTMLElement): Promise<void> {
   await vi.waitFor(() => expect(times(root).length).toBeGreaterThan(0));
 }
@@ -81,7 +89,7 @@ describe('working-hours-section - grilla y guardado (C-19 D4)', () => {
     await vi.waitFor(() => expect(root.textContent).toContain('Todavía no hay horarios de atención'));
     expect(root.textContent).toContain('Agregá tramos por día para habilitar los turnos en la reserva online.');
 
-    button(root, 'Agregar tramo').click();
+    addButton(root, 'lunes').click();
     const [start, end] = times(root);
     expect(start).toBeDefined();
     expect(end).toBeDefined();
@@ -97,6 +105,59 @@ describe('working-hours-section - grilla y guardado (C-19 D4)', () => {
     expect(saveWorkingHours).toHaveBeenCalledWith([
       { weekday: 1, startTime: '09:00', endTime: '13:00' },
     ]);
+  });
+
+  it('en el estado vacío muestra los siete días, cada uno con su botón de agregar', async () => {
+    const { root } = mount({ getResult: { ok: true, data: [] } });
+    await vi.waitFor(() => expect(root.textContent).toContain('Todavía no hay horarios de atención'));
+
+    expect(root.querySelectorAll('.day-block')).toHaveLength(7);
+    for (const day of ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']) {
+      expect(addButton(root, day)).toBeDefined();
+    }
+  });
+
+  it('agrega un tramo al martes y lo guarda con weekday 2', async () => {
+    const { root, saveWorkingHours } = mount({ getResult: { ok: true, data: [] } });
+    await vi.waitFor(() => expect(root.textContent).toContain('Todavía no hay horarios de atención'));
+
+    addButton(root, 'martes').click();
+    expect(root.querySelector('.day-block[data-weekday="2"] input[type="time"]')).not.toBeNull();
+    expect(root.querySelector('.day-block[data-weekday="1"] input[type="time"]')).toBeNull();
+
+    button(root, 'Guardar horarios').click();
+
+    await vi.waitFor(() => expect(saveWorkingHours).toHaveBeenCalledTimes(1));
+    expect(saveWorkingHours).toHaveBeenCalledWith([{ weekday: 2, startTime: '09:00', endTime: '13:00' }]);
+  });
+
+  it('agrega un tramo al viernes junto a los existentes y guarda ordenado por día', async () => {
+    const { root, saveWorkingHours } = mount();
+    await loaded(root);
+
+    addButton(root, 'viernes').click();
+    expect(root.querySelector('.day-block[data-weekday="5"] input[type="time"]')).not.toBeNull();
+
+    button(root, 'Guardar horarios').click();
+
+    await vi.waitFor(() => expect(saveWorkingHours).toHaveBeenCalledTimes(1));
+    expect(saveWorkingHours).toHaveBeenCalledWith([
+      { weekday: 1, startTime: '09:00', endTime: '13:00' },
+      { weekday: 1, startTime: '14:00', endTime: '18:00' },
+      { weekday: 2, startTime: '09:00', endTime: '18:00' },
+      { weekday: 5, startTime: '09:00', endTime: '13:00' },
+    ]);
+  });
+
+  it('agregar un tramo a un día anterior mantiene el error de validación en el campo correcto', async () => {
+    const { root, saveWorkingHours } = mount();
+    await loaded(root);
+
+    addButton(root, 'lunes').click(); // nuevo tramo 09:00-13:00 se superpone con el primero
+    button(root, 'Guardar horarios').click();
+
+    expect(saveWorkingHours).not.toHaveBeenCalled();
+    expect(root.querySelectorAll('[aria-invalid="true"]').length).toBeGreaterThan(0);
   });
 
   it('muestra error de carga por sección con «Reintentar»', async () => {

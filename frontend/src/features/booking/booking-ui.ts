@@ -51,17 +51,13 @@ export function bookingHead(title: string, lead?: string): HTMLElement {
 }
 
 export function noticeAlert(notice: BookingNotice, role: 'alert' | 'status' = 'alert'): HTMLElement {
-  const box = alertBox({
+  return alertBox({
     variant: notice.variant,
     role,
     icon: NOTICE_ICONS[notice.variant],
     title: notice.title,
     text: notice.detail,
   });
-  if (notice.tbd !== undefined) {
-    box.lastElementChild?.append(' ', h('span', { class: 'tbd' }, notice.tbd));
-  }
-  return box;
 }
 
 export function emptyState(message: EmptyMessage, compact = false): HTMLElement {
@@ -78,9 +74,7 @@ export function emptyState(message: EmptyMessage, compact = false): HTMLElement 
     { class: compact ? 'empty empty-compact' : 'empty' },
     h('div', { class: 'ico' }, icon),
     h('h2', {}, message.title),
-    message.tbd === undefined
-      ? h('p', {}, message.detail)
-      : h('p', {}, message.detail, ' ', h('span', { class: 'tbd' }, message.tbd), '.'),
+    h('p', {}, message.detail),
   );
 }
 

@@ -77,7 +77,8 @@ describe('paso 1: prestaciones', () => {
 
     expect(text(requireElement(root, '.empty'))).toContain('Reservas online no disponibles');
     expect(requireElement(root, 'h1').textContent).toBe('Reservar turno');
-    expect(requireElement(root, '.empty .tbd').textContent).toBe('(TBD · datos)');
+    expect(root.textContent).not.toContain('TBD');
+    expect(root.querySelector('.tbd')).toBeNull();
     expect(root.querySelector('.stepper')).toBeNull();
     expect(root.querySelector('form, fieldset')).toBeNull();
   });

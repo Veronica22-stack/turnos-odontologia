@@ -4,6 +4,7 @@ import type { FieldError } from '../../core/http/errors';
 import { dayLabels, formatTime, localDateOf } from '../../shared/utils/dates';
 import type { BookingNotice } from './booking-messages';
 import { serverFieldMessage } from './booking-messages';
+import { renderPrivacyNotice } from './privacy-notice';
 import type { PublicService } from './booking-types';
 import { backButton, bookingHead, noticeAlert, stepper } from './booking-ui';
 import type { Slot } from './slots';
@@ -82,12 +83,14 @@ export function renderDetailsStep(props: DetailsStepProps): DetailsStep {
       h(
         'span',
         {},
-        'Leí y acepto el ',
-        h('a', { attrs: { href: '#', target: '_blank', rel: 'noopener noreferrer' } }, 'aviso de privacidad'),
-        ' ',
-        h('span', { class: 'tbd' }, '(TBD · PA-10)'),
-        '.',
+        'Leí y acepto el aviso de privacidad.',
       ),
+    ),
+    h(
+      'details',
+      { class: 'privacy-details' },
+      h('summary', {}, 'Ver aviso de privacidad'),
+      renderPrivacyNotice(),
     ),
   );
 

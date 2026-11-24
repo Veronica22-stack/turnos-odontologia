@@ -101,13 +101,30 @@ describe('estructura del paso 3', () => {
     expect(input('email').autocomplete).toBe('email');
   });
 
-  it('la casilla del aviso de privacidad enlaza en pestana nueva y marca el texto pendiente', () => {
+  it('el paso de datos no muestra marcas TBD ni enlaces muertos', () => {
     mount();
 
-    const link = document.querySelector('.check a');
-    expect(link?.getAttribute('target')).toBe('_blank');
-    expect(link?.getAttribute('rel')).toBe('noopener noreferrer');
-    expect(document.querySelector('.check')?.textContent).toContain('(TBD');
+    expect(document.body.textContent).not.toContain('TBD');
+    expect(document.querySelector('.tbd')).toBeNull();
+    expect(document.querySelector('a[href="#"]')).toBeNull();
+  });
+
+  it('el aviso de privacidad se despliega sin salir del formulario', () => {
+    mount();
+
+    const details = document.querySelector<HTMLDetailsElement>('form details.privacy-details');
+    expect(details).not.toBeNull();
+    expect(details?.open).toBe(false);
+    expect(details?.querySelector('summary')?.textContent).toBe('Ver aviso de privacidad');
+    expect(details?.textContent).toContain('Ley 25.326');
+    expect(details?.querySelector('summary')?.closest('label')).toBeNull();
+    details!.open = true;
+    expect(document.querySelector('form')?.contains(details)).toBe(true);
+  });
+
+  it('la casilla del aviso de privacidad sigue siendo obligatoria', () => {
+    mount();
+
     expect(input('privacyAccepted').type).toBe('checkbox');
     expect(input('privacyAccepted').checked).toBe(false);
   });

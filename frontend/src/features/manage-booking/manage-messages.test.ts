@@ -67,8 +67,8 @@ describe('manageNotice', () => {
     expect(manageNotice({ kind: 'reschedule-unavailable' })).toMatchObject({
       variant: 'info',
       title: 'No se puede reprogramar este turno online.',
-      tbd: '(TBD · datos)',
     });
+    expect(JSON.stringify(manageNotice({ kind: 'reschedule-unavailable' }))).not.toContain('TBD');
   });
 
   it('resultado desconocido de cancelar y de reprogramar no afirma ni niega', () => {
@@ -94,7 +94,8 @@ describe('textos de pantalla', () => {
     const message = invalidLinkMessage();
     expect(message.title).toBe('Este enlace no es válido');
     expect(message.detail).toContain('vencido');
-    expect(message.tbd).toBeDefined();
+    expect(message.detail).toMatch(/consultorio\.$/);
+    expect(JSON.stringify(message)).not.toContain('TBD');
   });
 
   it('solo lectura distingue pasado de cancelado', () => {

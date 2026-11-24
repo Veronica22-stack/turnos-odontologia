@@ -131,7 +131,7 @@ export function createPracticeSection(deps: PracticeSectionDeps): HTMLElement {
     id: 'practice-tz',
     label: 'Zona horaria',
     autocomplete: 'off',
-    help: 'Fija en la instalación. Edición (TBD) — D7.',
+    help: 'Se fija en la instalación y no se puede editar.',
   });
   timezone.input.disabled = true;
   timezone.input.readOnly = true;

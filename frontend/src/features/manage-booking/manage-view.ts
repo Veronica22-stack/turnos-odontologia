@@ -273,7 +273,7 @@ export function createManageView(deps: ManageViewDeps): (context: RouteContext) 
           ),
         ),
         h('h1', { attrs: { id: 'step-title', tabindex: '-1' } }, message.title),
-        h('p', {}, message.detail, ' ', h('span', { class: 'tbd' }, message.tbd ?? ''), '.'),
+        h('p', {}, message.detail),
         h('a', { class: 'btn btn-primary btn-lg', attrs: { href: BOOKING_PATH } }, 'Reservar un turno'),
       ),
     );

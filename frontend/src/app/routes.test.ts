@@ -113,6 +113,7 @@ describe('createRoutes', () => {
       '/': 'public',
       '/reservar': 'public',
       '/reservar/confirmado': 'public',
+      '/privacidad': 'public',
       '/turno/:token': 'public',
       '/login': 'public',
       '/cambiar-contrasena': 'public',
@@ -169,6 +170,18 @@ describe('createRoutes', () => {
     expect(content.querySelector('h1')?.textContent).toBe('Revisá tu email');
     expect(content.querySelector('.placeholder')).toBeNull();
     expect(content.querySelector('a[href="/reservar"]')).not.toBeNull();
+  });
+
+  it('/privacidad renderiza el aviso de privacidad en layout public, sin guard', () => {
+    const route = byPath(routes, '/privacidad');
+
+    const content = route.view(ctx('/privacidad'));
+
+    expect(route.layout).toBe('public');
+    expect(route.title).toBe('Aviso de privacidad');
+    expect(content.querySelector('h1')?.textContent).toBe('Aviso de privacidad');
+    expect(content.textContent).toContain('25.326');
+    expect(content.textContent).not.toContain('TBD');
   });
 
   it('/turno/:token usa la vista real (no el placeholder), layout public, sin guard y titulo fijo', async () => {

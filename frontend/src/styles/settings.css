@@ -302,6 +302,11 @@ code {
   gap: var(--space-2);
 }
 
+/* La grilla semanal y su botón de guardar ocupan todo el ancho (no dos columnas). */
+#hours .form-grid > * {
+  grid-column: 1 / -1;
+}
+
 /* ---------- Listas y tablas ---------- */
 .data-list {
   margin: 0;
@@ -405,18 +410,7 @@ table.data tr:last-child td {
 }
 
 .confirm-dialog {
-  width: min(100%, var(--layout-dialog-width));
-  padding: var(--space-5);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-xl);
-  background: var(--color-surface);
-  color: var(--color-text);
-  box-shadow: var(--shadow-lg);
-}
-
-.confirm-dialog::backdrop {
-  background: var(--color-text);
-  opacity: 0.48;
+  padding: var(--space-6);
 }
 
 .confirm-dialog h2 {
@@ -431,6 +425,8 @@ table.data tr:last-child td {
 
 .confirm-dialog .form-actions {
   justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
 }
 
 @media (min-width: 640px) {

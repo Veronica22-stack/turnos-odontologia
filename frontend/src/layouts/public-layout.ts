@@ -19,10 +19,6 @@ export function markProLink(layout: ParentNode, currentPath: string): void {
   }
 }
 
-function tbd(): HTMLElement {
-  return h('span', { class: 'tbd' }, '(TBD)');
-}
-
 export function renderPublicLayout(args: PublicLayoutArgs): HTMLElement {
   const header = h(
     'header',
@@ -44,19 +40,17 @@ export function renderPublicLayout(args: PublicLayoutArgs): HTMLElement {
 
   const main = h('main', { class: 'public-main', attrs: { id: 'main', tabindex: '-1' } }, args.content);
 
-  // Destinos legales y datos del consultorio: (TBD) hasta PA-10 / design system TBD 8.
   const footer = h(
     'footer',
     { class: 'public-footer' },
     h(
       'div',
       { class: 'inner' },
-      h('p', {}, `${brandName()} · Consultorio `, tbd(), ' · Dirección y teléfono ', tbd()),
+      h('p', {}, brandName()),
       h(
         'ul',
         {},
-        h('li', {}, h('a', { attrs: { href: '#' } }, 'Política de privacidad'), ' ', tbd()),
-        h('li', {}, h('a', { attrs: { href: '#' } }, 'Términos y condiciones'), ' ', tbd()),
+        h('li', {}, h('a', { attrs: { href: '/privacidad' } }, 'Política de privacidad')),
       ),
     ),
   );

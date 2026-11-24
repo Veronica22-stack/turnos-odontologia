@@ -82,6 +82,16 @@ afterEach(() => {
 });
 
 describe('login-view - vista inicial', () => {
+  it('no muestra marcas TBD y la ayuda de contraseña olvidada es un texto final', () => {
+    const { root } = mount();
+
+    expect(root.textContent).not.toMatch(/TBD|PA-\d+/);
+    expect(root.querySelector('.tbd')).toBeNull();
+    expect(root.querySelector('.auth-aside')?.textContent).toBe(
+      '¿Olvidaste tu contraseña? Comunicate con el consultorio para restablecerla.',
+    );
+  });
+
   it('muestra titulo, campos con autocomplete correcto, boton habilitado y ningun error', () => {
     const { root } = mount();
 

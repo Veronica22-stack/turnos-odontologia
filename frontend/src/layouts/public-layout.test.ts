@@ -33,12 +33,15 @@ describe('renderPublicLayout', () => {
     expect(main?.getAttribute('tabindex')).toBe('-1');
   });
 
-  it('footer con Politica de privacidad y Terminos y condiciones', () => {
+  it('footer con enlace funcional a la Politica de privacidad y sin marcas TBD', () => {
     render();
 
     const footer = document.querySelector('footer');
-    const labels = [...(footer?.querySelectorAll('a') ?? [])].map((a) => a.textContent);
-    expect(labels).toEqual(['Política de privacidad', 'Términos y condiciones']);
+    const links = [...(footer?.querySelectorAll('a') ?? [])];
+    expect(links.map((a) => a.textContent)).toEqual(['Política de privacidad']);
+    expect(links[0]?.getAttribute('href')).toBe('/privacidad');
+    expect(footer?.textContent).not.toContain('TBD');
+    expect(footer?.querySelector('.tbd')).toBeNull();
   });
 
   it('el primer enfocable es "Saltar al contenido" hacia #main', () => {
