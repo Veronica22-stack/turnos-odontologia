@@ -55,6 +55,22 @@
 | PA-17 | Baja | **Odontograma**: catálogo de estados, notación (FDI vs sistema local), dentición temporal/permanente | Change de HC | Profesional |
 | PA-18 | Baja | **Estructura de la anamnesis**: campos mínimos (formulario del profesional) | Change de HC | Profesional |
 | PA-19 | Baja | **Anticipación mínima, horizonte de reserva y ventana de recordatorio** por defecto | Configuración | Profesional |
-| PA-20 | Baja | **Verificación manual pendiente** de las fuentes de la sección E del informe de mercado (`discovery/investigacion-mercado.md`) | Validación competitiva | Product Owner |
+| PA-20 | Baja | **Verificación manual pendiente** de las fuentes del informe de Discovery (`docs/discovery/informe-discovery.md` §Verificación de fuentes) | Validación competitiva | Product Owner |
 | PA-21 | Baja | **Accesibilidad e idioma**: ¿WCAG nivel objetivo? ¿solo español? | Frontend | Equipo |
 | PA-22 | Baja | **Registro del profesional**: ¿matrícula visible en emails/HC? | Datos de consultorio | Profesional |
+
+## Puntos "No evidenciado" del Discovery
+
+Lo que el informe de Discovery (`docs/discovery/informe-discovery.md`) no pudo respaldar con fuentes públicas queda como pregunta abierta: el producto no se diseña suponiendo que esas afirmaciones son ciertas.
+
+| ID | Punto no evidenciado en el Discovery | Cómo lo trata este proyecto | Relacionado |
+|----|--------------------------------------|-----------------------------|-------------|
+| NE-01 | Cómo resuelven los competidores la **prevención de solapamientos, los bloqueos y los sobreturnos**: casi ningún proveedor lo describe públicamente | Reglas propias RN-AG-01, RN-AG-02 y RN-AG-04, garantizadas en base de datos; no se copian comportamientos no demostrados | RN-AG, C-09, C-11 |
+| NE-02 | **Agenda por sillón/box** con prevención de solapamiento por sillón: solo aparece en material comercial (AgendaPro) | v1 con un único sillón (RN-AG-10); multi-sillón en etapas posteriores | RN-AG-10, 06 §Funcionalidades posteriores |
+| NE-03 | **Adecuación a la Ley 27.706** (HC electrónica): ningún proveedor la evidencia | No se inventan requisitos; se valida con asesoría legal | PA-01, 11_cumplimiento_normativo |
+| NE-04 | **Facturación AFIP/ARCA operativa**: no evidenciada (AgendaPro la declara "próximamente"; otros solo la mencionan en directorios) | Fuera de la v1 | 06 §Funcionalidades posteriores |
+| NE-05 | **Gestión de obras sociales/prepagas**: solo Dentalink la documenta | Fuera de la v1 (diferenciador de etapa 2) | 06 §Funcionalidades posteriores |
+| NE-06 | **Precios publicados en ARS**: casi ningún proveedor los publica; varios precios vienen de agregadores no oficiales | Sin base de comparación confiable para el precio propio | PA-07 |
+| NE-07 | **Efectividad de recordatorios por WhatsApp y agentes de IA**: son afirmaciones comerciales sin demostración independiente | v1 solo email; medir no-show desde el día 1 | IN-05, PA-08 |
+| NE-08 | **Adopción y reseñas verificables** (Capterra, GetApp, tiendas): no se pudieron abrir | No se usan cifras de clientes como argumento | PA-20 |
+| NE-09 | **Empresa y país de origen** de varios proveedores (Reservo, Medilink, La Historia Clínica Digital, Consultorios.AR, DentalSoft) | Se reportan como "No evidenciado" en la tabla A | PA-20 |

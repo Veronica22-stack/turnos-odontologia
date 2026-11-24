@@ -1,5 +1,9 @@
 # Proposal: C-11 `appointments-core`
 
+## Justificación de la elección (change principal del TP)
+
+Elegimos C-11 porque pertenece al MVP imprescindible de la sección D del informe de Discovery ("agenda con duración variable por prestación, bloqueos y prevención de solapamientos") y corresponde al ejemplo recomendado por la consigna: crear un turno evitando solapamientos. Tiene reglas de negocio verificables con tests (no solapamiento, turno adyacente, bloqueos, horario de atención, transiciones de estado) y es una sola funcionalidad del camino crítico, no un módulo completo. El relevamiento previo está en `explore.md`.
+
 ## Why
 
 La agenda todavía no tiene turnos: existen prestaciones (C-07), horarios de atención y parámetros de reserva (C-08), bloqueos (C-09) y pacientes (C-10), pero nada que los combine en un turno que ocupe un rango del consultorio. Sin este change no se puede cargar un turno pedido por teléfono (US-021), ni cancelarlo, reprogramarlo o marcar su resultado (US-022), y quedan sin implementar los contratos que C-09 dejó pendientes (`AffectedAppointments`) y los que consumen C-12 (disponibilidad), C-13 (notificaciones), C-14/C-15 (reserva pública) y C-18 (evoluciones). Es el núcleo del dominio y está en el camino crítico. Governance: **CRÍTICO** (invariante de no solapamiento, modelo core): el plan se revisa antes de cualquier apply.

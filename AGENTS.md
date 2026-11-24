@@ -66,7 +66,7 @@ Fuente de verdad: `.atl/skill-registry.md`.
 
 Cargá la skill correspondiente al contexto ANTES de escribir código.
 
-> Los compact rules de cada skill los resuelve el orquestador desde `.atl/skill-registry.md` (generado por `skill-registry`; no versionado — no está en el repo). Esta tabla solo mapea skill→rol.
+> Los compact rules de cada skill los resuelve el orquestador desde `.atl/skill-registry.md` (generado por `skill-registry` y versionado en el repo). Esta tabla solo mapea skill→rol.
 
 ---
 
@@ -115,6 +115,10 @@ Son contrato; romperlas es un defecto. Formato `NUNCA X → hacer Y`.
 13. Conventional commits con el ID del change (ej. `feat(C-11): ...`).
 14. NUNCA commit ni push sin pedido explícito del usuario.
 15. NUNCA credenciales en el código ni en `application.yml` → variables de entorno + `.env.example` sin valores reales.
+
+### Dominio (agregadas a mano por el equipo)
+
+16. NUNCA almacenar datos reales de pacientes en el repositorio (código, tests, fixtures, mockups, capturas, ejemplos de la documentación ni Engram) → solo datos ficticios evidentes (ej. "Paciente Prueba", DNI `00000000`, emails `@ejemplo.com`).
 
 ---
 

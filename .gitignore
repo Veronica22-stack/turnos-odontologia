@@ -1,5 +1,6 @@
-# Skill registry (local, no versionado — ver CLAUDE.md)
-.atl/
+# Skill registry: se versiona .atl/skill-registry.md (lo exige la consigna); el resto de .atl/ es local
+.atl/*
+!.atl/skill-registry.md
 
 # Secretos y entorno
 .env
@@ -34,3 +35,6 @@ Thumbs.db
 frontend/.vite/
 backend/bin/
 **/.env
+
+# HTML intermedio del informe (se genera con docs/discovery/generar-pdf.py)
+docs/discovery/informe-discovery.html
