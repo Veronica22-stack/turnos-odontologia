@@ -12,6 +12,8 @@ import type { PatientsGateway } from '../features/patients/patients-gateway';
 import { createPatientsView } from '../features/patients/patients-view';
 import { createBookingView } from '../features/booking/booking-view';
 import { createConfirmationView } from '../features/booking/confirmation-view';
+import type { ManageGateway } from '../features/manage-booking/manage-types';
+import { createManageView } from '../features/manage-booking/manage-view';
 import type { Clock } from '../shared/utils/dates';
 import type { SettingsGateway } from '../features/settings/settings-gateway';
 import { createSettingsView } from '../features/settings/settings-view';
@@ -36,6 +38,7 @@ export interface RoutesDeps {
   readonly clinicalRecord: ClinicalRecordGateway;
   readonly settings: SettingsGateway;
   readonly booking: BookingGateway;
+  readonly manage: ManageGateway;
   /** Corrige la URL sin renderizar (normaliza `?paso=` de la reserva). */
   readonly replaceUrl: (path: string) => void;
   readonly goBack: () => void;
@@ -48,6 +51,14 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
   const { session, gateway, agenda, settings, navigate, onLogout } = deps;
   const bookingView = createBookingView({
     gateway: deps.booking,
+    clock: deps.clock ?? (() => new Date()),
+    navigate,
+    replaceUrl: deps.replaceUrl,
+    goBack: deps.goBack,
+  });
+  const manageView = createManageView({
+    gateway: deps.manage,
+    booking: deps.booking,
     clock: deps.clock ?? (() => new Date()),
     navigate,
     replaceUrl: deps.replaceUrl,
@@ -86,7 +97,7 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       path: '/turno/:token',
       layout: 'public',
       title: 'Gestionar turno',
-      view: placeholderView('Gestionar turno', 'La gestion por enlace llega en su propio change.'),
+      view: manageView,
     },
     {
       name: 'login',

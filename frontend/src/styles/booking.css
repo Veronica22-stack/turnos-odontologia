@@ -538,3 +538,103 @@
     justify-content: start;
   }
 }
+
+/* ================= Gestion de turno (C-25, design D9) ================= */
+.badge-cancelado {
+  border-color: var(--color-border);
+  background: var(--status-cancelado-bg);
+  color: var(--status-cancelado-fg);
+}
+
+.badge-cancelado span {
+  text-decoration: line-through;
+  text-decoration-thickness: 1px;
+}
+
+.badge-neutral {
+  border-color: var(--color-border);
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}
+
+.card-cancelled .meta-list dd {
+  color: var(--color-text-secondary);
+}
+
+.btn-danger-outline[aria-busy='true'] {
+  background: var(--color-danger-bg);
+  cursor: progress;
+}
+
+.btn[aria-disabled='true']:not([aria-busy='true']) {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.manage-actions {
+  display: grid;
+  gap: var(--space-3);
+}
+
+.manage-actions .btn {
+  width: 100%;
+}
+
+.manage-note {
+  display: flex;
+  gap: var(--space-2);
+  align-items: flex-start;
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+}
+
+.manage-note svg {
+  flex: none;
+  width: var(--space-4);
+  height: var(--space-4);
+}
+
+.zone-note {
+  color: var(--color-text-secondary);
+  font-size: var(--text-xs);
+}
+
+.previous-time {
+  color: var(--color-text-secondary);
+  font-size: var(--text-sm);
+}
+
+.previous-time s {
+  text-decoration-thickness: 1px;
+}
+
+.picker-busy {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.booking .empty h1 {
+  margin: 0;
+  font-size: var(--text-xl);
+  line-height: var(--leading-tight);
+}
+
+.booking .empty h1:focus {
+  outline: none;
+}
+
+.booking .empty .ico-neutral {
+  background: var(--color-bg-muted);
+  color: var(--color-text-secondary);
+}
+
+@media (min-width: 64rem) {
+  .manage-actions {
+    grid-template-columns: auto auto;
+    justify-content: start;
+  }
+
+  .manage-actions .btn {
+    width: auto;
+  }
+}

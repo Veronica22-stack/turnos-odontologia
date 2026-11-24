@@ -60,4 +60,38 @@ describe('confirmAction - diálogo nativo (C-19 D8)', () => {
     document.querySelector<HTMLButtonElement>('[data-confirm="cancel"]')?.click();
     await promise;
   });
+
+  it('por defecto enfoca el botón de aceptar (C-19 sin cambios)', async () => {
+    const promise = confirmAction({ title: 'Baja', text: 'Texto' });
+    expect(document.activeElement).toBe(document.querySelector('[data-confirm="accept"]'));
+    document.querySelector<HTMLButtonElement>('[data-confirm="cancel"]')?.click();
+    await promise;
+  });
+
+  it('initialFocus "cancel" enfoca el botón que conserva', async () => {
+    const promise = confirmAction({ title: 'Cancelar turno', text: 'Texto', initialFocus: 'cancel' });
+    expect(document.activeElement).toBe(document.querySelector('[data-confirm="cancel"]'));
+    document.querySelector<HTMLButtonElement>('[data-confirm="cancel"]')?.click();
+    await promise;
+  });
+
+  it('initialFocus "accept" explícito enfoca aceptar', async () => {
+    const promise = confirmAction({ title: 'Baja', text: 'Texto', initialFocus: 'accept' });
+    expect(document.activeElement).toBe(document.querySelector('[data-confirm="accept"]'));
+    document.querySelector<HTMLButtonElement>('[data-confirm="cancel"]')?.click();
+    await promise;
+  });
+
+  it('Escape resuelve false y devuelve el foco al origen', async () => {
+    const opener = document.createElement('button');
+    document.body.append(opener);
+    opener.focus();
+
+    const promise = confirmAction({ title: 'Cancelar turno', text: 'Texto', initialFocus: 'cancel' });
+    document.querySelector('dialog')?.dispatchEvent(new Event('cancel', { cancelable: true }));
+
+    await expect(promise).resolves.toBe(false);
+    expect(document.querySelector('dialog')).toBeNull();
+    expect(document.activeElement).toBe(opener);
+  });
 });

@@ -74,7 +74,7 @@ Abreviaturas de archivos de test:
 
 | Requisito | Escenario | Tipo | Test(s) | Estado |
 |---|---|---|---|---|
-| Token-based lookup | Consulta con token válido | feliz | `BMTIT.vistaConTokenValidoEsAcotadaYAudita`, `BMU.vistaConTokenValidoEsAcotadaYAudita` | OK |
+| Token-based lookup | Consulta con token válido (incluye `serviceId` para reprogramar, pedido P1 de C-25) | feliz | `BMTIT.vistaConTokenValidoEsAcotadaYAudita` (`$.serviceId`), `BMU.vistaConTokenValidoEsAcotadaYAudita` | OK |
 | Token-based lookup | Comparación en tiempo constante | borde | `BTC.comparacionEnTiempoConstanteAceptaIgualesYRechazaDistintos` | OK |
 | Token-based lookup | Sin acceso a datos ajenos | borde | `BMTIT.tokenSoloDaAccesoAlTurnoVinculado` (dos turnos/tokens, cada token devuelve solo su turno) | OK |
 | Generic token errors | Token expirado | error de negocio | `BTC.tokenSoloEsUsableAntesDeExpirarYSinRevocar` (dominio) y `BMTIT.tokenExpiradoDevuelveElMismo404Generico` (HTTP, token con `expires_at` en el pasado) | OK |

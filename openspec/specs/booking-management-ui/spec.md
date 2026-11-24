@@ -1,9 +1,9 @@
-# Spec Delta: booking-management-ui
+# booking-management-ui Specification
 
 ## Purpose
 Pantalla pública `/turno/{token}` de la SPA con la que el paciente, sin cuenta y desde el enlace del email, consulta su turno, lo cancela con confirmación previa o lo reprograma eligiendo otro horario de la misma prestación, sin exponer el token ni datos personales.
 
-## ADDED Requirements
+## Requirements
 
 ### Requirement: Consulta del turno por enlace
 Al abrir `/turno/{token}` la SPA SHALL consultar `GET /api/v1/public/bookings/{token}` y, mientras espera, mostrar un estado de carga anunciado a lectores de pantalla. Con respuesta 200 SHALL mostrar la prestación, el día y el horario de inicio y fin en `America/Argentina/Buenos_Aires`, el consultorio (si no está vacío) y el estado como insignia con texto. La pantalla MUST NOT mostrar el identificador de la reserva.
@@ -41,7 +41,7 @@ Ante 404 de la consulta (cualquier `code`, incluido `INVALID_OR_EXPIRED_TOKEN`) 
 
 #### Scenario: Token con forma imposible
 - **WHEN** se abre `/turno/abc$%25`
-- **THEN** se muestra el mensaje genérico sin ninguna petición a `/api/v1/public/bookings/`
+- **THEN** no se envía ninguna petición a `/api/v1/public/bookings/` y no se muestra ningún dato de turno (el router no enlaza símbolos como token y muestra la página genérica "Página no encontrada"; un token de longitud fuera de rango muestra "Este enlace no es válido")
 
 ### Requirement: Turno en solo lectura
 Cuando la respuesta trae `cancellable` y `reschedulable` en falso, la SPA SHALL mostrar el turno sin acciones de modificación y con un aviso de que no se puede cambiar desde el enlace. El estado `CANCELLED` SHALL mostrarse como "Cancelado"; un turno no modificable en cualquier otro estado (`CONFIRMED` ya comenzado, `COMPLETED`, `NO_SHOW`) SHALL mostrarse como "Turno pasado", sin distinguir asistencia de ausencia.
