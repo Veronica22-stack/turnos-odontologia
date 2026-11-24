@@ -162,14 +162,16 @@ C-01 → C-02 → C-03 → C-04 → C-08 → C-09 → C-11 → C-12 → C-14 →
 
 **Change principal: C-11 `appointments-core`** — núcleo del dominio (turnos sin solapamientos), en el camino crítico. **Completado por Lucas** de punta a punta (explore → propose → apply → verify → archive); el verify lo hizo un agente verificador independiente del que implementó (quien testea no es quien implementó).
 
-| Integrante | Responsabilidad principal | Changes |
-|---|---|---|
-| **Lucas (líder)** | Fundación (Discovery, knowledge-base, design system, roadmap, reglas del agente). **C-01, C-02 y C-11 completos** (C-11: explore, propose, apply, verify y archive). Decide gates y paralelismo, controla `master` y aprueba todos los PR. Evidencia de Engram. | C-01 ✓ · C-02 ✓ · C-11 ✓ |
-| **Elian** | Backend núcleo sobre el camino crítico. | C-03 · C-04 · C-09 · C-12 |
-| **Gabriel** | Dueño de la matriz de tests (cada escenario de cada spec: feliz, error de negocio y borde). README para clonar y correr los tests. API de reserva pública. | C-08 · C-10 · C-14 · C-15 |
-| **Veronica** | Informe de Discovery en PDF (resumen ejecutivo, A, B, C y D) y verificación manual de las fuentes. Backend de historia clínica y notificaciones. | C-13 · C-16 · C-17 · C-18 |
-| **Mayra** | Revisión de la knowledge-base contra el informe. Frontend base y reserva pública (con mockups). | C-05 · C-06 · C-24 · C-25 |
-| **Tomas** | Revisión del roadmap contra el MVP. Frontend del profesional (con mockups). | C-07 · C-19 · C-20 · C-21 · C-22 |
+| Integrante | Usuario en GitHub / git | Responsabilidad principal (como se implementó) | Changes |
+|---|---|---|---|
+| **Lucas Hernán Orsingher (líder)** | Lucas-Orsingher (merges de PR como "Lucas Hernán Orsingher") | Fundación (Discovery, knowledge-base, design system, roadmap, reglas del agente). **C-01, C-02 y C-11 completos** (C-11: explore, propose, apply, verify y archive). Decide gates y paralelismo, aprueba los mockups, controla `master` y mergea los PR. Evidencia de Engram. | C-01 ✓ · C-02 ✓ · C-11 ✓ |
+| **Elian Navarro** | elcrack205 | Backend núcleo sobre el camino crítico. | C-03 ✓ · C-04 ✓ · C-09 ✓ · C-12 ✓ |
+| **Gabriel Sánchez** | GSánchez (un merge como "Gabriel Sánchez") | Dueño de la matriz de tests (cada escenario de cada spec: feliz, error de negocio y borde). README para clonar y correr los tests. API de reserva pública y pedido P1 de C-25 sobre C-15. | C-08 ✓ · C-10 ✓ · C-14 ✓ · C-15 ✓ |
+| **Verónica Silva** | Veronica22-stack (commits locales como "Veronica") | Informe de Discovery en PDF (resumen ejecutivo, A, B, C y D) y **verificación manual de las fuentes**. Justificación de las skills (`docs/fundacion/`) y evidencia de instalación (`docs/evidencia/`). Backend de historia clínica y notificaciones. | C-13 ✓ · C-16 ✓ · C-17 ✓ · C-18 ✓ |
+| **Mayra Muñoz** | May (commits con `mayrampinto@gmail.com` y `mayrampinto.@gmail.com`) | Revisión de la knowledge-base contra el informe. Frontend base y reserva pública (con mockups). | C-05 ✓ · C-06 ✓ · C-24 ✓ · C-25 ✓ |
+| **Tomás Efraín Donoso Portillo** | Efrain-Donoso (merges como "Tomás Efraín Donoso Portillo") | Revisión del roadmap contra el MVP. Frontend del profesional (con mockups). | C-07 ✓ · C-19 ✓ · C-20 ✓ · C-21 ✓ · C-22 ✓ |
+
+> **Cambios respecto de la división inicial (2026-11-21).** La primera versión de esta tabla asignaba C-02 y el apply de C-11 a Elian, el verify de C-11 a Gabriel y la verificación manual de fuentes a Mayra. En la práctica, Lucas completó C-02 y C-11 de punta a punta (el verify de C-11 lo hizo un agente verificador independiente del que implementó) y la verificación manual de fuentes la hizo Verónica. La tabla de arriba refleja lo implementado.
 
 **Reglas de trabajo**
 
