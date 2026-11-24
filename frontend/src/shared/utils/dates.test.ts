@@ -33,6 +33,14 @@ describe('parseInstant', () => {
     expect(() => parseInstant('manana')).toThrowError(InvalidInstantError);
     expect(() => parseInstant('2026-13-40T99:00:00Z')).toThrowError(InvalidInstantError);
   });
+
+  it('acepta nanosegundos ISO-8601 como los serializa el backend', () => {
+    expect(parseInstant('2026-11-23T23:25:12.359241300Z').toISOString()).toBe('2026-11-23T23:25:12.359Z');
+  });
+
+  it('trunca nanosegundos con offset sin alterar el instante', () => {
+    expect(parseInstant('2026-11-23T20:25:12.123456789-03:00').toISOString()).toBe('2026-11-23T23:25:12.123Z');
+  });
 });
 
 describe('formatDate / formatTime / formatDateTime', () => {

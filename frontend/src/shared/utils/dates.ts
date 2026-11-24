@@ -9,7 +9,7 @@ export class InvalidInstantError extends Error {
   }
 }
 
-const INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:\d{2})$/;
+const INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,9})?)?(?:Z|[+-]\d{2}:\d{2})$/;
 const LOCAL_DATE_PATTERN = /^(\d{4})-(\d{2})-(\d{2})$/;
 
 const partsFormatter = new Intl.DateTimeFormat('es-AR', {
@@ -58,7 +58,8 @@ export function parseInstant(iso: string): Date {
   if (!INSTANT_PATTERN.test(iso)) {
     throw new InvalidInstantError('Instante invalido: se espera ISO-8601 con zona (Z o +-HH:mm)');
   }
-  const date = new Date(iso);
+  // El backend serializa Instant con nanosegundos; JS solo interpreta hasta milisegundos.
+  const date = new Date(iso.replace(/(\.\d{3})\d+(Z|[+-]\d{2}:\d{2})$/, '$1$2'));
   if (Number.isNaN(date.getTime())) {
     throw new InvalidInstantError('Instante invalido: fecha u hora fuera de rango');
   }

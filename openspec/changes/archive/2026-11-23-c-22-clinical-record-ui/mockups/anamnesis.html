@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Historia clínica · Anamnesis · {{brand}} — mockup C-22</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../../design-system/tokens.css">
+  <link rel="stylesheet" href="clinical-record.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-agenda" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 13h3v3H8z"/></symbol>
+    <symbol id="i-pacientes" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M16 3.5a4 4 0 0 1 0 7M19 14a5 5 0 0 1 3 5v2"/></symbol>
+    <symbol id="i-hc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10zM7.5 12h2l1-2 1.5 4 1-2h3"/></symbol>
+    <symbol id="i-config" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-salir" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4M16 17l5-5-5-5M21 12H9"/></symbol>
+    <symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v5M10 6.2v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 20 20"><path d="M10 2.8l8 14H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.8v5M10 13.8v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 10.3l2.4 2.4 4.6-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.4-3.5M13 2.5V5h-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  </svg>
+  <a class="sr-only" href="#main">Saltar al contenido</a>
+
+  <div class="private-shell">
+    <header class="app-header" role="banner">
+      <a class="brand-link" href="#main" aria-label="La Muela — ir al inicio" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <div class="user-slot">
+        <span class="avatar" aria-hidden="true">DR</span>
+        <span class="user-name">Dra. Romero <span class="tbd">(TBD)</span></span>
+        <span class="sr-only">Sesión iniciada como Dra. Romero</span>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Principal">
+      <ul>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-agenda"/></svg><span>Agenda</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-pacientes"/></svg><span>Pacientes</span></a></li>
+        <li><a href="#main" aria-current="page"><svg aria-hidden="true"><use href="#i-hc"/></svg><span>Historia clínica</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-config"/></svg><span>Configuración</span></a></li>
+      </ul>
+    </nav>
+
+    <main id="main" class="private-main">
+      <div class="page-head">
+        <h1 tabindex="-1">Historia clínica · Anamnesis</h1>
+        <p class="lead">Paciente ficticio seleccionado en memoria de la vista <span class="tbd">(datos de ejemplo)</span>. La URL permanece <code>/historia-clinica</code>: sin identificador, nombre ni DNI.</p>
+      </div>
+      <p class="patient-chip"><svg aria-hidden="true" width="14" height="14"><use href="#i-lock"/></svg> Selección solo en memoria · se pierde al recargar · sin <code>?patientId</code></p>
+
+      <nav class="section-tabs" aria-label="Secciones de la historia clínica">
+        <a href="anamnesis.html" aria-current="page">Anamnesis</a>
+        <a href="odontograma.html">Odontograma</a>
+        <a href="evoluciones.html">Evoluciones</a>
+        <a href="correcciones.html">Correcciones</a>
+        <a href="accesibilidad-odontograma.html">Accesibilidad</a>
+      </nav>
+
+      <article class="card" aria-labelledby="vigente-t">
+        <div class="card-head">
+          <div>
+            <h2 id="vigente-t">Anamnesis vigente · versión 2</h2>
+            <p class="sub">Unica lectura <code>GET .../anamnesis</code> al abrir la sección.</p>
+          </div>
+          <span class="badge badge-current"><svg aria-hidden="true"><use href="#i-check"/></svg>Vigente</span>
+        </div>
+        <div class="alert alert-warning" role="note">
+          <svg aria-hidden="true"><use href="#i-warn"/></svg>
+          <div><strong>Campos propuestos, no decididos — <span class="tbd">(TBD, PA-18)</span></strong>Se muestran los cinco campos del contrato C-16. Falta confirmar con el profesional si se requieren antecedentes heredofamiliares, embarazo, cirugías o consentimiento informado.</div>
+        </div>
+        <dl class="meta-list">
+          <dt>Alergias</dt><dd>Penicilina (ejemplo ficticio)</dd>
+          <dt>Medicación</dt><dd>Ninguna declarada (ejemplo ficticio)</dd>
+          <dt>Condiciones médicas</dt><dd>Sin antecedentes declarados (ejemplo ficticio)</dd>
+          <dt>Hábitos</dt><dd>No fuma (ejemplo ficticio)</dd>
+          <dt>Notas</dt><dd>&lt;script&gt;alert(1)&lt;/script&gt; y &amp; &quot;comillas&quot; 'simple' — se ve literal, nunca se ejecuta</dd>
+        </dl>
+        <p class="help num">Autor: Dra. Romero <span class="tbd">(TBD)</span> · 20/11/2026 09:12 · America/Argentina/Buenos_Aires · corrige la versión 1</p>
+        <div class="reason"><strong>Motivo de la corrección:</strong> «Se aclara la alergia declarada» (texto ficticio, se muestra como texto).</div>
+        <div class="entry-actions">
+          <button class="btn btn-secondary" type="button">Corregir esta entrada <span class="sr-only">(crea una entrada nueva; no edita)</span></button>
+        </div>
+        <p class="immutable-note"><svg aria-hidden="true"><use href="#i-lock"/></svg>Solo alta y corrección por nueva entrada. No hay botones de editar, borrar ni sobrescribir.</p>
+      </article>
+
+      <article class="card" aria-labelledby="historial-t">
+        <div class="card-head">
+          <div><h2 id="historial-t">Historial · anamnesis</h2><p class="sub">Orden descendente devuelto por el servidor; la UI no reordena.</p></div>
+        </div>
+        <ol class="entry-list">
+          <li class="entry corrected">
+            <header><span class="num">18/11/2026 11:40 · Dra. Romero</span><span class="badge badge-corrected">Corregida</span></header>
+            <p class="body">Alergias: «no refiere» (texto ficticio). Registro original conservado.</p>
+            <p class="help">Referencia: corregida por la entrada del 20/11/2026 09:12 (versión 2).</p>
+          </li>
+        </ol>
+      </article>
+
+      <article class="card" aria-labelledby="alta-t">
+        <div class="card-head">
+          <div><h2 id="alta-t">Nueva anamnesis</h2><p class="sub">Al menos un campo no vacío · hasta 2000 caracteres por campo.</p></div>
+        </div>
+        <form class="form-grid" novalidate onsubmit="return false">
+          <div class="field">
+            <label for="an-allergies">Alergias <span class="opt">(opcional) <span class="tbd">(TBD)</span></span></label>
+            <textarea class="textarea" id="an-allergies" aria-describedby="an-allergies-help"></textarea>
+            <span class="help" id="an-allergies-help">Hasta 2000 caracteres.</span>
+          </div>
+          <div class="field">
+            <label for="an-med">Medicación <span class="opt">(opcional) <span class="tbd">(TBD)</span></span></label>
+            <textarea class="textarea" id="an-med"></textarea>
+          </div>
+          <div class="field">
+            <label for="an-cond">Condiciones médicas <span class="opt">(opcional) <span class="tbd">(TBD)</span></span></label>
+            <textarea class="textarea" id="an-cond"></textarea>
+          </div>
+          <div class="field">
+            <label for="an-hab">Hábitos <span class="opt">(opcional) <span class="tbd">(TBD)</span></span></label>
+            <textarea class="textarea" id="an-hab"></textarea>
+          </div>
+          <div class="field span-2">
+            <label for="an-notes">Notas <span class="opt">(opcional) <span class="tbd">(TBD)</span></span></label>
+            <textarea class="textarea" id="an-notes" aria-invalid="true" aria-describedby="an-notes-err"></textarea>
+            <span class="error-msg" id="an-notes-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>Completá al menos un campo para registrar la anamnesis. No se envió ninguna petición.</span>
+          </div>
+          <div class="field span-2">
+            <p class="help">El borrador vive solo en memoria; no se guarda en la URL, la consola ni el almacenamiento del navegador. Autor e instante los agrega el servidor.</p>
+            <button class="btn btn-primary" type="button" disabled aria-describedby="an-notes-err">Registrar anamnesis</button>
+          </div>
+        </form>
+      </article>
+
+      <section class="state-strip" aria-labelledby="estados-t">
+        <h2 id="estados-t">Estados de la misma pantalla</h2>
+        <div class="state-grid">
+          <div class="state-panel">
+            <span class="state-label">Cargando</span>
+            <h3>Primera lectura de la sección</h3>
+            <p class="saving" role="status"><span class="spinner" aria-hidden="true"></span>Cargando anamnesis…</p>
+            <div class="skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
+            <p class="help">Sin datos parciales como definitivos; <code>role="status"</code> anuncia la carga.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Vacío</span>
+            <h3>Paciente sin anamnesis</h3>
+            <div class="empty">
+              <span class="ico" aria-hidden="true"><svg><use href="#i-hc"/></svg></span>
+              <h3>Todavía no hay anamnesis</h3>
+              <p>Completá el formulario para registrar el primer antecedente clínico.</p>
+            </div>
+            <p class="help">No se envía ninguna escritura solo por abrir la sección.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Error de lectura</span>
+            <h3>Fallo de red, timeout o respuesta ilegible</h3>
+            <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se pudo cargar la anamnesis</strong>Revisá la conexión e intentá de nuevo.</div></div>
+            <button class="btn btn-secondary btn-sm" type="button"><svg aria-hidden="true" width="14" height="14"><use href="#i-refresh"/></svg>Reintentar</button>
+            <p class="help">Mensaje propio: sin <code>title</code>, <code>detail</code> ni valores clínicos del error.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Sesión vencida</span>
+            <h3>401 durante la carga, con borrador sin enviar</h3>
+            <div class="alert alert-warning" role="alert"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>La sesión venció</strong>El borrador sin enviar se descarta y no se reintenta la escritura.</div></div>
+            <p class="help">Redirección exacta: <code>/login?next=%2Fhistoria-clinica</code>. Nada de texto clínico en URL, título, consola, <code>localStorage</code> ni <code>sessionStorage</code>.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Texto literal</span>
+            <h3>Contenido con etiquetas y entidades</h3>
+            <p class="entry">&lt;script&gt;alert(1)&lt;/script&gt; y &amp; &quot;comillas&quot; 'simple'</p>
+            <p class="help">Se renderiza con nodos de texto (<code>textContent</code>/<code>h()</code>); nunca se interpreta como HTML ni se convierte en atributo o enlace.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Error de validación</span>
+            <h3>Respuesta 400 del servidor</h3>
+            <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se pudo registrar: revisá los campos</strong>El borrador sigue en pantalla; no se afirmó que se guardó.</div></div>
+            <p class="help">El mensaje no repite el valor rechazado ni el <code>detail</code> del cuerpo de error.</p>
+          </div>
+        </div>
+      </section>
+
+      <p class="mock-note">Mockup C-22 · Anamnesis: los cinco campos y el límite de 2000 caracteres son supuestos del contrato C-16, marcados <span class="tbd">(TBD, PA-18)</span>. Todos los nombres, alergias y notas son ficticios y evidentes. La navegación «Secciones» y los paneles de estado son ayuda de revisión, no parte de la aplicación.</p>
+      <nav class="mock-nav" aria-label="Estados del mockup">Estados: <a href="anamnesis.html" aria-current="page">Anamnesis</a> <a href="odontograma.html">Odontograma</a> <a href="evoluciones.html">Evoluciones</a> <a href="correcciones.html">Correcciones</a> <a href="accesibilidad-odontograma.html">Accesibilidad</a></nav>
+    </main>
+  </div>
+  <script>
+    /* Demo de foco: solo lectura/escritura de texto, nunca innerHTML. */
+    (function () {
+      var h = document.querySelector("h1[tabindex='-1']");
+      if (h && window.matchMedia && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        h.focus({ preventScroll: true });
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -7,6 +7,8 @@ export interface ConfirmOptions {
   readonly text: string;
   readonly confirmLabel?: string;
   readonly cancelLabel?: string;
+  /** Opción aditiva (C-21/C-25): por defecto se enfoca «aceptar» como hasta ahora. */
+  readonly initialFocus?: 'accept' | 'cancel';
 }
 
 let sequence = 0;
@@ -55,6 +57,6 @@ export function confirmAction(options: ConfirmOptions): Promise<boolean> {
     } else {
       dialog.setAttribute('open', '');
     }
-    accept.focus();
+    (options.initialFocus === 'cancel' ? cancel : accept).focus();
   });
 }

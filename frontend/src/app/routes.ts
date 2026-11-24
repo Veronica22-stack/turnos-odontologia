@@ -6,6 +6,10 @@ import type { AuthGateway } from '../features/auth/auth-gateway';
 import { createChangePasswordView } from '../features/auth/change-password-view';
 import { createLoginView } from '../features/auth/login-view';
 import type { BookingGateway } from '../features/booking/booking-types';
+import type { ClinicalRecordGateway } from '../features/clinical-record/clinical-record-gateway';
+import { createClinicalRecordView } from '../features/clinical-record/clinical-record-view';
+import type { PatientsGateway } from '../features/patients/patients-gateway';
+import { createPatientsView } from '../features/patients/patients-view';
 import { createBookingView } from '../features/booking/booking-view';
 import { createConfirmationView } from '../features/booking/confirmation-view';
 import type { Clock } from '../shared/utils/dates';
@@ -25,9 +29,11 @@ function placeholderView(heading: string, description: string): () => HTMLElemen
 }
 
 export interface RoutesDeps {
-  readonly session: Pick<Session, 'get' | 'ensureLoaded' | 'signIn' | 'endAfterPasswordChange'>;
+  readonly session: Pick<Session, 'get' | 'ensureLoaded' | 'signIn' | 'endAfterPasswordChange' | 'expire'>;
   readonly gateway: AuthGateway;
   readonly agenda: AgendaGateway;
+  readonly patients: PatientsGateway;
+  readonly clinicalRecord: ClinicalRecordGateway;
   readonly settings: SettingsGateway;
   readonly booking: BookingGateway;
   /** Corrige la URL sin renderizar (normaliza `?paso=` de la reserva). */
@@ -40,7 +46,6 @@ export interface RoutesDeps {
 
 export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: ViewRoute } {
   const { session, gateway, agenda, settings, navigate, onLogout } = deps;
-  const { session, gateway, settings, navigate, onLogout } = deps;
   const bookingView = createBookingView({
     gateway: deps.booking,
     clock: deps.clock ?? (() => new Date()),
@@ -113,7 +118,27 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       layout: 'private',
       title: 'Pacientes',
       guard: privateGuard,
-      view: placeholderView('Pacientes', 'El listado de pacientes llega en su propio change.'),
+      view: () => createPatientsView({ gateway: deps.patients }),
+    },
+    {
+      name: 'historia-clinica',
+      path: '/historia-clinica',
+      layout: 'private',
+      title: 'Historia clínica',
+      guard: privateGuard,
+      view: () => createClinicalRecordView({
+        patients: deps.patients,
+        getAnamnesis: (patientId) => deps.clinicalRecord.getAnamnesis(patientId),
+        getOdontogram: (patientId) => deps.clinicalRecord.getOdontogram(patientId),
+        getEvolutions: (patientId) => deps.clinicalRecord.getEvolutions(patientId),
+        registerAnamnesis: (patientId, input) => deps.clinicalRecord.registerAnamnesis(patientId, input),
+        registerOdontogram: (patientId, entries) => deps.clinicalRecord.registerOdontogram(patientId, entries),
+        registerEvolution: (patientId, input) => deps.clinicalRecord.registerEvolution(patientId, input),
+        correctEntry: (patientId, type, entryId, input) =>
+          deps.clinicalRecord.correctEntry(patientId, type, entryId, input),
+        navigate: deps.navigate,
+        onSessionExpired: () => session.expire(),
+      }).element,
     },
     {
       name: 'configuracion',

@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Historia clínica · Evoluciones · {{brand}} — mockup C-22</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../../design-system/tokens.css">
+  <link rel="stylesheet" href="clinical-record.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-agenda" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 13h3v3H8z"/></symbol>
+    <symbol id="i-pacientes" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M16 3.5a4 4 0 0 1 0 7M19 14a5 5 0 0 1 3 5v2"/></symbol>
+    <symbol id="i-hc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10zM7.5 12h2l1-2 1.5 4 1-2h3"/></symbol>
+    <symbol id="i-config" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0-4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v5M10 6.2v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.8v5M10 13.8v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.4-3.5M13 2.5V5h-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+  </svg>
+  <a class="sr-only" href="#main">Saltar al contenido</a>
+
+  <div class="private-shell">
+    <header class="app-header" role="banner">
+      <a class="brand-link" href="#main" aria-label="La Muela — ir al inicio" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <div class="user-slot">
+        <span class="avatar" aria-hidden="true">DR</span>
+        <span class="user-name">Dra. Romero <span class="tbd">(TBD)</span></span>
+        <span class="sr-only">Sesión iniciada como Dra. Romero</span>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Principal">
+      <ul>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-agenda"/></svg><span>Agenda</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-pacientes"/></svg><span>Pacientes</span></a></li>
+        <li><a href="#main" aria-current="page"><svg aria-hidden="true"><use href="#i-hc"/></svg><span>Historia clínica</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-config"/></svg><span>Configuración</span></a></li>
+      </ul>
+    </nav>
+
+    <main id="main" class="private-main">
+      <div class="page-head">
+        <h1 tabindex="-1">Historia clínica · Evoluciones</h1>
+        <p class="lead">Orden cronológico descendente devuelto por el servidor. Autor e instante en <code>America/Argentina/Buenos_Aires</code>; el cliente no calcula la autoría.</p>
+      </div>
+      <p class="patient-chip"><svg aria-hidden="true" width="14" height="14"><use href="#i-lock"/></svg> Paciente ficticio en memoria · sin identificadores en la URL</p>
+
+      <nav class="section-tabs" aria-label="Secciones de la historia clínica">
+        <a href="anamnesis.html">Anamnesis</a>
+        <a href="odontograma.html">Odontograma</a>
+        <a href="evoluciones.html" aria-current="page">Evoluciones</a>
+        <a href="correcciones.html">Correcciones</a>
+        <a href="accesibilidad-odontograma.html">Accesibilidad</a>
+      </nav>
+
+      <article class="card" aria-labelledby="evo-t">
+        <div class="card-head">
+          <div><h2 id="evo-t">Historial de evoluciones</h2><p class="sub">Una lectura <code>GET .../evolutions</code> al abrir la sección.</p></div>
+          <span class="badge badge-immutable"><svg aria-hidden="true"><use href="#i-check"/></svg>Solo alta</span>
+        </div>
+        <ol class="entry-list">
+          <li class="entry">
+            <header>
+              <span class="num">21/11/2026 10:05 · Dra. Romero <span class="tbd">(TBD)</span></span>
+              <span class="badge badge-current">Vigente</span>
+            </header>
+            <p class="body">Control de seguimiento (texto ficticio). Se registra la evolución de la pieza 26 sin modificar el turno asociado.</p>
+            <p class="help">Turno asociado: DEMO-0001 <span class="tbd">(ficticio)</span> · America/Argentina/Buenos_Aires</p>
+            <div class="entry-actions"><button class="btn btn-secondary btn-sm" type="button">Corregir esta entrada</button></div>
+          </li>
+          <li class="entry">
+            <header>
+              <span class="num">20/11/2026 09:12 · Dra. Romero</span>
+              <span class="badge badge-current">Corrige entrada del 18/11 11:40</span>
+            </header>
+            <p class="body">Se aclara la pieza involucrada en el registro anterior (texto ficticio).</p>
+            <div class="reason"><strong>Motivo:</strong> «La pieza indicada en el registro original era incorrecta» (texto ficticio).</div>
+            <p class="help">Turno asociado: DEMO-0001 <span class="tbd">(ficticio)</span></p>
+            <div class="entry-actions"><button class="btn btn-secondary btn-sm" type="button">Corregir esta entrada</button></div>
+          </li>
+          <li class="entry corrected">
+            <header>
+              <span class="num">18/11/2026 11:40 · Dra. Romero</span>
+              <span class="badge badge-corrected">Corregida</span>
+            </header>
+            <p class="body">&lt;script&gt;alert(1)&lt;/script&gt; y &amp; &quot;texto con comillas&quot; 'simple': el contenido clínico se ve literal, sin ejecutarse ni interpretarse.</p>
+            <p class="help">Referencia: corregida por la entrada del 20/11/2026 09:12.</p>
+          </li>
+        </ol>
+        <p class="immutable-note"><svg aria-hidden="true"><use href="#i-lock"/></svg>Corregir crea una entrada nueva con motivo; no hay editar, borrar ni sobrescribir.</p>
+      </article>
+
+      <article class="card" aria-labelledby="alta-evo-t">
+        <div class="card-head">
+          <div><h2 id="alta-evo-t">Nueva evolución</h2><p class="sub">Descripción obligatoria de hasta 5000 caracteres · turno opcional.</p></div>
+        </div>
+        <form class="form-grid" novalidate onsubmit="return false">
+          <div class="field span-2">
+            <label for="evo-desc">Descripción</label>
+            <textarea class="textarea" id="evo-desc" aria-invalid="true" aria-describedby="evo-desc-err"></textarea>
+            <span class="error-msg" id="evo-desc-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>La evolución no puede quedar vacía. No se envió ninguna petición.</span>
+          </div>
+          <div class="field">
+            <label for="evo-appt">Turno asociado <span class="opt">(opcional)</span></label>
+            <input class="input num" id="evo-appt" placeholder="DEMO-0001">
+            <span class="help">Identificador de turno ficticio; no se modifica el turno.</span>
+          </div>
+          <div class="field">
+            <p class="help">El borrador queda solo en memoria. Autor e instante los asigna el servidor y se muestran en hora local.</p>
+            <button class="btn btn-primary" type="button" disabled aria-describedby="evo-desc-err">Registrar evolución</button>
+          </div>
+        </form>
+      </article>
+
+      <section class="state-strip" aria-labelledby="estados-t">
+        <h2 id="estados-t">Estados de la misma pantalla</h2>
+        <div class="state-grid">
+          <div class="state-panel">
+            <span class="state-label">Cargando</span>
+            <h3>Primera lectura</h3>
+            <p class="saving" role="status"><span class="spinner" aria-hidden="true"></span>Cargando evoluciones…</p>
+            <div class="skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Vacío</span>
+            <h3>Sin evoluciones</h3>
+            <div class="empty">
+              <span class="ico" aria-hidden="true"><svg><use href="#i-hc"/></svg></span>
+              <h3>Todavía no hay evoluciones</h3>
+              <p>Registrá la primera evolución clínica de este paciente.</p>
+            </div>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Error de lectura</span>
+            <h3>Fallo de red al consultar</h3>
+            <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se pudo cargar la evolución</strong>Revisá la conexión e intentá de nuevo.</div></div>
+            <button class="btn btn-secondary btn-sm" type="button"><svg aria-hidden="true" width="14" height="14"><use href="#i-refresh"/></svg>Reintentar</button>
+            <p class="help">Solo las lecturas ofrecen reintento; las escrituras nunca se reintentan solas.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Error 422 del turno</span>
+            <h3>Turno rechazado por el servidor</h3>
+            <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se pudo asociar el turno</strong>El turno indicado no está en condición de vincularse. Revisalo y confirmá de nuevo.</div></div>
+            <p class="help">Mensaje propio: sin <code>title</code>, <code>detail</code>, código crudo ni contenido clínico del error.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Doble envío</span>
+            <h3>Botón bloqueado mientras se envía</h3>
+            <button class="btn btn-primary" type="button" disabled aria-busy="true"><span class="spinner" aria-hidden="true"></span>Guardando…</button>
+            <p class="help">Un solo <code>POST</code> por confirmación: la segunda activación no genera otra petición ni otro evento de auditoría.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Sesión vencida</span>
+            <h3>401 durante la carga con borrador en memoria</h3>
+            <div class="alert alert-warning" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>La sesión venció</strong>El borrador se descarta sin reintento ni persistencia.</div></div>
+            <p class="help">Redirección: <code>/login?next=%2Fhistoria-clinica</code>. Tras reingresar se hace una lectura nueva, sin restaurar el borrador.</p>
+          </div>
+        </div>
+      </section>
+
+      <p class="mock-note">Mockup C-22 · Evoluciones: fechas, autores y turnos son ficticios y se muestran en <code>America/Argentina/Buenos_Aires</code>. El contenido con etiquetas se pinta como texto literal con nodos seguros; nunca con <code>innerHTML</code>.</p>
+      <nav class="mock-nav" aria-label="Estados del mockup">Estados: <a href="anamnesis.html">Anamnesis</a> <a href="odontograma.html">Odontograma</a> <a href="evoluciones.html" aria-current="page">Evoluciones</a> <a href="correcciones.html">Correcciones</a> <a href="accesibilidad-odontograma.html">Accesibilidad</a></nav>
+    </main>
+  </div>
+</body>
+</html>

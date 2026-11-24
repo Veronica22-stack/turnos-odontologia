@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Historia clínica · Accesibilidad del odontograma · {{brand}} — mockup C-22</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../../design-system/tokens.css">
+  <link rel="stylesheet" href="clinical-record.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-agenda" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 13h3v3H8z"/></symbol>
+    <symbol id="i-pacientes" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M16 3.5a4 4 0 0 1 0 7M19 14a5 5 0 0 1 3 5v2"/></symbol>
+    <symbol id="i-hc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10zM7.5 12h2l1-2 1.5 4 1-2h3"/></symbol>
+    <symbol id="i-config" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0-4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v5M10 6.2v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+  </svg>
+  <a class="sr-only" href="#main">Saltar al contenido</a>
+
+  <div class="private-shell">
+    <header class="app-header" role="banner">
+      <a class="brand-link" href="#main" aria-label="La Muela — ir al inicio" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <div class="user-slot">
+        <span class="avatar" aria-hidden="true">DR</span>
+        <span class="user-name">Dra. Romero <span class="tbd">(TBD)</span></span>
+        <span class="sr-only">Sesión iniciada como Dra. Romero</span>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Principal">
+      <ul>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-agenda"/></svg><span>Agenda</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-pacientes"/></svg><span>Pacientes</span></a></li>
+        <li><a href="#main" aria-current="page"><svg aria-hidden="true"><use href="#i-hc"/></svg><span>Historia clínica</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-config"/></svg><span>Configuración</span></a></li>
+      </ul>
+    </nav>
+
+    <main id="main" class="private-main">
+      <div class="page-head">
+        <h1 tabindex="-1">Historia clínica · Accesibilidad del odontograma</h1>
+        <p class="lead">Cada pieza se alcanza por teclado, se anuncia con código FDI y estado en texto, y señala la selección con <code>aria-pressed</code> además del color. Objetivo WCAG <span class="tbd">(TBD, PA-21)</span>.</p>
+      </div>
+      <p class="patient-chip"><svg aria-hidden="true" width="14" height="14"><use href="#i-lock"/></svg> Paciente ficticio en memoria · sin scroll horizontal de página</p>
+
+      <nav class="section-tabs" aria-label="Secciones de la historia clínica">
+        <a href="anamnesis.html">Anamnesis</a>
+        <a href="odontograma.html">Odontograma</a>
+        <a href="evoluciones.html">Evoluciones</a>
+        <a href="correcciones.html">Correcciones</a>
+        <a href="accesibilidad-odontograma.html" aria-current="page">Accesibilidad</a>
+      </nav>
+
+      <article class="card" aria-labelledby="foco-t">
+        <div class="card-head">
+          <div><h2 id="foco-t">Foco visible y selección</h2><p class="sub">Anillo de 3 px con separación blanca (<code>--focus-ring</code>) y selección con borde + <code>aria-pressed</code>.</p></div>
+          <span class="badge badge-immutable"><svg aria-hidden="true"><use href="#i-check"/></svg>Teclado</span>
+        </div>
+        <div class="a11y-grid">
+          <div class="state-panel">
+            <span class="state-label">Foco por teclado</span>
+            <h3>Pieza 36 con foco visible simulado</h3>
+            <button class="tooth t-caries is-focus" type="button" aria-label="Pieza 36, caries, cara oclusal, con foco visible simulado" aria-pressed="false"><span>36</span><span class="mark" aria-hidden="true">C</span></button>
+            <p class="help">En la aplicación el foco real aparece al tabular; aquí se representa con la misma variable <code>--focus-ring</code>. La selección con <code>aria-pressed</code> se prueba en el odontograma interactivo de abajo.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Recorrido</span>
+            <h3>Secuencia de interacción</h3>
+            <ul class="a11y-list">
+              <li><span><span class="kbd">Tab</span> Avanza a la siguiente pieza; <span class="kbd">Mayús</span> + <span class="kbd">Tab</span> retrocede.</span></li>
+              <li><span><span class="kbd">Enter</span> o <span class="kbd">Espacio</span> selecciona la pieza (no se envía ninguna escritura).</span></li>
+              <li><span>El lector anuncia, por ejemplo: «Pieza 36, caries, cara oclusal, seleccionada».</span></li>
+              <li><span><span class="kbd">Esc</span> cierra el diálogo de corrección y devuelve el foco al origen.</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <article class="card" aria-labelledby="odo-a11y-t">
+        <div class="card-head">
+          <div><h2 id="odo-a11y-t">Odontograma operable (demo)</h2><p class="sub">Probá tabular y activar piezas: el estado pulsado y el anuncio se actualizan sin recargar.</p></div>
+        </div>
+        <div class="odo">
+          <div class="arch-row">
+            <section class="odo-arch" aria-label="Dentición permanente, arcada superior">
+              <div class="odo-quad" role="group" aria-label="Cuadrante 1, superior derecho, permanente">
+                <button class="tooth t-corona" type="button" aria-label="Pieza 11, corona" aria-pressed="false"><span>11</span><span class="mark" aria-hidden="true">Co</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 12, sin registro" aria-pressed="false"><span>12</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 13, sin registro" aria-pressed="false"><span>13</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 14, sin registro" aria-pressed="false"><span>14</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 15, sin registro" aria-pressed="false"><span>15</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-caries" type="button" aria-label="Pieza 16, caries, cara oclusal" aria-pressed="false"><span>16</span><span class="mark" aria-hidden="true">C</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 17, sin registro" aria-pressed="false"><span>17</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 18, sin registro" aria-pressed="false"><span>18</span><span class="mark" aria-hidden="true">–</span></button>
+                <span class="odo-quad-label">Cuadrante 1 · superior derecho</span>
+              </div>
+              <div class="odo-quad" role="group" aria-label="Cuadrante 2, superior izquierdo, permanente">
+                <button class="tooth t-endodoncia" type="button" aria-label="Pieza 21, endodoncia" aria-pressed="false"><span>21</span><span class="mark" aria-hidden="true">E</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 22, sin registro" aria-pressed="false"><span>22</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 23, sin registro" aria-pressed="false"><span>23</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 24, sin registro" aria-pressed="false"><span>24</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 25, sin registro" aria-pressed="false"><span>25</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-obturado" type="button" aria-label="Pieza 26, obturado" aria-pressed="false"><span>26</span><span class="mark" aria-hidden="true">O</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 27, sin registro" aria-pressed="false"><span>27</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 28, sin registro" aria-pressed="false"><span>28</span><span class="mark" aria-hidden="true">–</span></button>
+                <span class="odo-quad-label">Cuadrante 2 · superior izquierdo</span>
+              </div>
+            </section>
+            <section class="odo-arch" aria-label="Dentición permanente, arcada inferior">
+              <div class="odo-quad" role="group" aria-label="Cuadrante 4, inferior derecho, permanente">
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 41, sin registro" aria-pressed="false"><span>41</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 42, sin registro" aria-pressed="false"><span>42</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 43, sin registro" aria-pressed="false"><span>43</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 44, sin registro" aria-pressed="false"><span>44</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 45, sin registro" aria-pressed="false"><span>45</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-ausente" type="button" aria-label="Pieza 46, ausente" aria-pressed="false"><span>46</span><span class="mark" aria-hidden="true">✕</span></button>
+                <button class="tooth t-obturado" type="button" aria-label="Pieza 47, obturado" aria-pressed="false"><span>47</span><span class="mark" aria-hidden="true">O</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 48, sin registro" aria-pressed="false"><span>48</span><span class="mark" aria-hidden="true">–</span></button>
+                <span class="odo-quad-label">Cuadrante 4 · inferior derecho</span>
+              </div>
+              <div class="odo-quad" role="group" aria-label="Cuadrante 3, inferior izquierdo, permanente">
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 31, sin registro" aria-pressed="false"><span>31</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 32, sin registro" aria-pressed="false"><span>32</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 33, sin registro" aria-pressed="false"><span>33</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 34, sin registro" aria-pressed="false"><span>34</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 35, sin registro" aria-pressed="false"><span>35</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-caries" type="button" aria-label="Pieza 36, caries, cara oclusal, seleccionada" aria-pressed="true"><span>36</span><span class="mark" aria-hidden="true">C</span></button>
+                <button class="tooth t-sin-registro" type="button" aria-label="Pieza 37, sin registro" aria-pressed="false"><span>37</span><span class="mark" aria-hidden="true">–</span></button>
+                <button class="tooth t-ausente" type="button" aria-label="Pieza 38, ausente" aria-pressed="false"><span>38</span><span class="mark" aria-hidden="true">✕</span></button>
+                <span class="odo-quad-label">Cuadrante 3 · inferior izquierdo</span>
+              </div>
+            </section>
+          </div>
+          <div class="odo-legend" aria-label="Leyenda con marcas textuales">
+            <span><span class="tooth t-caries"><span class="mark">C</span></span>Caries</span>
+            <span><span class="tooth t-obturado"><span class="mark">O</span></span>Obturado</span>
+            <span><span class="tooth t-corona"><span class="mark">Co</span></span>Corona</span>
+            <span><span class="tooth t-endodoncia"><span class="mark">E</span></span>Endodoncia</span>
+            <span><span class="tooth t-ausente"><span class="mark">✕</span></span>Ausente</span>
+            <span><span class="tooth t-sin-registro"><span class="mark">–</span></span>Sin registro</span>
+          </div>
+          <p class="live-region" id="a11y-status" role="status" aria-live="polite">Pieza 36, caries, cara oclusal, seleccionada.</p>
+        </div>
+        <p class="immutable-note"><svg aria-hidden="true"><use href="#i-lock"/></svg>Seleccionar una pieza no modifica la historia clínica: solo prepara un registro que se enviará con un <code>POST</code> explícito.</p>
+      </article>
+
+      <article class="card" aria-labelledby="semantica-t">
+        <div class="card-head">
+          <div><h2 id="semantica-t">Semántica, contraste y movimiento</h2><p class="sub">Tokens de la Revision 1; sin valores propios de color, tipografía ni espaciado.</p></div>
+        </div>
+        <div class="a11y-grid">
+          <div class="state-panel">
+            <span class="state-label">Roles y etiquetas</span>
+            <dl class="meta-list">
+              <dt>Cuadrante</dt><dd><code>role="group"</code> + <code>aria-label</code> con número y ubicación</dd>
+              <dt>Pieza</dt><dd><code>&lt;button type="button"&gt;</code> con <code>aria-label="Pieza FDI, estado"</code></dd>
+              <dt>Selección</dt><dd><code>aria-pressed="true|false"</code> + borde y marca textual</dd>
+              <dt>Estado</dt><dd>Marca <code>C</code>, <code>O</code>, <code>Co</code>, <code>E</code>, <code>✕</code> o <code>–</code> además del color</dd>
+              <dt>Anuncio</dt><dd><code>role="status"</code> / <code>aria-live="polite"</code> con texto propio</dd>
+            </dl>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Contraste y movimiento</span>
+            <ul class="a11y-list">
+              <li><span>Foco con <code>--focus-ring</code>: anillo de <code>--focus-width</code> sobre separación blanca.</span></li>
+              <li><span>Estados con pares de tokens verificados: <code>--tooth-caries</code>, <code>--tooth-obturado</code>, <code>--tooth-corona</code>, <code>--tooth-endodoncia</code> y texto <code>--color-text</code>.</span></li>
+              <li><span>Transiciones de <code>--duration-fast</code> y <code>--ease-out</code>; con <code>prefers-reduced-motion: reduce</code> pasan a 0 ms.</span></li>
+              <li><span>Sin canvas ni tabla solo visual: todas las piezas son botones reales, enfocables y con nombre accesible.</span></li>
+            </ul>
+          </div>
+        </div>
+      </article>
+
+      <section class="state-strip" aria-labelledby="estados-t">
+        <h2 id="estados-t">Comprobaciones de layout</h2>
+        <div class="state-grid">
+          <div class="state-panel">
+            <span class="state-label">390×844</span>
+            <h3>Móvil</h3>
+            <p class="help">Los cuadrantes se apilan y centran; cada pieza mantiene tamaño táctil cómodo. La página no tiene desplazamiento horizontal.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">1440×900</span>
+            <h3>Escritorio</h3>
+            <p class="help">Dos arcadas por fila con el mismo ancho máximo por cuadrante. La navegación lateral deja el odontograma dentro del área de contenido.</p>
+          </div>
+        </div>
+      </section>
+
+      <p class="mock-note">Mockup C-22 · Accesibilidad: las notaciones dentales y el profesional son ficticios. Objetivo WCAG abierto <span class="tbd">(TBD, PA-21)</span>; la Revision 1 del design system no se modifica.</p>
+      <nav class="mock-nav" aria-label="Estados del mockup">Estados: <a href="anamnesis.html">Anamnesis</a> <a href="odontograma.html">Odontograma</a> <a href="evoluciones.html">Evoluciones</a> <a href="correcciones.html">Correcciones</a> <a href="accesibilidad-odontograma.html" aria-current="page">Accesibilidad</a></nav>
+    </main>
+  </div>
+  <script>
+    /* Demo: actualiza aria-pressed y un mensaje de estado con textContent. Sin innerHTML. */
+    (function () {
+      var status = document.getElementById("a11y-status");
+      var odontograma = document.querySelector(".odo");
+      if (!odontograma || !status) return;
+      odontograma.addEventListener("click", function (event) {
+        var target = event.target;
+        var tooth = target && target.closest ? target.closest("button.tooth") : null;
+        if (!tooth || !odontograma.contains(tooth)) return;
+        var teeth = odontograma.querySelectorAll("button.tooth");
+        for (var i = 0; i < teeth.length; i++) {
+          teeth[i].setAttribute("aria-pressed", String(teeth[i] === tooth));
+        }
+        status.textContent = (tooth.getAttribute("aria-label") || "").replace(", seleccionada", "") + ", seleccionada.";
+      });
+    })();
+  </script>
+</body>
+</html>

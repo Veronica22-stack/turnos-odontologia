@@ -329,9 +329,15 @@ describe('bootstrap', () => {
     });
 
     it('401 en una llamada privada -> /login?next con aviso de vencida -> reingreso -> /pacientes', async () => {
+      let patientCalls = 0;
       const { ready, client } = start('/pacientes', (path) => {
         if (path === '/api/v1/auth/me' || path === '/api/v1/auth/login') {
           return me(false);
+        }
+        if (path.startsWith('/api/v1/patients')) {
+          patientCalls += 1;
+          // La vista monta y recarga con 200; solo la petición explícita del test responde 401.
+          return patientCalls === 2 ? new Response(null, { status: 401 }) : json('[]');
         }
         return new Response(null, { status: 401 });
       });

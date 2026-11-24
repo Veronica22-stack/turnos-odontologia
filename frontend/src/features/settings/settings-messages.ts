@@ -42,7 +42,7 @@ export const MESSAGES = {
   },
   range: { title: 'El rango no es válido.', text: 'Revisá la hora de inicio y la de fin.' },
   conflict: {
-    title: 'Conflicto: el rango se superpone con otro bloqueo.',
+    title: 'Conflicto: el rango se superpone con un bloqueo existente.',
     text: 'Elegí otro horario. No se creó el bloqueo.',
   },
   notFound: { title: 'El registro ya no existe.', text: 'Actualizá el listado para continuar.' },

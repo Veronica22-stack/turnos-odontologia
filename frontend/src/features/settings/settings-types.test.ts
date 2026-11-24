@@ -80,6 +80,16 @@ describe('settings-types - decodificadores del contrato (C-19 D2)', () => {
     ]);
     expect(decodeBlock(withAppointment)?.affectedAppointments).toHaveLength(1);
   });
+
+  it('decodeBlock acepta instantes con nanosegundos como los serializa el backend', () => {
+    const withNanos = {
+      ...BLOCK,
+      createdAt: '2026-11-23T22:22:10.359241300Z',
+      updatedAt: '2026-11-23T22:22:10.359241300Z',
+    };
+
+    expect(decodeBlock(withNanos)).toEqual(withNanos);
+  });
 });
 
 describe('settings-types - casos de error y borde', () => {
