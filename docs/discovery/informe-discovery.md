@@ -6,7 +6,7 @@
 
 **Materia**: Desarrollo de Software — UTN Facultad Regional Mendoza
 
-**Trabajo**: Trabajo de Integración — del Discovery al primer Change, con SDD y Active Stack
+**Trabajo**: Global — del Discovery al primer change, con SDD y Active Stack
 
 **Proyecto**: turnos-odontologia
 
@@ -801,6 +801,7 @@ Los totales altos reflejan evidencia publicada, no calidad del producto: sistema
 ### MVP sugerido
 
 **Imprescindible** (lo que implementa el roadmap, `CHANGES.md` C-01 a C-22, C-24 y C-25)
+
 - Agenda de un profesional con un único sillón/box: vistas diaria y semanal, duración variable por prestación,
   horarios de atención, bloqueos, sobreturno explícito y prevención de solapamientos.
 - Reserva online 24/7 por link, sin cuenta, con cancelación y reprogramación autogestionadas por el paciente.
@@ -809,6 +810,7 @@ Los totales altos reflejan evidencia publicada, no calidad del producto: sistema
 - Acceso del odontólogo con sesión segura y registro de auditoría de los accesos a la historia clínica.
 
 **Diferenciadores**
+
 - Recordatorios y confirmación por WhatsApp (Business API oficial).
 - Seña con Mercado Pago al reservar.
 - Lista de espera automática y cola de cancelaciones.
@@ -817,6 +819,7 @@ Los totales altos reflejan evidencia publicada, no calidad del producto: sistema
 - Precios publicados en ARS.
 
 **Etapas posteriores**
+
 - Agenda multi-profesional y multi-sillón, roles y permisos (secretaria), multi sucursal.
 - Facturación ARCA, periodontograma, presupuestos y planes de tratamiento, imágenes, firma de consentimientos.
 - Visor del registro de auditoría, exportación de datos, campañas, API pública, adecuación documentada a Ley 27.706.

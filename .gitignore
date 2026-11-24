@@ -35,3 +35,6 @@ Thumbs.db
 frontend/.vite/
 backend/bin/
 **/.env
+
+# HTML intermedio del informe (se genera con docs/discovery/generar-pdf.py)
+docs/discovery/informe-discovery.html
