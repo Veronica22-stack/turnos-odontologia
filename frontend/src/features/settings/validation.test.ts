@@ -63,6 +63,7 @@ describe('validation - errores de negocio y borde', () => {
     }
     expect(result.fields['start-0']).toContain('posterior');
     expect(result.fields['end-0']).toContain('posterior');
+    expect(result.message).toBe('No se guardó: revisá el tramo marcado. La hora de fin debe ser posterior a la de inicio.');
   });
 
   it('rechaza solapes dentro del mismo día pero permite el mismo rango en días distintos', () => {
@@ -75,6 +76,7 @@ describe('validation - errores de negocio y borde', () => {
     if (!overlapped.ok) {
       expect(overlapped.fields['start-0']).toContain('superpone');
       expect(overlapped.fields['start-1']).toContain('superpone');
+      expect(overlapped.message).toBe('No se guardó: hay tramos superpuestos. Corregí los horarios marcados antes de enviar.');
     }
     expect(
       validateWorkingHours([
@@ -91,6 +93,7 @@ describe('validation - errores de negocio y borde', () => {
     if (!result.ok) {
       expect(result.fields['durationMin']).toContain('15');
       expect(result.fields['durationMin']).toContain('30');
+      expect(result.message).toBe('No se guardó la prestación. La duración debe ser múltiplo de la granularidad vigente (15 min).');
     }
   });
 

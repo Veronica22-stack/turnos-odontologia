@@ -51,7 +51,7 @@ export interface ScheduleBlock {
 
 const CLOCK_PATTERN = /^([01]\d|2[0-3]):[0-5]\d(?::[0-5]\d)?$/;
 /** Mismo criterio que `dates.ts`: ISO-8601 con `Z` u offset obligatorio. */
-const INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,3})?)?(?:Z|[+-]\d{2}:\d{2})$/;
+const INSTANT_PATTERN = /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}(?::\d{2}(?:\.\d{1,9})?)?(?:Z|[+-]\d{2}:\d{2})$/;
 
 export function isZonedInstant(value: unknown): value is string {
   return isString(value) && INSTANT_PATTERN.test(value) && !Number.isNaN(new Date(value).getTime());

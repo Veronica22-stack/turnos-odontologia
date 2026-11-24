@@ -4,6 +4,8 @@ import './styles/forms.css';
 import './styles/settings.css';
 import './styles/agenda.css';
 import './styles/booking.css';
+import './styles/patients.css';
+import './styles/clinical-record.css';
 import { createRoutes } from './app/routes';
 import { createSession, type Session } from './core/auth/session';
 import { httpSessionGateway } from './core/auth/session-gateway';
@@ -14,6 +16,8 @@ import { renderPrivateLayout, type PrivateSection } from './layouts/private-layo
 import { createAgendaGateway } from './features/agenda/agenda-gateway';
 import { createAuthGateway } from './features/auth/auth-gateway';
 import { createBookingGateway } from './features/booking/booking-gateway';
+import { createClinicalRecordGateway } from './features/clinical-record/clinical-record-gateway';
+import { createPatientsGateway } from './features/patients/patients-gateway';
 import { createManageGateway } from './features/manage-booking/manage-gateway';
 import { createSettingsGateway } from './features/settings/settings-gateway';
 import { markProLink, renderPublicLayout } from './layouts/public-layout';
@@ -64,7 +68,7 @@ export interface App {
 /** C-04 todavia no expone el nombre (pedido P1): etiqueta de respaldo en el encabezado privado. */
 const FALLBACK_USER_LABEL = 'Profesional';
 
-const PRIVATE_SECTIONS: ReadonlySet<string> = new Set<PrivateSection>(['agenda', 'pacientes', 'configuracion']);
+const PRIVATE_SECTIONS: ReadonlySet<string> = new Set<PrivateSection>(['agenda', 'pacientes', 'historia-clinica', 'configuracion']);
 
 function sectionOf(routeName: string): PrivateSection | null {
   return PRIVATE_SECTIONS.has(routeName) ? (routeName as PrivateSection) : null;
@@ -94,12 +98,16 @@ export function bootstrap(options: BootstrapOptions = {}): App {
   const agendaGateway = createAgendaGateway({ client });
   const settingsGateway = createSettingsGateway({ client });
   const bookingGateway = createBookingGateway({ client });
+  const patientsGateway = createPatientsGateway({ client });
+  const clinicalRecordGateway = createClinicalRecordGateway({ client });
   const manageGateway = createManageGateway({ client });
 
   const { routes, notFound } = createRoutes({
     session: sessionRef,
     gateway: authGateway,
     agenda: agendaGateway,
+    patients: patientsGateway,
+    clinicalRecord: clinicalRecordGateway,
     settings: settingsGateway,
     booking: bookingGateway,
     manage: manageGateway,

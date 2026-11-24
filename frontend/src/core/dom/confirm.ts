@@ -7,7 +7,7 @@ export interface ConfirmOptions {
   readonly text: string;
   readonly confirmLabel?: string;
   readonly cancelLabel?: string;
-  /** Boton con el foco inicial; por defecto `accept` (C-19). C-25 usa `cancel` para la cancelacion de turnos. */
+  /** Opción aditiva (C-21/C-25): por defecto se enfoca «aceptar» como hasta ahora. */
   readonly initialFocus?: 'accept' | 'cancel';
 }
 

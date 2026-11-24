@@ -84,6 +84,8 @@ export function validatePracticeSettings(input: PracticeSettingsInput): Validati
 
 export function validateWorkingHours(hours: readonly WorkingHour[]): ValidationResult {
   const fields: Record<string, string> = {};
+  let hasInverted = false;
+  let hasOverlap = false;
 
   for (const [index, hour] of hours.entries()) {
     const start = clockToMinutes(hour.startTime);
@@ -96,6 +98,7 @@ export function validateWorkingHours(hours: readonly WorkingHour[]): ValidationR
       fields[`end-${index}`] = 'Ingresá una hora de fin válida.';
     }
     if (!Number.isNaN(start) && !Number.isNaN(end) && end <= start) {
+      hasInverted = true;
       const message = 'La hora de fin debe ser posterior a la de inicio.';
       fields[`start-${index}`] = message;
       fields[`end-${index}`] = message;
@@ -114,6 +117,7 @@ export function validateWorkingHours(hours: readonly WorkingHour[]): ValidationR
       if (first === undefined || second === undefined) {
         continue;
       }
+      hasOverlap = true;
       const message = 'Este tramo se superpone con otro del mismo día.';
       fields[`start-${first}`] = message;
       fields[`end-${first}`] = message;
@@ -122,7 +126,12 @@ export function validateWorkingHours(hours: readonly WorkingHour[]): ValidationR
     }
   }
 
-  return finish(fields, 'No se guardó: revisá los tramos marcados.');
+  const message = hasOverlap
+    ? 'No se guardó: hay tramos superpuestos. Corregí los horarios marcados antes de enviar.'
+    : hasInverted
+      ? 'No se guardó: revisá el tramo marcado. La hora de fin debe ser posterior a la de inicio.'
+      : 'No se guardó: revisá los tramos marcados.';
+  return finish(fields, message);
 }
 
 export function validateService(input: ServiceInput, granularity: number): ValidationResult {
@@ -144,7 +153,10 @@ export function validateService(input: ServiceInput, granularity: number): Valid
   } else if (granularity > 0 && input.durationMin % granularity !== 0) {
     fields['durationMin'] = `Debe ser un múltiplo de ${granularity} minutos (${granularity}, ${granularity * 2}, ${granularity * 3}…).`;
   }
-  return finish(fields, 'No se guardó la prestación.');
+  return finish(
+    fields,
+    `No se guardó la prestación. La duración debe ser múltiplo de la granularidad vigente (${granularity} min).`,
+  );
 }
 
 export function validateBlock(input: BlockInput): ValidationResult {

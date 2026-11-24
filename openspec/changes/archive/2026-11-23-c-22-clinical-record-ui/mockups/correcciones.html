@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="referrer" content="no-referrer">
+  <title>Historia clínica · Correcciones · {{brand}} — mockup C-22</title>
+  <link rel="icon" href="../../../../design-system/assets/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../../../design-system/tokens.css">
+  <link rel="stylesheet" href="clinical-record.css">
+  <script src="../../../../design-system/brand.js"></script>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+    <symbol id="i-agenda" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M7 3v3M17 3v3M4 9h16M5 6h14a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zM8 13h3v3H8z"/></symbol>
+    <symbol id="i-pacientes" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM2 21v-1a6 6 0 0 1 6-6h2a6 6 0 0 1 6 6v1M16 3.5a4 4 0 0 1 0 7M19 14a5 5 0 0 1 3 5v2"/></symbol>
+    <symbol id="i-hc" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 20s-7-4.6-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.4-7 10-7 10zM7.5 12h2l1-2 1.5 4 1-2h3"/></symbol>
+    <symbol id="i-config" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6zM19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0-4h-.1a1.7 1.7 0 0 0-1.5 1z"/></symbol>
+    <symbol id="i-info" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 9v5M10 6.2v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-warn" viewBox="0 0 20 20"><path d="M10 2.8l8 14H2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M10 8v4M10 14.6v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-alert" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10 5.8v5M10 13.8v.1" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"/></symbol>
+    <symbol id="i-check-circle" viewBox="0 0 20 20"><circle cx="10" cy="10" r="8.25" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M6.5 10.3l2.4 2.4 4.6-5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-lock" viewBox="0 0 16 16"><rect x="3" y="7" width="10" height="7" rx="1.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.5 7V5a2.5 2.5 0 015 0v2" fill="none" stroke="currentColor" stroke-width="1.5"/></symbol>
+    <symbol id="i-refresh" viewBox="0 0 16 16"><path d="M13 8a5 5 0 1 1-1.4-3.5M13 2.5V5h-2.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></symbol>
+    <symbol id="i-x" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></symbol>
+  </svg>
+  <a class="sr-only" href="#main">Saltar al contenido</a>
+
+  <div class="private-shell">
+    <header class="app-header" role="banner">
+      <a class="brand-link" href="#main" aria-label="La Muela — ir al inicio" data-brand-name-attr="aria-label">
+        <img src="../../../../design-system/assets/logo.svg" alt="La Muela (logo provisional)" width="248" height="48">
+      </a>
+      <div class="user-slot">
+        <span class="avatar" aria-hidden="true">DR</span>
+        <span class="user-name">Dra. Romero <span class="tbd">(TBD)</span></span>
+        <span class="sr-only">Sesión iniciada como Dra. Romero</span>
+      </div>
+    </header>
+
+    <nav class="main-nav" aria-label="Principal">
+      <ul>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-agenda"/></svg><span>Agenda</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-pacientes"/></svg><span>Pacientes</span></a></li>
+        <li><a href="#main" aria-current="page"><svg aria-hidden="true"><use href="#i-hc"/></svg><span>Historia clínica</span></a></li>
+        <li><a href="#main"><svg aria-hidden="true"><use href="#i-config"/></svg><span>Configuración</span></a></li>
+      </ul>
+    </nav>
+
+    <main id="main" class="private-main">
+      <div class="page-head">
+        <h1 tabindex="-1">Historia clínica · Historial de correcciones</h1>
+        <p class="lead">Cada corrección es una entrada nueva que referencia a la original, con motivo, autor e instante del servidor (Ley 26.529, RN-HC-01/02).</p>
+      </div>
+      <p class="patient-chip"><svg aria-hidden="true" width="14" height="14"><use href="#i-lock"/></svg> Paciente ficticio en memoria · <code>/historia-clinica</code> sin parámetros</p>
+
+      <nav class="section-tabs" aria-label="Secciones de la historia clínica">
+        <a href="anamnesis.html">Anamnesis</a>
+        <a href="odontograma.html">Odontograma</a>
+        <a href="evoluciones.html">Evoluciones</a>
+        <a href="correcciones.html" aria-current="page">Correcciones</a>
+        <a href="accesibilidad-odontograma.html">Accesibilidad</a>
+      </nav>
+
+      <div class="alert alert-info" role="note">
+        <svg aria-hidden="true"><use href="#i-info"/></svg>
+        <div><strong>Registro inmutable, solo por alta</strong>Las entradas originales permanecen visibles y marcadas como corregidas. No hay controles de modificación ni de borrado en ningún estado, sección ni diálogo; «Corregir» siempre crea una entrada nueva.</div>
+      </div>
+
+      <article class="card" aria-labelledby="hist-corr-t">
+        <div class="card-head">
+          <div><h2 id="hist-corr-t">Correcciones registradas</h2><p class="sub">Historial devuelto por el servidor; la UI no calcula cuál entry es vigente.</p></div>
+          <span class="badge badge-immutable"><svg aria-hidden="true"><use href="#i-lock"/></svg>Append-only</span>
+        </div>
+        <ol class="entry-list">
+          <li class="entry">
+            <header>
+              <span class="num">20/11/2026 09:12 · Dra. Romero <span class="tbd">(TBD)</span></span>
+              <span class="badge badge-current">Anamnesis · nueva entrada vigente</span>
+            </header>
+            <p class="body">Alergias: «Penicilina (ejemplo ficticio)». Resto de campos sin cambios (texto ficticio).</p>
+            <div class="reason"><strong>Motivo:</strong> «Se aclara la alergia declarada en el registro original» · 20/11/2026 09:12 · Dra. Romero</div>
+            <p class="help">Corrige: entrada de anamnesis del 18/11/2026 11:40 (versión 1).</p>
+            <div class="entry-actions"><button class="btn btn-secondary btn-sm" type="button">Corregir esta entrada</button></div>
+          </li>
+          <li class="entry corrected">
+            <header>
+              <span class="num">18/11/2026 11:40 · Dra. Romero</span>
+              <span class="badge badge-corrected">Anamnesis · corregida</span>
+            </header>
+            <p class="body">Alergias: «no refiere» (texto ficticio). Contenido original conservado.</p>
+            <p class="help">Referencia: corregida por la entrada del 20/11/2026 09:12. Sin acciones sobre esta entrada.</p>
+          </li>
+          <li class="entry">
+            <header>
+              <span class="num">19/11/2026 16:28 · Dra. Romero</span>
+              <span class="badge badge-current">Odontograma · nueva entrada vigente</span>
+            </header>
+            <p class="body">Pieza 36 / OCCLUSAL: de caries a obturado (notación ficticia de ejemplo). La posición no cambió.</p>
+            <div class="reason"><strong>Motivo:</strong> «El tratamiento se registró con el estado anterior» · 19/11/2026 16:28 · Dra. Romero</div>
+            <p class="help">Corrige: entrada de odontograma del 18/11/2026 11:41. El cuerpo de la corrección no incluyó <code>toothCode</code> ni <code>surface</code>.</p>
+            <div class="entry-actions"><button class="btn btn-secondary btn-sm" type="button">Corregir esta entrada</button></div>
+          </li>
+          <li class="entry corrected">
+            <header>
+              <span class="num">18/11/2026 11:41 · Dra. Romero</span>
+              <span class="badge badge-corrected">Odontograma · corregida</span>
+            </header>
+            <p class="body">Pieza 36 / OCCLUSAL: caries (texto ficticio). Entrada original conservada.</p>
+            <p class="help">Referencia: corregida por la entrada del 19/11/2026 16:28.</p>
+          </li>
+          <li class="entry">
+            <header>
+              <span class="num">20/11/2026 09:12 · Dra. Romero</span>
+              <span class="badge badge-current">Evolución · nueva entrada vigente</span>
+            </header>
+            <p class="body">Se aclara la pieza involucrada en la evolución anterior (texto ficticio).</p>
+            <div class="reason"><strong>Motivo:</strong> «La pieza indicada en el registro original era incorrecta» · 20/11/2026 09:12 · Dra. Romero</div>
+            <p class="help">Corrige: evolución del 18/11/2026 11:40. El cuerpo no incluyó <code>appointmentId</code>.</p>
+            <div class="entry-actions"><button class="btn btn-secondary btn-sm" type="button">Corregir esta entrada</button></div>
+          </li>
+          <li class="entry corrected">
+            <header>
+              <span class="num">18/11/2026 11:40 · Dra. Romero</span>
+              <span class="badge badge-corrected">Evolución · corregida</span>
+            </header>
+            <p class="body">&lt;script&gt;alert(1)&lt;/script&gt; y &amp; &quot;motivo con comillas&quot; 'simple': se muestra literal (texto ficticio).</p>
+            <p class="help">Referencia: corregida por la entrada del 20/11/2026 09:12.</p>
+          </li>
+        </ol>
+        <p class="immutable-note"><svg aria-hidden="true"><use href="#i-lock"/></svg>Sin botones, enlaces, menús ni atajos de modificación o borrado: solo lecturas <code>GET</code> y altas <code>POST</code>.</p>
+      </article>
+
+      <article class="card" aria-labelledby="dlg-t">
+        <div class="card-head">
+          <div><h2 id="dlg-t">Diálogo de corrección (vista estática)</h2><p class="sub">El foco inicial va al motivo; Escape cierra; el envío se bloquea mientras la petición está en curso.</p></div>
+        </div>
+        <div class="dialog-static" role="group" aria-labelledby="dlg-title">
+          <div class="dialog-head">
+            <h3 id="dlg-title">Corregir evolución</h3>
+            <button class="btn btn-ghost btn-sm" type="button" aria-label="Cerrar diálogo"><svg aria-hidden="true" width="14" height="14"><use href="#i-x"/></svg></button>
+          </div>
+          <div class="dialog-body">
+            <p class="help">Entrada vigente del 21/11/2026 10:05 (texto ficticio). Se agregará una entrada nueva que la referenciará.</p>
+            <div class="field">
+              <label for="corr-desc">Contenido corregido</label>
+              <textarea class="textarea" id="corr-desc" aria-describedby="corr-desc-help">Descripción corregida de ejemplo (texto ficticio).</textarea>
+              <span class="help" id="corr-desc-help">Mismo tipo de contenido; no se cambia autor, instante ni identificador.</span>
+            </div>
+            <div class="field">
+              <label for="corr-reason">Motivo de la corrección <span class="tbd">(obligatorio)</span></label>
+              <textarea class="textarea" id="corr-reason" aria-invalid="true" aria-describedby="corr-reason-err"></textarea>
+              <span class="error-msg" id="corr-reason-err"><svg aria-hidden="true"><use href="#i-alert"/></svg>El motivo es obligatorio (hasta 500 caracteres). No se envió ninguna petición.</span>
+            </div>
+          </div>
+          <div class="dialog-foot">
+            <button class="btn btn-secondary" type="button">Cancelar</button>
+            <button class="btn btn-primary" type="button" disabled aria-describedby="corr-reason-err">Registrar corrección</button>
+          </div>
+        </div>
+      </article>
+
+      <section class="state-strip" aria-labelledby="estados-t">
+        <h2 id="estados-t">Estados de la misma pantalla</h2>
+        <div class="state-grid">
+          <div class="state-panel">
+            <span class="state-label">Conflicto 409</span>
+            <h3>Entrada ya corregida o no vigente</h3>
+            <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>La entrada ya no está vigente</strong>Recargá la historia clínica para ver la versión actual.</div></div>
+            <button class="btn btn-secondary btn-sm" type="button"><svg aria-hidden="true" width="14" height="14"><use href="#i-refresh"/></svg>Recargar vista</button>
+            <p class="help">No se modifica lo mostrado como vigente ni se reintenta la escritura.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Error de escritura</span>
+            <h3>Respuesta inesperada al corregir</h3>
+            <div class="alert alert-danger" role="alert"><svg aria-hidden="true"><use href="#i-alert"/></svg><div><strong>No se pudo registrar la corrección</strong>Revisá el motivo y volvé a intentarlo.</div></div>
+            <p class="help">El borrador sigue en pantalla; la entrada no aparece como guardada. Sin reintento automático.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Sesión vencida</span>
+            <h3>401 con borrador de corrección en memoria</h3>
+            <div class="alert alert-warning" role="alert"><svg aria-hidden="true"><use href="#i-warn"/></svg><div><strong>La sesión venció</strong>El borrador se descarta antes de redirigir.</div></div>
+            <p class="help">Destino exacto <code>/login?next=%2Fhistoria-clinica</code>: sin motivo, contenido ni identificadores en la URL o el almacenamiento.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Texto literal</span>
+            <h3>Motivo con etiquetas</h3>
+            <p class="entry">&lt;script&gt;alert(1)&lt;/script&gt; y &amp; &quot;comillas&quot; 'simple'</p>
+            <p class="help">Motivos y descripciones se renderizan como texto; no se interpreta HTML ni se registra en consola.</p>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Cargando</span>
+            <h3>Lectura del historial</h3>
+            <p class="saving" role="status"><span class="spinner" aria-hidden="true"></span>Cargando historial de correcciones…</p>
+            <div class="skeleton" aria-hidden="true"><span></span><span></span><span></span></div>
+          </div>
+          <div class="state-panel">
+            <span class="state-label">Sin correcciones</span>
+            <h3>Historial vacío</h3>
+            <div class="empty">
+              <span class="ico" aria-hidden="true"><svg><use href="#i-check-circle"/></svg></span>
+              <h3>Todavía no hay correcciones</h3>
+              <p>Las entradas vigentes siguen disponibles en sus secciones; no hay originales marcadas.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <p class="mock-note">Mockup C-22 · Historial de correcciones: autores, instantes, motivos y notaciones son ficticios y se muestran en <code>America/Argentina/Buenos_Aires</code>. El diálogo es una vista estática de revisión; la navegación y los paneles no existen en la aplicación.</p>
+      <nav class="mock-nav" aria-label="Estados del mockup">Estados: <a href="anamnesis.html">Anamnesis</a> <a href="odontograma.html">Odontograma</a> <a href="evoluciones.html">Evoluciones</a> <a href="correcciones.html" aria-current="page">Correcciones</a> <a href="accesibilidad-odontograma.html">Accesibilidad</a></nav>
+    </main>
+  </div>
+</body>
+</html>

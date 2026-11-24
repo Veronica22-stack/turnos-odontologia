@@ -65,7 +65,7 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
       variant: 'warning',
       role: 'status',
       icon: 'info',
-      text: 'Los turnos confirmados no se cancelan automáticamente; revisalos en la agenda.',
+      text: 'Los turnos confirmados no se cancelan automáticamente. Si cambiás los horarios, revisalos en la agenda.',
     }),
   );
   const noticeSlot = h('div', { class: 'section-notice' });
@@ -104,8 +104,8 @@ export function createWorkingHoursSection(deps: WorkingHoursSectionDeps): HTMLEl
         h(
           'div',
           { class: 'empty' },
-          h('h3', {}, 'Todavía no cargaste horarios'),
-          h('p', {}, 'Agregá el primer tramo para habilitar la reserva online.'),
+          h('h3', {}, 'Todavía no hay horarios de atención'),
+          h('p', {}, 'Agregá tramos por día para habilitar los turnos en la reserva online.'),
           emptyAdd,
         ),
       );

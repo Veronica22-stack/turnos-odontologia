@@ -180,6 +180,92 @@ El flujo `/reservar` SHALL reflejar el paso en la query `paso` (sin parámetro: 
 - **WHEN** se inspecciona `location.href`
 - **THEN** es exactamente `/reservar?paso=3`, sin prestación, horario ni datos personales
 
+### Requirement: Vista operativa de configuración
+La ruta privada `/configuracion` SHALL mostrar la vista operativa de configuración del consultorio en lugar del contenido de marcador de posición, manteniendo el guard de sesión, el redireccionamiento por cambio de contraseña pendiente y el layout privado ya definidos para las rutas privadas.
+
+#### Scenario: Configuración con sesión autenticada
+- **GIVEN** una sesión autenticada sin cambio de contraseña pendiente
+- **WHEN** se navega a `/configuracion`
+- **THEN** se muestra la vista con las secciones de datos del consultorio, horarios, prestaciones y bloqueos, y «Configuración» aparece como sección actual del layout privado
+
+#### Scenario: Configuración sin sesión
+- **GIVEN** la sesión en estado anónimo
+- **WHEN** se navega a `/configuracion`
+- **THEN** la URL pasa a ser `/login?next=%2Fconfiguracion` y no se muestra contenido de configuración
+
+#### Scenario: Configuración con cambio de contraseña pendiente
+- **GIVEN** una sesión autenticada con `mustChangePassword = true`
+- **WHEN** se navega a `/configuracion`
+- **THEN** la URL pasa a ser `/cambiar-contrasena?next=%2Fconfiguracion` y no se muestra contenido de configuración
+
+#### Scenario: Fallo de carga de datos
+- **GIVEN** una sesión autenticada y respuestas fallidas de los endpoints de configuración
+- **WHEN** se navega a `/configuracion`
+- **THEN** se muestra el layout privado con las secciones en estado de error y opciones de reintento, sin volver al marcador de posición
+
+### Requirement: Vista operativa de pacientes
+La ruta privada `/pacientes` SHALL mostrar la vista operativa de gestión de pacientes en lugar del contenido de marcador de posición, manteniendo el guard de sesión, el redireccionamiento por cambio de contraseña pendiente, el título y el layout privado ya definidos. La ruta SHALL permanecer como `/pacientes`: la búsqueda y la selección de una ficha MUST NOT agregar a la URL datos personales del paciente ni su identificador.
+
+#### Scenario: Pacientes con sesión autenticada
+- **GIVEN** una sesión autenticada sin cambio de contraseña pendiente
+- **WHEN** se navega a `/pacientes`
+- **THEN** se muestra la vista de búsqueda y listado de pacientes dentro del layout privado, «Pacientes» aparece como sección actual, el título contiene «Pacientes» y la marca, y el foco está en el encabezado de la vista
+
+#### Scenario: Pacientes sin sesión
+- **GIVEN** la sesión en estado anónimo
+- **WHEN** se navega a `/pacientes`
+- **THEN** la URL pasa a ser `/login?next=%2Fpacientes` y no se muestra contenido de pacientes
+
+#### Scenario: Pacientes con cambio de contraseña pendiente
+- **GIVEN** una sesión autenticada con `mustChangePassword = true`
+- **WHEN** se navega a `/pacientes`
+- **THEN** la URL pasa a ser `/cambiar-contrasena?next=%2Fpacientes` y no se muestra contenido de pacientes
+
+#### Scenario: Fallo de carga de pacientes
+- **GIVEN** una sesión autenticada y una respuesta fallida de `GET /api/v1/patients`
+- **WHEN** se navega a `/pacientes`
+- **THEN** se muestra el layout privado con el aviso de error y la opción de reintento de la vista de pacientes, sin volver al marcador de posición
+
+#### Scenario: Búsqueda y ficha sin datos en la URL
+- **GIVEN** una búsqueda por DNI y un paciente seleccionado para ver su ficha
+- **WHEN** se inspecciona la URL tras buscar y abrir la ficha
+- **THEN** la ruta sigue siendo `/pacientes` y no contiene el término buscado, el DNI, el nombre ni el identificador del paciente
+
+### Requirement: Vista privada de historia clínica
+La ruta privada `/historia-clinica` SHALL mostrar la vista de historia clínica por paciente dentro del layout privado, con los mismos guards de sesión y de cambio de contraseña pendiente que las demás rutas privadas. SHALL actualizar el título con el nombre de la vista y la marca, marcar «Historia clínica» como sección actual y mover el foco al encabezado principal.
+
+#### Scenario: Historia clínica con sesión autenticada
+- **GIVEN** una sesión autenticada sin cambio de contraseña pendiente
+- **WHEN** se navega a `/historia-clinica`
+- **THEN** se muestra la vista de historia clínica dentro del layout privado, «Historia clínica» aparece como sección actual, el título contiene «Historia clínica» y la marca, y el foco está en el encabezado de la vista
+
+#### Scenario: Historia clínica sin sesión
+- **GIVEN** la sesión en estado anónimo
+- **WHEN** se navega a `/historia-clinica`
+- **THEN** la URL pasa a ser `/login?next=%2Fhistoria-clinica` y no se muestra contenido clínico
+
+#### Scenario: Historia clínica con cambio de contraseña pendiente
+- **GIVEN** una sesión autenticada con `mustChangePassword = true`
+- **WHEN** se navega a `/historia-clinica`
+- **THEN** la URL pasa a ser `/cambiar-contrasena?next=%2Fhistoria-clinica` y no se muestra contenido clínico
+
+#### Scenario: Fallo de carga de la historia clínica
+- **GIVEN** una sesión autenticada y una respuesta fallida de los endpoints de historia clínica
+- **WHEN** se navega a `/historia-clinica`
+- **THEN** se muestra el layout privado con el aviso de error y la opción de reintento de la vista, sin volver a un marcador de posición
+
+### Requirement: Ruta de historia clínica sin datos clínicos
+La ruta `/historia-clinica` SHALL permanecer sin parámetros: la selección del paciente, su identificador y cualquier dato clínico MUST NOT agregarse a la URL, al título del documento, a la consola ni al destino `next`.
+
+#### Scenario: Navegación sin identificadores ni datos clínicos
+- **GIVEN** un paciente seleccionado con anamnesis, odontograma y evoluciones cargadas
+- **WHEN** se inspeccionan la URL, el título del documento, la consola y el parámetro `next` tras navegar
+- **THEN** la ruta sigue siendo `/historia-clinica` y ninguno contiene el identificador del paciente, su DNI, su nombre ni contenido clínico
+
+#### Scenario: Destino de reingreso sin datos
+- **GIVEN** una sesión vencida durante la carga de la historia clínica
+- **WHEN** se redirige a `/login` conservando el destino
+- **THEN** el destino es exactamente `/historia-clinica`, sin identificador de paciente ni contenido clínico
 ### Requirement: Acción de reprogramar en la URL
 La vista `/turno/{token}` SHALL reflejar la pantalla de reprogramación con la query `accion=reprogramar`, apilando una entrada de historial al abrirla (`pushState`), de modo que atrás del navegador vuelve al detalle. La URL MUST NOT contener nada más que el token en la ruta y esa acción (ni horario ni prestación). Tras una reprogramación correcta la URL SHALL pasar a `/turno/{token}` con `replaceState`.
 

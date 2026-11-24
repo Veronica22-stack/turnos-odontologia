@@ -38,6 +38,18 @@ describe('confirmAction - diálogo nativo (C-19 D8)', () => {
     expect(document.activeElement).toBe(opener);
   });
 
+  it('initialFocus: cancel enfoca la opción segura; el default sigue enfocando aceptar', async () => {
+    const safe = confirmAction({ title: 'Dar de baja', text: '¿Confirmás?', initialFocus: 'cancel' });
+    expect(document.activeElement?.getAttribute('data-confirm')).toBe('cancel');
+    document.querySelector<HTMLButtonElement>('[data-confirm="cancel"]')?.click();
+    await safe;
+
+    const defaultFocus = confirmAction({ title: 'Baja', text: '¿Confirmás?' });
+    expect(document.activeElement?.getAttribute('data-confirm')).toBe('accept');
+    document.querySelector<HTMLButtonElement>('[data-confirm="cancel"]')?.click();
+    await defaultFocus;
+  });
+
   it('inserta título y texto hostil como texto literal', async () => {
     const hostile = '<img src=x onerror=alert(1)>';
     const promise = confirmAction({ title: hostile, text: hostile });

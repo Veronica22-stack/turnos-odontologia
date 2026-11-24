@@ -78,7 +78,8 @@ describe('working-hours-section - grilla y guardado (C-19 D4)', () => {
 
   it('muestra estado vacío con «Agregar tramo» y puede crear un tramo', async () => {
     const { root, saveWorkingHours } = mount({ getResult: { ok: true, data: [] } });
-    await vi.waitFor(() => expect(root.textContent).toContain('Todavía no cargaste horarios'));
+    await vi.waitFor(() => expect(root.textContent).toContain('Todavía no hay horarios de atención'));
+    expect(root.textContent).toContain('Agregá tramos por día para habilitar los turnos en la reserva online.');
 
     button(root, 'Agregar tramo').click();
     const [start, end] = times(root);
@@ -169,7 +170,7 @@ describe('working-hours-section - validación y borde (C-19 D3/D5)', () => {
     const { root } = mount();
     await loaded(root);
 
-    expect(root.textContent).toContain('Los turnos confirmados no se cancelan automáticamente; revisalos en la agenda.');
+    expect(root.textContent).toContain('Los turnos confirmados no se cancelan automáticamente. Si cambiás los horarios, revisalos en la agenda.');
   });
 
   it('no interpreta como HTML un payload hostil en un horario', async () => {

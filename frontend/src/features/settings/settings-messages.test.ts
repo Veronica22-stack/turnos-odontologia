@@ -34,6 +34,9 @@ describe('settings-messages - mapeo por code sin texto técnico', () => {
 
     expect(failure.kind).toBe(kind);
     expect(failureCopy(failure).title.length).toBeGreaterThan(0);
+    if (kind === 'conflict') {
+      expect(failureCopy(failure).title).toBe('Conflicto: el rango se superpone con un bloqueo existente.');
+    }
   });
 
   it('errores de transporte y campos sin code conocido tienen copy propia', () => {

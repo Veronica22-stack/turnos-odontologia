@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import type { SessionState } from '../core/auth/session';
 import type { AgendaGateway } from '../features/agenda/agenda-gateway';
+import type { PatientsGateway } from '../features/patients/patients-gateway';
 import type { SettingsGateway } from '../features/settings/settings-gateway';
 import { safeNext } from '../router/safe-next';
 import type { RouteContext, RouteDef } from '../router/router';
@@ -56,11 +57,30 @@ const AGENDA_GATEWAY = {
   listBlocks: async () => ({ ok: true, data: [] }),
 } as unknown as AgendaGateway;
 
+const PATIENTS_GATEWAY = {
+  search: async () => ({ ok: true, data: [] }),
+  get: async () => ({ ok: true, data: undefined }),
+  update: async () => ({ ok: true, data: undefined }),
+  deactivate: async () => ({ ok: true, data: undefined }),
+} as unknown as PatientsGateway;
+
 function deps(state: SessionState = { status: 'anonymous' }, settings: SettingsGateway = SETTINGS_GATEWAY): RoutesDeps {
   return {
-    session: { get: () => state, ensureLoaded: async () => {}, signIn: () => {}, endAfterPasswordChange: () => {} },
+    session: {
+      get: () => state, ensureLoaded: async () => {}, signIn: () => {}, endAfterPasswordChange: () => {}, expire: () => {},
+    } as unknown as RoutesDeps['session'],
     gateway: { login: async () => ({ ok: false, failure: { kind: 'connection' } }), changePassword: async () => ({ ok: true }) },
     agenda: AGENDA_GATEWAY,
+    patients: PATIENTS_GATEWAY,
+    clinicalRecord: {
+      getAnamnesis: async () => ({ ok: true, data: { current: null, history: [] } }),
+      getOdontogram: async () => ({ ok: true, data: { current: [], history: [] } }),
+      getEvolutions: async () => ({ ok: true, data: { entries: [] } }),
+      registerAnamnesis: async () => ({ ok: false, failure: { kind: 'connection' } }),
+      registerOdontogram: async () => ({ ok: false, failure: { kind: 'connection' } }),
+      registerEvolution: async () => ({ ok: false, failure: { kind: 'connection' } }),
+      correctEntry: async () => ({ ok: false, failure: { kind: 'connection' } }),
+    } as unknown as import('../features/clinical-record/clinical-record-gateway').ClinicalRecordGateway,
     settings,
     booking: BOOKING_GATEWAY,
     manage: MANAGE_GATEWAY,
@@ -98,12 +118,13 @@ describe('createRoutes', () => {
       '/cambiar-contrasena': 'public',
       '/agenda': 'private',
       '/pacientes': 'private',
+      '/historia-clinica': 'private',
       '/configuracion': 'private',
     });
   });
 
   it('protege las privadas con guard, y / y /login tambien tienen guard', () => {
-    for (const path of ['/agenda', '/pacientes', '/configuracion', '/', '/login', '/cambiar-contrasena']) {
+    for (const path of ['/agenda', '/pacientes', '/historia-clinica', '/configuracion', '/', '/login', '/cambiar-contrasena']) {
       expect(byPath(routes, path).guard).toBeTypeOf('function');
     }
     for (const path of ['/reservar', '/reservar/confirmado', '/turno/:token']) {
@@ -115,6 +136,7 @@ describe('createRoutes', () => {
     ['/login', 'Ingresar'],
     ['/agenda', 'Agenda'],
     ['/pacientes', 'Pacientes'],
+    ['/historia-clinica', 'Historia clínica'],
     ['/configuracion', 'Configuración'],
   ])('la vista de %s tiene el h1 "%s"', (path, heading) => {
     const content = byPath(routes, path).view(ctx(path));
@@ -175,6 +197,16 @@ describe('createRoutes', () => {
     expect(content.querySelector('h1')?.textContent).toBe('Este enlace no es válido');
     expect(view).not.toHaveBeenCalled();
     expect(content.textContent).not.toContain('AbC-123_x');
+  });
+
+  it('/historia-clinica enfoca el h1 sin exponer datos en la URL', async () => {
+    const content = byPath(routes, '/historia-clinica').view(ctx('/historia-clinica'));
+    document.body.replaceChildren(content);
+    const heading = content.querySelector<HTMLElement>('h1');
+
+    await vi.waitFor(() => expect(document.activeElement).toBe(heading));
+    expect(window.location.search).toBe('');
+    expect(content.textContent).not.toContain('patientId');
   });
 
   it('la vista no encontrada tiene h1 y enlace al inicio', () => {
@@ -272,5 +304,49 @@ describe('/configuracion operativa (C-19)', () => {
     await vi.waitFor(() => expect(content.querySelectorAll('.settings-card [role="alert"]')).toHaveLength(4));
     expect(content.querySelectorAll('.settings-card')).toHaveLength(4);
     expect(content.textContent).toContain('Reintentar');
+  });
+});
+
+describe('/pacientes operativo (C-21)', () => {
+  const authenticated = (mustChangePassword: boolean): SessionState => ({
+    status: 'authenticated',
+    user: { userId: 'u1', role: 'DENTIST', mustChangePassword },
+  });
+
+  it('usa la vista real con layout private y título Pacientes (no placeholder)', () => {
+    const { routes } = createRoutes(deps(authenticated(false)));
+    const route = byPath(routes, '/pacientes');
+    const content = route.view(ctx('/pacientes'));
+
+    expect(route.name).toBe('pacientes');
+    expect(route.layout).toBe('private');
+    expect(route.title).toBe('Pacientes');
+    expect(content.classList.contains('patients-view')).toBe(true);
+    expect(content.querySelector('.placeholder')).toBeNull();
+    expect(content.textContent).toContain('Cargando pacientes');
+  });
+
+  it('sin sesión redirige a /login?next=%2Fpacientes', async () => {
+    const { routes } = createRoutes(deps());
+
+    const result = await byPath(routes, '/pacientes').guard?.(ctx('/pacientes'));
+
+    expect(result).toEqual({ redirect: '/login?next=%2Fpacientes', replace: true });
+  });
+
+  it('con cambio de contraseña pendiente redirige a /cambiar-contrasena?next=%2Fpacientes', async () => {
+    const { routes } = createRoutes(deps(authenticated(true)));
+
+    const result = await byPath(routes, '/pacientes').guard?.(ctx('/pacientes'));
+
+    expect(result).toEqual({ redirect: '/cambiar-contrasena?next=%2Fpacientes', replace: true });
+  });
+
+  it('las rutas privadas comparten el mismo guard', () => {
+    const { routes } = createRoutes(deps(authenticated(false)));
+
+    expect(byPath(routes, '/pacientes').guard).toBe(byPath(routes, '/agenda').guard);
+    expect(byPath(routes, '/pacientes').guard).toBe(byPath(routes, '/historia-clinica').guard);
+    expect(byPath(routes, '/pacientes').guard).toBe(byPath(routes, '/configuracion').guard);
   });
 });

@@ -2,7 +2,7 @@ import { h } from '../core/dom/h';
 import { brandName, logoAlt, logoUrl } from './brand';
 import { icon, type IconName } from './icons';
 
-export type PrivateSection = 'agenda' | 'pacientes' | 'configuracion';
+export type PrivateSection = 'agenda' | 'pacientes' | 'historia-clinica' | 'configuracion';
 
 export interface PrivateLayoutArgs {
   readonly user: { readonly fullName: string };
@@ -14,6 +14,7 @@ export interface PrivateLayoutArgs {
 const NAV_ITEMS: ReadonlyArray<{ section: PrivateSection; label: string; href: string; icon: IconName }> = [
   { section: 'agenda', label: 'Agenda', href: '/agenda', icon: 'agenda' },
   { section: 'pacientes', label: 'Pacientes', href: '/pacientes', icon: 'pacientes' },
+  { section: 'historia-clinica', label: 'Historia clínica', href: '/historia-clinica', icon: 'pacientes' },
   { section: 'configuracion', label: 'Configuración', href: '/configuracion', icon: 'config' },
 ];
 

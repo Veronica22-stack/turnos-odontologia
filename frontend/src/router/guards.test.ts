@@ -7,6 +7,7 @@ import type { RouteContext } from './router';
 const routes: LayoutRoute[] = [
   { path: '/agenda', layout: 'private' },
   { path: '/pacientes', layout: 'private' },
+  { path: '/historia-clinica', layout: 'private' },
   { path: '/reservar', layout: 'public' },
 ];
 
@@ -174,6 +175,34 @@ describe('cambio de contrasena obligatorio (C-06)', () => {
       redirect: '/cambiar-contrasena',
       replace: true,
     });
+  });
+});
+
+describe('/historia-clinica privada (C-22)', () => {
+  const mustChange = { status: 'authenticated', user: { ...ROMERO, mustChangePassword: true } } as const;
+
+  it('anonimo redirige a /login?next=%2Fhistoria-clinica', async () => {
+    const { session } = fakeSession({ status: 'anonymous' });
+
+    expect(await requireSession(session, () => routes)(ctx('/historia-clinica'))).toEqual({
+      redirect: '/login?next=%2Fhistoria-clinica',
+      replace: true,
+    });
+  });
+
+  it('cambio de contrasena pendiente conserva el destino', async () => {
+    const { session } = fakeSession(mustChange);
+
+    expect(await requireSession(session, () => routes)(ctx('/historia-clinica'))).toEqual({
+      redirect: '/cambiar-contrasena?next=%2Fhistoria-clinica',
+      replace: true,
+    });
+  });
+
+  it('sesion desconocida espera antes de permitir o redirigir', async () => {
+    const { session } = fakeSession({ status: 'unknown' }, { status: 'authenticated', user: ROMERO });
+
+    expect(await requireSession(session, () => routes)(ctx('/historia-clinica'))).toEqual({ allow: true });
   });
 });
 

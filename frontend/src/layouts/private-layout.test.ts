@@ -36,7 +36,7 @@ describe('renderPrivateLayout - estructura', () => {
     expect(document.querySelector('header b')).toBeNull();
   });
 
-  it('nav "Principal" con los tres enlaces en orden', () => {
+  it('nav "Principal" con los cuatro enlaces en orden', () => {
     render();
 
     const nav = document.querySelector('nav');
@@ -45,6 +45,7 @@ describe('renderPrivateLayout - estructura', () => {
     expect(links.map((a) => [a.textContent, a.getAttribute('href')])).toEqual([
       ['Agenda', '/agenda'],
       ['Pacientes', '/pacientes'],
+      ['Historia clínica', '/historia-clinica'],
       ['Configuración', '/configuracion'],
     ]);
   });
@@ -69,7 +70,7 @@ describe('renderPrivateLayout - estructura', () => {
     render();
 
     const icons = document.querySelectorAll('nav svg, header button svg');
-    expect(icons.length).toBe(4);
+    expect(icons.length).toBe(5);
     for (const icon of icons) {
       expect(icon.getAttribute('aria-hidden')).toBe('true');
     }
@@ -80,6 +81,7 @@ describe('renderPrivateLayout - item actual', () => {
   it.each([
     ['agenda', 'Agenda'],
     ['pacientes', 'Pacientes'],
+    ['historia-clinica', 'Historia clínica'],
     ['configuracion', 'Configuración'],
   ] as const)('solo %s lleva aria-current="page"', (current, label) => {
     render({ current });
