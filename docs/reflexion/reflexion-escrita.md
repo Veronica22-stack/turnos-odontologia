@@ -33,6 +33,7 @@ La regla de evidencia obligó al agente a marcar "No evidenciado" y "afirmación
 | Propose de C-11, change principal (Lucas) | `CHANGES.md` estaba desactualizado y faltaban dependencias; varias decisiones de errores y puertos no coincidían con C-16 | Implementar sobre módulos inexistentes. Luego, una carrera reprogramar/cancelar llevó a volver al diseño: lock por consultorio |
 | Propose de C-06 (Mayra) | Los mockups suponían un contrato de C-04 que no era el real | La pantalla de login habría fallado contra el backend. Se hizo la revisión 2 de mockups |
 | Propose de C-13 y C-18 (Verónica) | El roadmap pedía migración V9 (ya había hasta V13); el CHECK de evoluciones aceptaba textos solo con saltos de línea | Flyway rechaza la migración y quedan evoluciones vacías en una tabla inmutable. Se usó V14 y un CHECK que exige texto |
+| Arreglos del front tras la prueba manual (Verónica) | Los arreglos se iban a commitear sin un change de OpenSpec | Specs sin el alta de tramos por día ni la ruta `/privacidad`: código y specs desalineados. Se creó y archivó `frontend-ui-fixes` antes del commit |
 
 ## Especificación aprobada vs. prompt suelto
 
@@ -41,6 +42,8 @@ Con una especificación aprobada, el agente dejó de decidir por nosotros. Las d
 Cada escenario (feliz, error de negocio y borde) se volvió un test en Strict TDD: al cierre de C-11 había 566 tests unitarios y 364 de integración en verde. El verify lo hizo un agente distinto del que implementó.
 
 El costo fue tiempo, y cuando salteamos el proceso se notó: el pedido P1 de C-25 a C-15 se aplicó antes de escribir su change.
+
+Los tests por componente tampoco alcanzaron. Al levantar el front completo aparecieron errores que ningún test veía: la reserva solo ofrecía turnos los lunes porque "Agregar tramo" siempre creaba el tramo del lunes, los diálogos no tenían margen, el odontograma se desbordaba y había marcadores "(TBD · PA-xx)" y un link muerto al aviso de privacidad. Se corrigieron en el change `frontend-ui-fixes`.
 
 ## Qué parte de la fundación aportó más y cuál menos
 
@@ -55,6 +58,6 @@ El costo fue tiempo, y cuando salteamos el proceso se notó: el pedido P1 de C-2
 | Lucas Hernán Orsingher (líder) | Nombre completo (merges) | Fundación completa; C-01, C-02 y el change principal C-11 con el ciclo OPSX completo. Aprobó mockups y mergeó los PR |
 | Elian Navarro | — | Propose, apply y archive del backend núcleo: C-03, C-04, C-09 y C-12 |
 | Gabriel Sánchez | "Gabriel Sánchez" (merge) | Apply y archive de C-08, C-10, C-14, C-15 y su pedido P1; matriz de tests (`docs/qa/matriz-de-tests.md`) |
-| Verónica Silva | "Veronica" | Discovery: informe PDF y verificación manual de fuentes. Ciclo OPSX de C-13, C-16, C-17 y C-18; justificación de skills y evidencia de instalación |
+| Verónica Silva | "Veronica" | Discovery: informe PDF y verificación manual de fuentes. Ciclo OPSX de C-13, C-16, C-17 y C-18; prueba manual del front y change `frontend-ui-fixes`; justificación de skills y evidencia de instalación |
 | Mayra Muñoz | Correo con un punto de más (`mayrampinto.@gmail.com`) en parte de sus commits | Revisión de la knowledge-base contra el informe. Frontend base y reserva pública con mockups: C-05, C-06, C-24 y C-25 |
 | Tomás Efraín Donoso Portillo | Nombre completo (merges) | Revisión del roadmap contra el MVP. Frontend del profesional con mockups: C-07, C-19, C-20, C-21 y C-22 |
