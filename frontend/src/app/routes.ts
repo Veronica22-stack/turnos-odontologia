@@ -11,6 +11,7 @@ import { createClinicalRecordView } from '../features/clinical-record/clinical-r
 import type { PatientsGateway } from '../features/patients/patients-gateway';
 import { createPatientsView } from '../features/patients/patients-view';
 import { createBookingView } from '../features/booking/booking-view';
+import { renderPrivacyNotice } from '../features/booking/privacy-notice';
 import { createConfirmationView } from '../features/booking/confirmation-view';
 import type { ManageGateway } from '../features/manage-booking/manage-types';
 import { createManageView } from '../features/manage-booking/manage-view';
@@ -100,6 +101,14 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       view: manageView,
     },
     {
+      name: 'privacidad',
+      path: '/privacidad',
+      layout: 'public',
+      title: 'Aviso de privacidad',
+      view: () =>
+        h('section', { class: 'privacy-page' }, h('h1', {}, 'Aviso de privacidad'), renderPrivacyNotice()),
+    },
+    {
       name: 'login',
       path: '/login',
       layout: 'public',
@@ -129,7 +138,7 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       layout: 'private',
       title: 'Pacientes',
       guard: privateGuard,
-      view: () => createPatientsView({ gateway: deps.patients }),
+      view: () => createPatientsView({ gateway: deps.patients, agenda }),
     },
     {
       name: 'historia-clinica',

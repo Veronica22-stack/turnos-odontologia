@@ -141,3 +141,80 @@ describe('settings-view - render seguro (C-19 D5/D9)', () => {
     expect(root.querySelectorAll('script')).toHaveLength(0);
   });
 });
+
+describe('settings-view - índice lateral resalta la sección actual', () => {
+  function currentLinks(root: HTMLElement): string[] {
+    return Array.from(root.querySelectorAll('.section-index a[aria-current="true"]')).map((a) =>
+      a.getAttribute('href') ?? '',
+    );
+  }
+
+  it('al iniciar solo "Consultorio y reserva" está marcado', () => {
+    const root = createSettingsView({ gateway: makeGateway() });
+    mount(root);
+    expect(currentLinks(root)).toEqual(['#practice']);
+  });
+
+  it('click en "Prestaciones" marca solo ese link, hace scroll a la sección y no deja que el router lo vea', () => {
+    const scrollIntoView = vi.fn();
+    Element.prototype.scrollIntoView = scrollIntoView;
+    const root = createSettingsView({ gateway: makeGateway() });
+    mount(root);
+    const link = root.querySelector<HTMLAnchorElement>('.section-index a[href="#services"]');
+    const event = new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 });
+    link?.dispatchEvent(event);
+
+    expect(currentLinks(root)).toEqual(['#services']);
+    expect(event.defaultPrevented).toBe(true);
+    expect(scrollIntoView).toHaveBeenCalledTimes(1);
+    expect(document.activeElement?.id).toBe('services');
+  });
+
+  it('click en otro link mueve la marca (triangulación)', () => {
+    Element.prototype.scrollIntoView = vi.fn();
+    const root = createSettingsView({ gateway: makeGateway() });
+    mount(root);
+    root.querySelector<HTMLAnchorElement>('a[href="#blocks"]')?.click();
+    root.querySelector<HTMLAnchorElement>('a[href="#hours"]')?.click();
+    expect(currentLinks(root)).toEqual(['#hours']);
+  });
+
+  it('con IntersectionObserver simulado, al intersectar "hours" se marca ese', () => {
+    type Cb = (entries: Partial<IntersectionObserverEntry>[]) => void;
+    let callback: Cb = () => {};
+    const observed: Element[] = [];
+    const disconnect = vi.fn();
+    class FakeObserver {
+      constructor(cb: Cb) {
+        callback = cb;
+      }
+      observe(el: Element): void {
+        observed.push(el);
+      }
+      disconnect = disconnect;
+    }
+    vi.stubGlobal('IntersectionObserver', FakeObserver);
+    try {
+      const root = createSettingsView({ gateway: makeGateway() });
+      mount(root);
+      expect(observed.map((el) => el.id)).toEqual(['practice', 'hours', 'services', 'blocks']);
+
+      const hours = root.querySelector('#hours') as Element;
+      callback([{ target: hours, isIntersecting: true }]);
+      expect(currentLinks(root)).toEqual(['#hours']);
+
+      const services = root.querySelector('#services') as Element;
+      callback([
+        { target: hours, isIntersecting: false },
+        { target: services, isIntersecting: true },
+      ]);
+      expect(currentLinks(root)).toEqual(['#services']);
+
+      document.body.replaceChildren();
+      callback([{ target: hours, isIntersecting: true }]);
+      expect(disconnect).toHaveBeenCalled();
+    } finally {
+      vi.unstubAllGlobals();
+    }
+  });
+});

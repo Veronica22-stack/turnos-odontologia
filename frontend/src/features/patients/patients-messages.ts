@@ -1,4 +1,5 @@
 import type { ApiError, FieldError } from '../../core/http/errors';
+import { formatDateTime } from '../../shared/utils/dates';
 
 /** Única fuente de textos y de clasificación de fallos de pacientes (D4). */
 
@@ -7,6 +8,7 @@ export type PatientsFailure =
   | { readonly kind: 'forbidden' }
   | { readonly kind: 'not-found' }
   | { readonly kind: 'stale-page' }
+  | { readonly kind: 'release' }
   | { readonly kind: 'invalid'; readonly errors: readonly FieldError[] };
 
 export interface MessageCopy {
@@ -22,6 +24,10 @@ export const MESSAGES = {
     title: 'No pudimos confirmar la baja.',
     text: 'La conexión se cortó y no sabemos si se completó. Revisá la ficha actual antes de reintentar.',
   },
+  releaseError: {
+    title: 'No pudimos revisar los turnos del paciente.',
+    text: 'No se dio de baja la ficha ni se canceló ningún turno pendiente. Revisá tu conexión e intentá de nuevo.',
+  },
   notFound: { title: 'No encontramos este paciente', text: 'Puede que ya no esté disponible. Volvé al listado para continuar.' },
   stalePage: {
     title: 'La página quedó desactualizada.',
@@ -33,7 +39,7 @@ export const MESSAGES = {
   saved: { title: 'Ficha actualizada.', text: 'Los cambios se guardaron correctamente.' },
   deactivated: {
     title: 'Paciente dado de baja.',
-    text: 'La ficha quedó inactiva y no aparece en las búsquedas. Sus turnos y su historia clínica se conservan.',
+    text: 'La ficha quedó inactiva y no aparece en las búsquedas. Su historia clínica se conserva.',
   },
   review: {
     title: 'Datos para revisar',
@@ -77,6 +83,9 @@ export function failureCopy(failure: PatientsFailure, operation: 'load' | 'detai
   if (failure.kind === 'not-found') {
     return MESSAGES.notFound;
   }
+  if (failure.kind === 'release') {
+    return MESSAGES.releaseError;
+  }
   if (failure.kind === 'stale-page') {
     return MESSAGES.stalePage;
   }
@@ -96,4 +105,41 @@ export function failureCopy(failure: PatientsFailure, operation: 'load' | 'detai
     case 'deactivate':
       return MESSAGES.deactivateError;
   }
+}
+
+export interface ReleaseSummary {
+  readonly released: number;
+  readonly failed: readonly { readonly startsAt: string }[];
+}
+
+const turnos = (n: number): string => `${n} ${n === 1 ? 'turno' : 'turnos'}`;
+
+/** Mensaje de éxito de la baja según los turnos liberados (sin datos personales). */
+export function deactivatedCopy(release?: ReleaseSummary): { readonly copy: MessageCopy; readonly warning: boolean } {
+  if (release === undefined) {
+    return { copy: MESSAGES.deactivated, warning: false };
+  }
+  if (release.failed.length > 0) {
+    const when = release.failed.map((a) => formatDateTime(a.startsAt)).join(', ');
+    return {
+      warning: true,
+      copy: {
+        title: 'Paciente dado de baja, pero quedaron turnos sin liberar.',
+        text: `Se dio de baja al paciente y se liberó ${turnos(release.released)}. No pudimos liberar ${turnos(release.failed.length)} (${when}): cancelalos desde la agenda. Su historia clínica se conserva.`,
+      },
+    };
+  }
+  if (release.released === 0) {
+    return {
+      warning: false,
+      copy: { title: MESSAGES.deactivated.title, text: `${MESSAGES.deactivated.text} No tenía turnos futuros para liberar.` },
+    };
+  }
+  return {
+    warning: false,
+    copy: {
+      title: MESSAGES.deactivated.title,
+      text: `Se dio de baja al paciente y se liberaron ${turnos(release.released)}. Su historia clínica se conserva.`,
+    },
+  };
 }

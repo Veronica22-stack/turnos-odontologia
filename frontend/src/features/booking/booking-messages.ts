@@ -7,15 +7,11 @@ export interface BookingNotice {
   readonly variant: 'info' | 'warning' | 'danger';
   readonly title: string;
   readonly detail: string;
-  /** Marca de dato pendiente (TBD) que se muestra junto al texto. */
-  readonly tbd?: string;
 }
 
 export interface EmptyMessage {
   readonly title: string;
-  /** Sin punto final cuando hay `tbd`: el punto va despues de la marca. */
   readonly detail: string;
-  readonly tbd?: string;
 }
 
 export type NoticeKind =
@@ -47,7 +43,6 @@ export function bookingNotice(notice: NoticeKind): BookingNotice {
         title: 'Ya tenés turnos reservados.',
         detail:
           'Con estos datos ya hay varios turnos próximos. Para cambiarlos usá el enlace del email de confirmación o comunicate con el consultorio.',
-        tbd: '(TBD · PA-05)',
       };
     case 'service-gone':
       return {
@@ -80,8 +75,7 @@ export function bookingNotice(notice: NoticeKind): BookingNotice {
 export function noServicesMessage(): EmptyMessage {
   return {
     title: 'Reservas online no disponibles',
-    detail: 'Por ahora no se pueden reservar turnos desde acá. Comunicate con el consultorio',
-    tbd: '(TBD · datos)',
+    detail: 'Por ahora no se pueden reservar turnos desde acá. Comunicate con el consultorio.',
   };
 }
 

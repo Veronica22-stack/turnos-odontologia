@@ -70,6 +70,9 @@ describe('pacientes integrados (C-21)', () => {
         if (url.endsWith('/auth/me')) {
           return json({ userId: 'u1', role: 'DENTIST', mustChangePassword: false, fullName: 'Dra. Prueba' });
         }
+        if (url.includes('/appointments')) {
+          return json([]);
+        }
         if (url.includes('/patients?') || url.endsWith('/patients')) {
           if (failFirstList) {
             failFirstList = false;

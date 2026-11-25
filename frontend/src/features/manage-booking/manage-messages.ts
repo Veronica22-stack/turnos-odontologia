@@ -55,7 +55,6 @@ export function manageNotice(notice: ManageNoticeKind): BookingNotice {
         title: 'No se puede reprogramar este turno online.',
         detail:
           'La prestación ya no está disponible para reservar desde la web. Comunicate con el consultorio para cambiarlo o cancelalo desde acá.',
-        tbd: '(TBD · datos)',
       };
     case 'connection':
       return { variant: 'danger', title: 'No pudimos cargar tu turno.', detail: 'Revisá tu conexión.' };
@@ -73,8 +72,7 @@ export function invalidLinkMessage(): EmptyMessage {
   return {
     title: 'Este enlace no es válido',
     detail:
-      'Puede que haya vencido, que el turno ya se haya cancelado o que el enlace esté incompleto. Si necesitás ayuda con tu turno, comunicate con el consultorio',
-    tbd: '(TBD · datos)',
+      'Puede que haya vencido, que el turno ya se haya cancelado o que el enlace esté incompleto. Si necesitás ayuda con tu turno, comunicate con el consultorio.',
   };
 }
 

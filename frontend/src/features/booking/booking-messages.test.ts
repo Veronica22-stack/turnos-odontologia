@@ -26,7 +26,6 @@ describe('bookingNotice', () => {
     expect(bookingNotice({ kind: 'contact-limit' })).toMatchObject({
       variant: 'warning',
       title: 'Ya tenés turnos reservados.',
-      tbd: '(TBD · PA-05)',
     });
     expect(bookingNotice({ kind: 'service-gone' })).toEqual({
       variant: 'info',
@@ -57,8 +56,7 @@ describe('noServicesMessage', () => {
   it('usa el copy de "Reservas online no disponibles"', () => {
     expect(noServicesMessage()).toEqual({
       title: 'Reservas online no disponibles',
-      detail: 'Por ahora no se pueden reservar turnos desde acá. Comunicate con el consultorio',
-      tbd: '(TBD · datos)',
+      detail: 'Por ahora no se pueden reservar turnos desde acá. Comunicate con el consultorio.',
     });
   });
 });

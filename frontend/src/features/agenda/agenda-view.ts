@@ -536,7 +536,11 @@ export function createAgendaView(deps: AgendaViewDeps): HTMLElement {
 
   // ----- Formulario de alta (C-20 D7, US-021) -----
 
+  /** Formulario abierto actualmente: se quita del documento al cerrarse para no dejar restos en otras vistas. */
+  let formDialog: HTMLDialogElement | undefined;
+
   function openForm(): void {
+    formDialog?.remove();
     const dialog = createAppointmentForm({
       gateway,
       day: state.day,
@@ -545,8 +549,24 @@ export function createAgendaView(deps: AgendaViewDeps): HTMLElement {
         void loadAppointments();
       },
     });
+    const discard = (): void => {
+      openObserver.disconnect();
+      dialog.remove();
+      if (formDialog === dialog) {
+        formDialog = undefined;
+      }
+    };
+    // Se detecta el cierre por el atributo `open` (fiable en todo navegador) y también por el evento `close`.
+    const openObserver = new MutationObserver(() => {
+      if (!dialog.hasAttribute('open')) {
+        discard();
+      }
+    });
+    dialog.addEventListener('close', discard);
+    formDialog = dialog;
     document.body.append(dialog);
     openDialog(dialog);
+    openObserver.observe(dialog, { attributes: true, attributeFilter: ['open'] });
     dialog.querySelector<HTMLElement>('#pac-q')?.focus();
   }
 

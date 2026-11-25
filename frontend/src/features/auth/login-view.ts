@@ -152,13 +152,7 @@ export function createLoginView(deps: LoginViewDeps): (context: RouteContext) =>
       h(
         'div',
         { class: 'auth-aside' },
-        h(
-          'p',
-          {},
-          '¿Olvidaste tu contraseña? La recuperación todavía no está definida ',
-          h('span', { class: 'tbd' }, '(TBD · PA-04)'),
-          '.',
-        ),
+        h('p', {}, '¿Olvidaste tu contraseña? Comunicate con el consultorio para restablecerla.'),
       ),
     );
   };

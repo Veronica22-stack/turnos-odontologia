@@ -2,7 +2,7 @@ import { confirmAction } from '../../core/dom/confirm';
 import { alertBox, formIcon } from '../../core/dom/form';
 import { h } from '../../core/dom/h';
 import type { MessageCopy, PatientsFailure } from './patients-messages';
-import { failureCopy, MESSAGES } from './patients-messages';
+import { deactivatedCopy, failureCopy, MESSAGES } from './patients-messages';
 import type { PatientsGateway } from './patients-gateway';
 import {
   backToList,
@@ -30,12 +30,16 @@ import { mapServerErrors, validatePatientInput } from './patients-validation';
 import type { PatientDetail, PatientInput } from './patients-types';
 import { createPatientCard } from './patient-card';
 import { createPatientForm } from './patient-form';
+import { releasePatientAppointments, type ReleaseGateway, type ReleaseResult } from './release-appointments';
 import { createPatientList, createPatientTable } from './patient-row';
 
 /** Vista `/pacientes` (C-21 D6/D7): búsqueda, ficha, edición y baja sin datos personales en la ruta. */
 
 export interface PatientsViewDeps {
   readonly gateway: PatientsGateway;
+  /** Agenda para liberar los turnos futuros al dar de baja; sin ella la baja no toca turnos. */
+  readonly agenda?: ReleaseGateway;
+  readonly now?: () => Date;
 }
 
 function action(label: string, className: string, onClick: () => void): HTMLButtonElement {
@@ -53,7 +57,8 @@ function notice(copy: MessageCopy, variant: 'info' | 'success' | 'warning' | 'da
 }
 
 export function createPatientsView(deps: PatientsViewDeps): HTMLElement {
-  const { gateway } = deps;
+  const { gateway, agenda } = deps;
+  const clock = deps.now ?? (() => new Date());
   const root = h('section', { class: 'patients-view' });
   let state: PatientsState = initialPatientsState();
   let listState: ListState = state;
@@ -241,7 +246,7 @@ export function createPatientsView(deps: PatientsViewDeps): HTMLElement {
     const opener = document.activeElement;
     void confirmAction({
       title: '¿Dar de baja a este paciente?',
-      text: 'La ficha quedará inactiva y no aparecerá en las búsquedas. Sus turnos y su historia clínica se conservan. No se puede deshacer.',
+      text: 'La ficha quedará inactiva y no aparecerá en las búsquedas. Sus turnos futuros confirmados se cancelarán y esos horarios quedarán libres; su historia clínica se conserva. No se puede deshacer.',
       confirmLabel: 'Sí, dar de baja',
       cancelLabel: 'No, mantener activo',
       initialFocus: 'cancel',
@@ -254,11 +259,24 @@ export function createPatientsView(deps: PatientsViewDeps): HTMLElement {
       }
       const current: Extract<PatientsState, { kind: 'deactivate' }> = beginDeactivate({ kind: 'detail', phase: 'ready', id: patient.id, patient });
       set(deactivateStarted(current));
+      // Primero se liberan los turnos: si no se pueden consultar, la ficha sigue activa y se puede reintentar.
+      let release: Extract<ReleaseResult, { ok: true }> | undefined;
+      if (agenda !== undefined) {
+        const released = await releasePatientAppointments({ gateway: agenda, patientId: patient.id, now: clock() });
+        if (sequence !== generation) {
+          return;
+        }
+        if (!released.ok) {
+          set(deactivateFailed(current, { kind: 'release' }));
+          return;
+        }
+        release = released;
+      }
       const result = await gateway.deactivate(patient.id);
       if (sequence !== generation) {
         return;
       }
-      set(result.ok ? deactivateSucceeded(current) : deactivateFailed(current, result.failure));
+      set(result.ok ? deactivateSucceeded(current, release) : deactivateFailed(current, result.failure));
     });
   }
 
@@ -286,9 +304,11 @@ export function createPatientsView(deps: PatientsViewDeps): HTMLElement {
       case 'deactivate':
         content = renderDeactivate(state);
         break;
-      case 'deactivated':
-        content = notice(MESSAGES.deactivated, 'info', 'check', action('Volver al listado', 'btn-primary', () => void load(listState.query)));
+      case 'deactivated': {
+        const outcome = deactivatedCopy(state.release);
+        content = notice(outcome.copy, outcome.warning ? 'warning' : 'info', outcome.warning ? 'warning' : 'check', action('Volver al listado', 'btn-primary', () => void load(listState.query)));
         break;
+      }
     }
     root.replaceChildren(content);
   }

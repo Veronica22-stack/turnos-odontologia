@@ -6,7 +6,7 @@ Define cómo la SPA decide qué pantalla mostrar según la URL, qué rutas son p
 ## Requirements
 
 ### Requirement: Rutas declaradas
-La SPA SHALL reconocer las rutas públicas `/reservar`, `/reservar/confirmado`, `/turno/{token}` y `/login`, y las rutas privadas `/agenda`, `/pacientes` y `/configuracion`, resolviendo la ruta por el `pathname` de la URL (History API, sin `#`).
+La SPA SHALL reconocer las rutas públicas `/reservar`, `/reservar/confirmado`, `/privacidad`, `/turno/{token}` y `/login`, y las rutas privadas `/agenda`, `/pacientes` y `/configuracion`, resolviendo la ruta por el `pathname` de la URL (History API, sin `#`).
 
 #### Scenario: Ruta pública con parámetro
 - **WHEN** se navega a `/turno/AbC-123_x`
@@ -20,6 +20,11 @@ La SPA SHALL reconocer las rutas públicas `/reservar`, `/reservar/confirmado`, 
 #### Scenario: Barra final
 - **WHEN** se navega a `/agenda/` con una sesión autenticada
 - **THEN** se resuelve la misma ruta que `/agenda`
+
+#### Scenario: Aviso de privacidad sin sesión
+- **GIVEN** no hay sesión iniciada
+- **WHEN** se navega a `/privacidad`
+- **THEN** se muestra el aviso de privacidad dentro del layout público, con título «Aviso de privacidad» y sin redirigir a `/login`
 
 ### Requirement: Ruta no encontrada
 Una URL que no coincide con ninguna ruta declarada SHALL mostrar una vista "Página no encontrada" con un enlace al inicio, sin redirigir y sin mostrar la URL solicitada.
@@ -266,6 +271,7 @@ La ruta `/historia-clinica` SHALL permanecer sin parámetros: la selección del 
 - **GIVEN** una sesión vencida durante la carga de la historia clínica
 - **WHEN** se redirige a `/login` conservando el destino
 - **THEN** el destino es exactamente `/historia-clinica`, sin identificador de paciente ni contenido clínico
+
 ### Requirement: Acción de reprogramar en la URL
 La vista `/turno/{token}` SHALL reflejar la pantalla de reprogramación con la query `accion=reprogramar`, apilando una entrada de historial al abrirla (`pushState`), de modo que atrás del navegador vuelve al detalle. La URL MUST NOT contener nada más que el token en la ruta y esa acción (ni horario ni prestación). Tras una reprogramación correcta la URL SHALL pasar a `/turno/{token}` con `replaceState`.
 

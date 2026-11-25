@@ -2,6 +2,7 @@ import { h } from '../../core/dom/h';
 import { createBlocksSection } from './blocks-section';
 import { createPracticeSection } from './practice-section';
 import type { SettingsGateway } from './settings-gateway';
+import { startSectionSpy } from './section-spy';
 import { createServicesSection } from './services-section';
 import { createWorkingHoursSection } from './working-hours-section';
 
@@ -21,8 +22,34 @@ const SECTION_INDEX: readonly { readonly id: string; readonly label: string }[] 
   { id: 'blocks', label: 'Bloqueos' },
 ];
 
+const SECTION_IDS = SECTION_INDEX.map((section) => section.id);
+
 export function createSettingsView(deps: SettingsViewDeps): HTMLElement {
   const content = h('div', { class: 'settings-content' });
+
+  function markCurrent(id: string): void {
+    for (const link of root.querySelectorAll<HTMLAnchorElement>('.section-index a')) {
+      if (link.getAttribute('href') === `#${id}`) {
+        link.setAttribute('aria-current', 'true');
+      } else {
+        link.removeAttribute('aria-current');
+      }
+    }
+  }
+
+  /** El router escucha popstate (que dispara el salto de ancla) y re-renderizaría la vista: se resuelve acá. */
+  function onIndexClick(event: Event): void {
+    const href = (event.currentTarget as HTMLAnchorElement).getAttribute('href') ?? '';
+    const target = root.querySelector<HTMLElement>(href);
+    if (target === null) {
+      return;
+    }
+    event.preventDefault();
+    markCurrent(target.id);
+    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+  }
   const root = h(
     'div',
     { class: 'settings-page' },
@@ -53,8 +80,8 @@ export function createSettingsView(deps: SettingsViewDeps): HTMLElement {
               h(
                 'a',
                 index === 0
-                  ? { attrs: { href: `#${section.id}` }, aria: { current: 'true' } }
-                  : { attrs: { href: `#${section.id}` } },
+                  ? { attrs: { href: `#${section.id}` }, aria: { current: 'true' }, on: { click: onIndexClick } }
+                  : { attrs: { href: `#${section.id}` }, on: { click: onIndexClick } },
                 section.label,
               ),
             ),
@@ -80,6 +107,8 @@ export function createSettingsView(deps: SettingsViewDeps): HTMLElement {
     createServicesSection({ gateway: deps.gateway, getGranularity: () => granularity }),
     createBlocksSection({ gateway: deps.gateway }),
   );
+
+  startSectionSpy({ root, ids: SECTION_IDS, initial: SECTION_IDS[0] ?? '', onChange: markCurrent });
 
   return root;
 }
