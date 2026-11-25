@@ -458,15 +458,19 @@ dialog.confirm-dialog {
   padding: var(--space-6);
 }
 
-/* Diálogos sin cabecera/cuerpo estructurados (p. ej. "Nuevo turno"): padding propio. */
+/* Diálogos sin cabecera/cuerpo estructurados (p. ej. "Nuevo turno"): padding propio.
+   El display solo aplica abierto: un <dialog> cerrado debe seguir oculto. */
 dialog.dialog:not(:has(> .dialog-head)) {
-  display: grid;
   gap: var(--space-4);
   padding: var(--space-6);
 }
 
 dialog.dialog:not(:has(> .dialog-head))[open] {
   display: grid;
+}
+
+dialog:not([open]) {
+  display: none;
 }
 
 dialog.dialog:not(:has(> .dialog-head)) > h3 {

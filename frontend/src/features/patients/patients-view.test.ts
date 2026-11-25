@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import type { PatientsFailure } from './patients-messages';
 import type { PatientsGateway, PatientsResult } from './patients-gateway';
 import { createPatientsView } from './patients-view';
+import type { ReleaseGateway } from './release-appointments';
 import type { PatientDetail, PatientInput, PatientSummary } from './patients-types';
 
 const SUMMARY: PatientSummary = {
@@ -51,9 +52,9 @@ function fakeGateway(options: {
   };
 }
 
-function mount(gateway: PatientsGateway): HTMLElement {
+function mount(gateway: PatientsGateway, agenda?: ReleaseGateway): HTMLElement {
   document.body.replaceChildren();
-  const view = createPatientsView({ gateway });
+  const view = createPatientsView({ gateway, ...(agenda !== undefined ? { agenda, now: () => new Date('2026-11-24T12:00:00Z') } : {}) });
   document.body.append(view);
   return view;
 }
@@ -386,7 +387,8 @@ describe('patients-view - baja lógica (D6)', () => {
     const root = mount(fakes.gateway);
     await openDeactivate(root, fakes);
     const dialog = document.querySelector('dialog');
-    expect(dialog?.textContent).toContain('Sus turnos y su historia clínica se conservan');
+    expect(dialog?.textContent).toContain('Sus turnos futuros confirmados se cancelarán');
+    expect(dialog?.textContent).toContain('su historia clínica se conserva');
     expect(document.activeElement?.getAttribute('data-confirm')).toBe('cancel');
     dialog?.dispatchEvent(new Event('cancel', { bubbles: true, cancelable: true }));
     await vi.waitFor(() => expect(document.querySelector('dialog')).toBeNull());
@@ -442,3 +444,95 @@ async function textEventually(root: HTMLElement, text: string): Promise<boolean>
     return root.textContent?.includes(text) === true;
   }
 }
+
+describe('patients-view - baja libera turnos futuros', () => {
+  function appointment(id: string, patientId: string, startsAt: string): Record<string, unknown> {
+    return {
+      id, patientId, serviceId: 'srv-1', startsAt, endsAt: startsAt, durationMin: 30, status: 'CONFIRMED',
+      origin: 'INTERNAL', overbooking: false, cancelledBy: null, cancelledAt: null, notes: null,
+      createdAt: '2026-11-01T10:00:00Z', updatedAt: '2026-11-01T10:00:00Z',
+    };
+  }
+
+  function fakeAgenda(items: readonly Record<string, unknown>[], failIds: readonly string[] = []): {
+    agenda: ReleaseGateway;
+    cancel: ReturnType<typeof vi.fn>;
+    order: string[];
+  } {
+    const order: string[] = [];
+    const listAppointments = vi.fn(async (from?: string) => ({
+      ok: true as const,
+      data: from === new Date('2026-11-24T12:00:00Z').toISOString() ? items : [],
+    }));
+    const cancel = vi.fn(async (id: string) => {
+      order.push(`cancel:${id}`);
+      return failIds.includes(id) ? { ok: false as const, error: { kind: 'network' } } : { ok: true as const, data: {} };
+    });
+    return { agenda: { listAppointments, cancelAppointment: cancel } as unknown as ReleaseGateway, cancel, order };
+  }
+
+  async function confirm(root: HTMLElement): Promise<void> {
+    await loaded(root);
+    root.querySelector<HTMLAnchorElement>('.pname')?.click();
+    await vi.waitFor(() => expect(root.querySelector('h1')?.textContent).toBe('Julieta Simulada'));
+    button(root, 'Dar de baja').click();
+    await vi.waitFor(() => expect(document.querySelector('dialog')).not.toBeNull());
+    document.querySelector<HTMLButtonElement>('[data-confirm="accept"]')?.click();
+  }
+
+  it('cancela los turnos del paciente antes de la baja y informa cuántos se liberaron', async () => {
+    const fakes = fakeGateway();
+    const { agenda, cancel, order } = fakeAgenda([
+      appointment('t1', 'pac-001', '2026-12-01T13:00:00Z'),
+      appointment('t2', 'pac-001', '2026-12-02T13:00:00Z'),
+      appointment('t3', 'otro', '2026-12-03T13:00:00Z'),
+    ]);
+    fakes.deactivate.mockImplementation(async () => {
+      order.push('deactivate');
+      return { ok: true, data: undefined };
+    });
+    const root = mount(fakes.gateway, agenda);
+    await confirm(root);
+    await vi.waitFor(() => expect(root.textContent).toContain('Se dio de baja al paciente y se liberaron 2 turnos.'));
+    expect(cancel).toHaveBeenCalledTimes(2);
+    expect(order).toEqual(['cancel:t1', 'cancel:t2', 'deactivate']);
+  });
+
+  it('TRIANGULATE: sin turnos futuros informa que no había nada para liberar', async () => {
+    const fakes = fakeGateway();
+    const { agenda, cancel } = fakeAgenda([]);
+    const root = mount(fakes.gateway, agenda);
+    await confirm(root);
+    await vi.waitFor(() => expect(root.textContent).toContain('Paciente dado de baja'));
+    expect(root.textContent).toContain('No tenía turnos futuros para liberar.');
+    expect(cancel).not.toHaveBeenCalled();
+    expect(fakes.deactivate).toHaveBeenCalledTimes(1);
+  });
+
+  it('TRIANGULATE: con falla parcial avisa cuáles turnos no se pudieron liberar', async () => {
+    const fakes = fakeGateway();
+    const { agenda } = fakeAgenda(
+      [appointment('t1', 'pac-001', '2026-12-01T13:00:00Z'), appointment('t2', 'pac-001', '2026-12-02T13:00:00Z')],
+      ['t2'],
+    );
+    const root = mount(fakes.gateway, agenda);
+    await confirm(root);
+    await vi.waitFor(() => expect(root.textContent).toContain('se liberó 1 turno'));
+    expect(root.textContent).toContain('No pudimos liberar 1 turno');
+    expect(root.textContent).toContain('02/12/2026');
+    expect(root.querySelector('[role="alert"]')).not.toBeNull();
+  });
+
+  it('si no se pueden consultar los turnos no da de baja al paciente', async () => {
+    const fakes = fakeGateway();
+    const agenda = {
+      listAppointments: vi.fn(async () => ({ ok: false as const, error: { kind: 'network' } })),
+      cancelAppointment: vi.fn(),
+    } as unknown as ReleaseGateway;
+    const root = mount(fakes.gateway, agenda);
+    await confirm(root);
+    await vi.waitFor(() => expect(root.querySelector('[role="alert"]')).not.toBeNull());
+    expect(fakes.deactivate).not.toHaveBeenCalled();
+    expect(root.textContent).not.toContain('Se dio de baja');
+  });
+});

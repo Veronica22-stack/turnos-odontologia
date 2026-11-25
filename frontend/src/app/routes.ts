@@ -138,7 +138,7 @@ export function createRoutes(deps: RoutesDeps): { routes: RouteDef[]; notFound: 
       layout: 'private',
       title: 'Pacientes',
       guard: privateGuard,
-      view: () => createPatientsView({ gateway: deps.patients }),
+      view: () => createPatientsView({ gateway: deps.patients, agenda }),
     },
     {
       name: 'historia-clinica',

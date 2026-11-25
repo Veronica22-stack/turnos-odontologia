@@ -1,4 +1,4 @@
-import type { PatientsFailure } from './patients-messages';
+import type { PatientsFailure, ReleaseSummary } from './patients-messages';
 import type { FieldErrors } from './patients-validation';
 import type { PatientDetail, PatientInput, PatientSummary } from './patients-types';
 
@@ -40,6 +40,7 @@ interface DeactivateState {
 interface DeactivatedState {
   readonly kind: 'deactivated';
   readonly patient: PatientDetail;
+  readonly release?: ReleaseSummary;
 }
 
 export type PatientsState = ListState | DetailState | EditState | DeactivateState | DeactivatedState;
@@ -146,8 +147,10 @@ export function deactivateStarted(state: DeactivateState): DeactivateState {
   return state.phase === 'working' ? state : { ...state, phase: 'working' };
 }
 
-export function deactivateSucceeded(state: DeactivateState): DeactivatedState {
-  return { kind: 'deactivated', patient: state.patient };
+export function deactivateSucceeded(state: DeactivateState, release?: ReleaseSummary): DeactivatedState {
+  return release === undefined
+    ? { kind: 'deactivated', patient: state.patient }
+    : { kind: 'deactivated', patient: state.patient, release };
 }
 
 export function deactivateFailed(state: DeactivateState, failure: PatientsFailure): DeactivateState {

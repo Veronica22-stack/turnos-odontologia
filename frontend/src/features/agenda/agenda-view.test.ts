@@ -83,6 +83,55 @@ afterEach(() => {
   document.body.replaceChildren();
 });
 
+describe('agenda-view - formulario "Nuevo turno" no queda en el documento', () => {
+  function newAppointmentForms(): HTMLDialogElement[] {
+    return Array.from(document.body.querySelectorAll('dialog')).filter((d) => d.querySelector('#nuevo-turno-t') !== null);
+  }
+
+  function openNewAppointment(root: HTMLElement): void {
+    const button = Array.from(root.querySelectorAll('button')).find((b) => b.textContent === 'Nuevo turno');
+    button?.click();
+  }
+
+  it('al cerrarse, el formulario sale del documento', async () => {
+    const root = createAgendaView({ gateway: makeGateway(), clock: CLOCK });
+    mount(root);
+    await vi.waitFor(() => expect(root.querySelector('.appt')).not.toBeNull());
+
+    openNewAppointment(root);
+    const form = newAppointmentForms()[0];
+    expect(form).toBeDefined();
+
+    form?.dispatchEvent(new Event('close'));
+
+    expect(newAppointmentForms()).toHaveLength(0);
+  });
+
+  it('al tocar "Cancelar" (se quita el atributo open) el formulario sale del documento', async () => {
+    const root = createAgendaView({ gateway: makeGateway(), clock: CLOCK });
+    mount(root);
+    await vi.waitFor(() => expect(root.querySelector('.appt')).not.toBeNull());
+
+    openNewAppointment(root);
+    const cancel = Array.from(newAppointmentForms()[0]?.querySelectorAll('button') ?? []).find((b) => b.textContent === 'Cancelar');
+    cancel?.click();
+
+    await vi.waitFor(() => expect(newAppointmentForms()).toHaveLength(0));
+  });
+
+  it('abrirlo varias veces deja un solo formulario en el documento', async () => {
+    const root = createAgendaView({ gateway: makeGateway(), clock: CLOCK });
+    mount(root);
+    await vi.waitFor(() => expect(root.querySelector('.appt')).not.toBeNull());
+
+    openNewAppointment(root);
+    openNewAppointment(root);
+    openNewAppointment(root);
+
+    expect(newAppointmentForms()).toHaveLength(1);
+  });
+});
+
 describe('agenda-view - agenda diaria (C-20 D4)', () => {
   it('renderiza turno confirmado con badge, bloqueo rayado, hueco libre clickeable; selector de día y leyenda', async () => {
     const root = createAgendaView({ gateway: makeGateway(), clock: CLOCK });
